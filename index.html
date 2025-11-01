@@ -1,60 +1,257 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TEYLON SAC - Tecnología y Ciberseguridad</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEYLON SAC — Consultoría TI & Equipos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#07121a; --card:#081522; --accent:#00e0a3; --accent-2:#1fb6ff; --glass:rgba(255,255,255,0.03);
+      --muted:#9aa8b3; --glass-2:rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; margin:0; background:radial-gradient(1200px 600px at 10% 10%, rgba(31,182,255,0.04), transparent), radial-gradient(800px 400px at 90% 90%, rgba(0,224,163,0.03), transparent), var(--bg); color:#e6eef3; -webkit-font-smoothing:antialiased}
+    header{position:fixed; left:0; right:0; top:0; z-index:40; backdrop-filter: blur(6px); background:linear-gradient(180deg, rgba(8,21,34,0.6), rgba(8,21,34,0.35)); border-bottom:1px solid rgba(255,255,255,0.03)}
+    .container{max-width:1200px; margin:0 auto; padding:18px 24px; display:flex; align-items:center; justify-content:space-between}
+    .brand{display:flex; gap:12px; align-items:center}
+    .logo-mark{width:46px; height:46px; border-radius:10px; background:linear-gradient(135deg,var(--accent-2),var(--accent)); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 24px rgba(0,224,163,0.07)}
+    .logo-mark svg{width:28px; height:28px}
+    nav ul{display:flex; gap:18px; list-style:none; margin:0; padding:0; align-items:center}
+    nav a{color:var(--muted); text-decoration:none; font-weight:600; font-size:14px}
+    nav a.cta{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021217; padding:10px 14px; border-radius:10px}
+
+    /* HERO */
+    .hero{min-height:78vh; display:grid; grid-template-columns:1fr 420px; gap:32px; align-items:center; padding:110px 24px 60px}
+    .hero-left{padding-right:12px}
+    .eyebrow{display:inline-block; padding:6px 10px; border-radius:999px; background:linear-gradient(90deg, rgba(31,182,255,0.08), rgba(0,224,163,0.06)); color:var(--accent-2); font-weight:700; font-size:13px}
+    h1{font-size:44px; line-height:1.02; margin:18px 0 12px; color:#fff; text-shadow:0 8px 40px rgba(0,0,0,0.5)}
+    p.lead{color:var(--muted); font-size:16px; margin:0 0 18px}
+    .actions{display:flex; gap:12px; margin-top:12px}
+    .btn{padding:12px 18px; border-radius:10px; font-weight:700; text-decoration:none}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#022;}
+    .btn-ghost{border:1px solid rgba(255,255,255,0.06); color:var(--muted); background:transparent}
+
+    /* hero card */
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); padding:20px; border-radius:14px; box-shadow:0 8px 30px rgba(3,10,18,0.6)}
+    .stat{display:flex; gap:12px; align-items:center}
+    .stat strong{font-size:20px; color:#fff}
+    .muted{color:var(--muted); font-size:13px}
+
+    /* sections */
+    section{padding:48px 24px;}
+    .grid{display:grid; gap:20px}
+    .services{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+    .card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.02)); padding:22px; border-radius:14px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 8px 30px rgba(2,6,12,0.6)}
+    .card h3{margin:0 0 8px}
+    .muted-block{color:var(--muted); font-size:14px}
+
+    /* catalog */
+    .catalog-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px}
+    .product{padding:16px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border:1px solid rgba(255,255,255,0.03)}
+    .product h4{margin:8px 0}
+    .price{font-weight:800; color:var(--accent)}
+
+    footer{padding:28px 24px; border-top:1px solid rgba(255,255,255,0.03); text-align:center; color:var(--muted)}
+
+    /* WhatsApp floating */
+    .whatsapp{position:fixed; right:22px; bottom:22px; z-index:60}
+    .wa-btn{width:64px; height:64px; border-radius:999px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 10px 30px rgba(0,224,163,0.12); text-decoration:none}
+
+    /* small screens */
+    @media (max-width:940px){.hero{grid-template-columns:1fr; padding-top:160px} nav ul{display:none} .container{justify-content:space-between}}
+
+    /* subtle animations */
+    .fade-up{opacity:0; transform:translateY(8px); transition:all 600ms cubic-bezier(.2,.9,.3,1)}
+    .in-view{opacity:1; transform:none}
+
+    /* particle canvas overlay */
+    #particles{position:fixed; inset:0; z-index:0; pointer-events:none}
+    main{position:relative; z-index:10}
+  </style>
 </head>
-
 <body>
-<header>
-  <div class="logo">TEYLON SAC</div>
-  <nav>
-    <a href="#">Inicio</a>
-    <a href="#">Servicios</a>
-    <a href="#">Catálogo</a>
-    <a href="#">IA Assistant</a>
-    <a href="#">Contacto</a>
-  </nav>
-</header>
+  <canvas id="particles"></canvas>
+  <header>
+    <div class="container">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden>
+          <!-- simple shield+network mark -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l7 3v5c0 5-3 9-7 12-4-3-7-7-7-12V5l7-3z" stroke="#021217" stroke-width="0" fill="white" opacity="0.1"/><path d="M8 11h8M9 15h6" stroke="#021217" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:800;color:#fff">TEYLON SAC</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Tecnología — Ciberseguridad — IA</div>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#contacto" class="cta">Contáctanos</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-<section class="hero">
-  <h1>Soluciones Tecnológicas Inteligentes</h1>
-  <p>Consultoría en TI, Infraestructura, Ciberseguridad e Inteligencia Artificial</p>
-  <button class="cta">Contáctanos</button>
-</section>
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-left">
+        <span class="eyebrow">Soluciones TI empresariales</span>
+        <h1>Consultoría y Equipamiento Tecnológico con enfoque en Ciberseguridad e IA</h1>
+        <p class="lead">Diseñamos, implementamos y optimizamos infraestructuras, redes y soluciones digitales. Venta y despliegue de equipos corporativos con soporte especializado.</p>
+        <div class="actions">
+          <a href="#contacto" class="btn btn-primary">Solicitar Cotización</a>
+          <a href="#productos" class="btn btn-ghost">Ver Catálogo</a>
+        </div>
 
-<!-- Asistente IA -->
-<section class="assistant">
-  <h2>🤖 Asistente IA Empresarial</h2>
-  <p>Automatización, análisis y modernización tecnológica</p>
-</section>
+        <div style="display:flex; gap:12px; margin-top:22px">
+          <div class="hero-card card fade-up">
+            <div class="stat"><strong>+5</strong><div class="muted">Años de experiencia</div></div>
+          </div>
+          <div class="hero-card card fade-up">
+            <div class="stat"><strong>Empresas</strong><div class="muted">Soluciones para PYMES y Corporativos</div></div>
+          </div>
+        </div>
+      </div>
 
-<!-- Catálogo -->
-<section class="catalog">
-  <h2>Nuestros Productos</h2>
-  <div class="product-grid">
-    <div class="card">Laptop Corporativa</div>
-    <div class="card">Servidores Empresariales</div>
-    <div class="card">Networking & Firewall</div>
+      <div style="position:relative">
+        <div class="card" style="min-height:300px; display:flex; flex-direction:column; gap:10px; justify-content:center; align-items:flex-start">
+          <div style="font-size:13px; color:var(--muted);">Demo AI Assistant</div>
+          <div style="font-weight:800; font-size:20px; color:#fff">TEYLON AI Advisor</div>
+          <p class="muted-block">Haz consultas rápidas sobre requerimientos de infraestructura o pide una recomendación de equipo.</p>
+          <input id="aiQ" placeholder="¿Qué necesitas? (ej: servidor para 50 usuarios)" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3" />
+          <div style="display:flex; gap:8px; width:100%; justify-content:flex-end">
+            <button class="btn btn-primary" onclick="askAI()">Preguntar</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('aiQ').value=''">Limpiar</button>
+          </div>
+          <div id="aiR" style="margin-top:8px; color:var(--muted); font-size:14px"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="servicios">
+      <div class="container">
+        <h2 style="color:#fff">Servicios</h2>
+        <div class="grid services" style="margin-top:18px; grid-template-columns:repeat(3,1fr)">
+          <div class="card fade-up"><h3>Consultoría TI</h3><p class="muted-block">Auditorías, arquitectura, migración a la nube, políticas de seguridad y planes de continuidad.</p></div>
+          <div class="card fade-up"><h3>Implementación & Mantenimiento</h3><p class="muted-block">Diseño e implementación de redes, servidores y soporte 24/7.</p></div>
+          <div class="card fade-up"><h3>Venta de Equipos</h3><p class="muted-block">Computadoras, servidores, almacenamiento y periféricos con garantía y soporte.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="productos">
+      <div class="container">
+        <h2 style="color:#fff">Catálogo de Productos</h2>
+        <div class="catalog-grid" style="margin-top:18px">
+          <div class="product card fade-up">
+            <div style="font-size:12px; color:var(--muted)">Laptop Corporativa</div>
+            <h4>TEYLON ProBook 15</h4>
+            <div class="muted-block">Intel i7 — 16GB RAM — 512GB NVMe</div>
+            <div class="price">S/ 3,200</div>
+            <div style="margin-top:10px"><a class="btn btn-primary" href="#contacto">Solicitar</a></div>
+          </div>
+
+          <div class="product card fade-up">
+            <div style="font-size:12px; color:var(--muted)">Servidor Rack</div>
+            <h4>TEYLON RackServer X2</h4>
+            <div class="muted-block">2x Xeon — 64GB — 4TB RAID</div>
+            <div class="price">S/ 18,500</div>
+            <div style="margin-top:10px"><a class="btn btn-primary" href="#contacto">Solicitar</a></div>
+          </div>
+
+          <div class="product card fade-up">
+            <div style="font-size:12px; color:var(--muted)">Firewall & Network</div>
+            <h4>SecureEdge UTM</h4>
+            <div class="muted-block">Protección perimetral y VPN empresarial</div>
+            <div class="price">S/ 4,900</div>
+            <div style="margin-top:10px"><a class="btn btn-primary" href="#contacto">Solicitar</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="nosotros">
+      <div class="container">
+        <h2 style="color:#fff">Nosotros</h2>
+        <p class="muted-block" style="max-width:900px">TEYLON SAC se dedica a brindar servicios de consultoría especializada en sistemas de tecnología de la información, incluyendo diseño, implementación, mantenimiento y optimización de infraestructura tecnológica, redes, software y soluciones digitales. También comercializamos y distribuimos equipos tecnológicos orientados a satisfacer necesidades de empresas e instituciones.</p>
+      </div>
+    </section>
+
+    <section id="contacto">
+      <div class="container">
+        <h2 style="color:#fff">Contacto</h2>
+        <div style="display:grid; grid-template-columns:1fr 360px; gap:24px; margin-top:18px">
+          <div class="card">
+            <form onsubmit="sendForm(event)">
+              <label style="display:block; font-weight:700; margin-bottom:8px">Nombre</label>
+              <input id="name" required style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3" />
+              <label style="display:block; font-weight:700; margin:12px 0 8px">Email</label>
+              <input id="email" type="email" required style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3" />
+              <label style="display:block; font-weight:700; margin:12px 0 8px">Mensaje</label>
+              <textarea id="msg" rows="4" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3"></textarea>
+              <div style="margin-top:12px; display:flex; justify-content:flex-end"><button class="btn btn-primary" type="submit">Enviar</button></div>
+            </form>
+            <div id="formMsg" style="margin-top:12px; color:var(--muted)"></div>
+          </div>
+
+          <div class="card">
+            <h4>Información</h4>
+            <p class="muted-block">Email: contacto@teylon.com</p>
+            <p class="muted-block">Teléfono: +51 970619270</p>
+            <p class="muted-block">Dirección: Lima, Perú (oficina)</p>
+            <div style="margin-top:10px"><a href="#" class="btn btn-ghost">Mapa</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      © 2025 TEYLON SAC — Tecnología y Seguridad. Todos los derechos reservados.
+    </footer>
+  </main>
+
+  <!-- WhatsApp flotante -->
+  <div class="whatsapp">
+    <a class="wa-btn" href="https://wa.me/51970619270" target="_blank" aria-label="WhatsApp TEYLON">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 3.5A11 11 0 0 0 3 20l-1 4 4-1A11 11 0 0 0 20.5 3.5z" fill="#021217" opacity="0.06"/><path d="M17.6 15.3c-.4.9-1.9 1.8-2.7 2.1-.7.3-1.5.5-2.5.2-2.6-.6-4.8-2.4-6.2-4.8-.9-1.5-1.2-2.9-.8-4.1.8-2.6 3.7-4.8 7.4-5.1 2.8-.2 5 1 5.9 1.8.9.8 1.6 2.1 1.3 3.5-.3 1.4-1.4 3-2.4 4.4z" fill="#fff"/></svg>
+    </a>
   </div>
-</section>
 
-<!-- Contacto -->
-<section class="contact">
-  <h2>Contáctanos</h2>
-  <form>
-    <input type="text" placeholder="Nombre">
-    <input type="email" placeholder="Correo">
-    <textarea placeholder="Mensaje"></textarea>
-    <button>Enviar</button>
-  </form>
-</section>
+  <script>
+    // simple AI advisor demo (local simulated answers)
+    function askAI(){
+      const q=document.getElementById('aiQ').value.trim();
+      const out=document.getElementById('aiR');
+      if(!q){ out.textContent='Escribe una consulta breve...'; return }
+      out.textContent='Generando recomendación inteligente...';
+      setTimeout(()=>{
+        out.innerHTML='<strong>Recomendación:</strong> Para "'+escapeHtml(q)+'" recomendamos evaluar un servidor con CPU multi-core, 64GB RAM y almacenamiento NVMe en RAID, además de una solución de firewall UTM. Podemos cotizar en 24h.'
+      },900)
+    }
+    function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-<!-- WhatsApp -->
-<a href="https://wa.me/51970619270" class="whatsapp" target="_blank">💬</a>
+    // contact form mock
+    function sendForm(e){e.preventDefault(); document.getElementById('formMsg').textContent='Gracias — Tu mensaje fue enviado (demo).'; setTimeout(()=>document.getElementById('formMsg').textContent='Podemos integrar envío real vía email/CRM si lo deseas.' ,1800)}
 
-<script src="script.js"></script>
+    // in-view animation
+    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view')} })},{threshold:0.12});
+    document.querySelectorAll('.fade-up').forEach(n=>obs.observe(n));
+
+    // particles background (lightweight)
+    const canvas=document.getElementById('particles'); const ctx=canvas.getContext('2d'); let w,h,particles=[];
+    function resize(){w=canvas.width=innerWidth; h=canvas.height=innerHeight}
+    window.addEventListener('resize',resize); resize();
+    function rand(min,max){return Math.random()*(max-min)+min}
+    function init(){particles=Array.from({length:Math.round((w*h)/90000)},()=>({x:rand(0,w), y:rand(0,h), r:rand(0.4,1.8), vx:rand(-0.2,0.2), vy:rand(-0.1,0.1), hue:rand(160,210)}))}
+    init();
+    function frame(){ctx.clearRect(0,0,w,h); particles.forEach(p=>{p.x+=p.vx; p.y+=p.vy; if(p.x<0) p.x=w; if(p.x> w) p.x=0; if(p.y<0) p.y=h; if(p.y>h) p.y=0; ctx.beginPath(); ctx.fillStyle='hsla('+p.hue+',90%,60%,0.06)'; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();}); requestAnimationFrame(frame)}
+    frame();
+  </script>
 </body>
 </html>
