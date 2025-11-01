@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: black;
+  color: white;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 40px;
+  background: rgba(0,0,0,0.6);
+  position: fixed;
+  width: 100%;
+}
+
+nav a {
+  margin: 0 12px;
+  color: cyan;
+  text-decoration: none;
+}
+
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(circle, #001a33, #000);
+  animation: pulse 4s infinite;
+}
+
+@keyframes pulse {
+  0% { text-shadow: 0 0 10px cyan; }
+  50% { text-shadow: 0 0 30px blue; }
+  100% { text-shadow: 0 0 10px cyan; }
+}
+
+.catalog {
+  padding: 60px;
+  text-align: center;
+}
+
+.product-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card {
+  background: #0a0a0a;
+  border: 1px solid cyan;
+  padding: 30px;
+  width: 200px;
+  text-align: center;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px cyan;
+}
+
+.contact {
+  padding: 60px;
+  text-align: center;
+}
+
+input, textarea {
+  width: 300px;
+  padding: 10px;
+  margin: 10px;
+  background: #111;
+  border: 1px solid cyan;
+  color: white;
+}
+
+button {
+  padding: 12px 30px;
+  background: cyan;
+  border: none;
+  cursor: pointer;
+}
+
+.whatsapp {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25D366;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 50%;
+  font-size: 22px;
+  text-decoration: none;
+}
