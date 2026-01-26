@@ -1,257 +1,272 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TEYLON SAC — Consultoría TI & Equipos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#07121a; --card:#081522; --accent:#00e0a3; --accent-2:#1fb6ff; --glass:rgba(255,255,255,0.03);
-      --muted:#9aa8b3; --glass-2:rgba(255,255,255,0.02);
-    }
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; margin:0; background:radial-gradient(1200px 600px at 10% 10%, rgba(31,182,255,0.04), transparent), radial-gradient(800px 400px at 90% 90%, rgba(0,224,163,0.03), transparent), var(--bg); color:#e6eef3; -webkit-font-smoothing:antialiased}
-    header{position:fixed; left:0; right:0; top:0; z-index:40; backdrop-filter: blur(6px); background:linear-gradient(180deg, rgba(8,21,34,0.6), rgba(8,21,34,0.35)); border-bottom:1px solid rgba(255,255,255,0.03)}
-    .container{max-width:1200px; margin:0 auto; padding:18px 24px; display:flex; align-items:center; justify-content:space-between}
-    .brand{display:flex; gap:12px; align-items:center}
-    .logo-mark{width:46px; height:46px; border-radius:10px; background:linear-gradient(135deg,var(--accent-2),var(--accent)); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 24px rgba(0,224,163,0.07)}
-    .logo-mark svg{width:28px; height:28px}
-    nav ul{display:flex; gap:18px; list-style:none; margin:0; padding:0; align-items:center}
-    nav a{color:var(--muted); text-decoration:none; font-weight:600; font-size:14px}
-    nav a.cta{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#021217; padding:10px 14px; border-radius:10px}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TELYON | Data • Analytics • Automation</title>
 
-    /* HERO */
-    .hero{min-height:78vh; display:grid; grid-template-columns:1fr 420px; gap:32px; align-items:center; padding:110px 24px 60px}
-    .hero-left{padding-right:12px}
-    .eyebrow{display:inline-block; padding:6px 10px; border-radius:999px; background:linear-gradient(90deg, rgba(31,182,255,0.08), rgba(0,224,163,0.06)); color:var(--accent-2); font-weight:700; font-size:13px}
-    h1{font-size:44px; line-height:1.02; margin:18px 0 12px; color:#fff; text-shadow:0 8px 40px rgba(0,0,0,0.5)}
-    p.lead{color:var(--muted); font-size:16px; margin:0 0 18px}
-    .actions{display:flex; gap:12px; margin-top:12px}
-    .btn{padding:12px 18px; border-radius:10px; font-weight:700; text-decoration:none}
-    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#022;}
-    .btn-ghost{border:1px solid rgba(255,255,255,0.06); color:var(--muted); background:transparent}
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    /* hero card */
-    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); padding:20px; border-radius:14px; box-shadow:0 8px 30px rgba(3,10,18,0.6)}
-    .stat{display:flex; gap:12px; align-items:center}
-    .stat strong{font-size:20px; color:#fff}
-    .muted{color:var(--muted); font-size:13px}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-    /* sections */
-    section{padding:48px 24px;}
-    .grid{display:grid; gap:20px}
-    .services{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
-    .card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.02)); padding:22px; border-radius:14px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 8px 30px rgba(2,6,12,0.6)}
-    .card h3{margin:0 0 8px}
-    .muted-block{color:var(--muted); font-size:14px}
+        body {
+            background: #050b16;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
 
-    /* catalog */
-    .catalog-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px}
-    .product{padding:16px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); border:1px solid rgba(255,255,255,0.03)}
-    .product h4{margin:8px 0}
-    .price{font-weight:800; color:var(--accent)}
+        /* ================= HEADER ================= */
 
-    footer{padding:28px 24px; border-top:1px solid rgba(255,255,255,0.03); text-align:center; color:var(--muted)}
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 8%;
+            position: fixed;
+            width: 100%;
+            background: rgba(5, 11, 22, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
 
-    /* WhatsApp floating */
-    .whatsapp{position:fixed; right:22px; bottom:22px; z-index:60}
-    .wa-btn{width:64px; height:64px; border-radius:999px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 10px 30px rgba(0,224,163,0.12); text-decoration:none}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-    /* small screens */
-    @media (max-width:940px){.hero{grid-template-columns:1fr; padding-top:160px} nav ul{display:none} .container{justify-content:space-between}}
+        .logo-img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+        }
 
-    /* subtle animations */
-    .fade-up{opacity:0; transform:translateY(8px); transition:all 600ms cubic-bezier(.2,.9,.3,1)}
-    .in-view{opacity:1; transform:none}
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
 
-    /* particle canvas overlay */
-    #particles{position:fixed; inset:0; z-index:0; pointer-events:none}
-    main{position:relative; z-index:10}
-  </style>
+        nav a {
+            margin-left: 28px;
+            text-decoration: none;
+            color: #cfd8ff;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #4da3ff;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 8%;
+            background:
+                radial-gradient(circle at 30% 30%, #123cff55, transparent 40%),
+                radial-gradient(circle at 80% 20%, #00e0ff33, transparent 45%),
+                #050b16;
+        }
+
+        .hero-content {
+            max-width: 620px;
+        }
+
+        .hero h1 {
+            font-size: 54px;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 span {
+            color: #4da3ff;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #cfd8ff;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .buttons a {
+            display: inline-block;
+            padding: 14px 34px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #2f7bff, #00e0ff);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+
+        .btn-secondary {
+            border: 1px solid #4da3ff;
+            color: #4da3ff;
+        }
+
+        .btn-secondary:hover {
+            background: #4da3ff;
+            color: #000;
+        }
+
+        /* ================= SECTIONS ================= */
+
+        section {
+            padding: 110px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 38px;
+            margin-bottom: 70px;
+        }
+
+        .section-title span {
+            color: #4da3ff;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: #0b1426;
+            padding: 40px 30px;
+            border-radius: 18px;
+            border: 1px solid #1c2a4a;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #4da3ff;
+            box-shadow: 0 0 25px #4da3f744;
+        }
+
+        .card h3 {
+            margin-bottom: 18px;
+            color: #4da3ff;
+        }
+
+        .card p {
+            color: #cfd8ff;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px;
+            background: #020611;
+            color: #7c8ccf;
+            font-size: 14px;
+        }
+
+        @media(max-width: 768px){
+            .hero h1 {
+                font-size: 38px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <canvas id="particles"></canvas>
-  <header>
-    <div class="container">
-      <div class="brand">
-        <div class="logo-mark" aria-hidden>
-          <!-- simple shield+network mark -->
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l7 3v5c0 5-3 9-7 12-4-3-7-7-7-12V5l7-3z" stroke="#021217" stroke-width="0" fill="white" opacity="0.1"/><path d="M8 11h8M9 15h6" stroke="#021217" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div>
-          <div style="font-weight:800;color:#fff">TEYLON SAC</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">Tecnología — Ciberseguridad — IA</div>
-        </div>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#servicios">Servicios</a></li>
-          <li><a href="#productos">Productos</a></li>
-          <li><a href="#nosotros">Nosotros</a></li>
-          <li><a href="#contacto" class="cta">Contáctanos</a></li>
-        </ul>
-      </nav>
+
+<header>
+    <div class="logo">
+        <img src="images/TELYON.png" alt="TELYON Logo" class="logo-img">
+        <div class="logo-text">TELYON</div>
     </div>
-  </header>
 
-  <main>
-    <section class="hero" id="inicio">
-      <div class="hero-left">
-        <span class="eyebrow">Soluciones TI empresariales</span>
-        <h1>Consultoría y Equipamiento Tecnológico con enfoque en Ciberseguridad e IA</h1>
-        <p class="lead">Diseñamos, implementamos y optimizamos infraestructuras, redes y soluciones digitales. Venta y despliegue de equipos corporativos con soporte especializado.</p>
-        <div class="actions">
-          <a href="#contacto" class="btn btn-primary">Solicitar Cotización</a>
-          <a href="#productos" class="btn btn-ghost">Ver Catálogo</a>
+    <nav>
+        <a href="#services">Servicios</a>
+        <a href="#about">Nosotros</a>
+        <a href="#contact">Contacto</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Transformamos datos en <span>decisiones inteligentes</span></h1>
+        <p>
+            Analytics, Business Intelligence y Automatización para empresas que buscan
+            eficiencia, escalabilidad y ventaja competitiva basada en datos.
+        </p>
+
+        <div class="buttons">
+            <a href="#services" class="btn-primary">Nuestros servicios</a>
+            <a href="#contact" class="btn-secondary">Contáctanos</a>
+        </div>
+    </div>
+</section>
+
+<section id="services">
+    <h2 class="section-title">Nuestros <span>Servicios</span></h2>
+
+    <div class="cards">
+        <div class="card">
+            <h3>📊 Analytics & BI</h3>
+            <p>Dashboards ejecutivos, KPIs, Power BI, visualización avanzada y gobierno de datos.</p>
         </div>
 
-        <div style="display:flex; gap:12px; margin-top:22px">
-          <div class="hero-card card fade-up">
-            <div class="stat"><strong>+5</strong><div class="muted">Años de experiencia</div></div>
-          </div>
-          <div class="hero-card card fade-up">
-            <div class="stat"><strong>Empresas</strong><div class="muted">Soluciones para PYMES y Corporativos</div></div>
-          </div>
+        <div class="card">
+            <h3>⚙ Automatización</h3>
+            <p>ETL, APIs, Azure Data Factory, Python, reducción de procesos manuales.</p>
         </div>
-      </div>
 
-      <div style="position:relative">
-        <div class="card" style="min-height:300px; display:flex; flex-direction:column; gap:10px; justify-content:center; align-items:flex-start">
-          <div style="font-size:13px; color:var(--muted);">Demo AI Assistant</div>
-          <div style="font-weight:800; font-size:20px; color:#fff">TEYLON AI Advisor</div>
-          <p class="muted-block">Haz consultas rápidas sobre requerimientos de infraestructura o pide una recomendación de equipo.</p>
-          <input id="aiQ" placeholder="¿Qué necesitas? (ej: servidor para 50 usuarios)" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3" />
-          <div style="display:flex; gap:8px; width:100%; justify-content:flex-end">
-            <button class="btn btn-primary" onclick="askAI()">Preguntar</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('aiQ').value=''">Limpiar</button>
-          </div>
-          <div id="aiR" style="margin-top:8px; color:var(--muted); font-size:14px"></div>
+        <div class="card">
+            <h3>🤖 IA & Data Science</h3>
+            <p>Modelos predictivos, optimización, machine learning y analítica avanzada.</p>
         </div>
-      </div>
-    </section>
 
-    <section id="servicios">
-      <div class="container">
-        <h2 style="color:#fff">Servicios</h2>
-        <div class="grid services" style="margin-top:18px; grid-template-columns:repeat(3,1fr)">
-          <div class="card fade-up"><h3>Consultoría TI</h3><p class="muted-block">Auditorías, arquitectura, migración a la nube, políticas de seguridad y planes de continuidad.</p></div>
-          <div class="card fade-up"><h3>Implementación & Mantenimiento</h3><p class="muted-block">Diseño e implementación de redes, servidores y soporte 24/7.</p></div>
-          <div class="card fade-up"><h3>Venta de Equipos</h3><p class="muted-block">Computadoras, servidores, almacenamiento y periféricos con garantía y soporte.</p></div>
+        <div class="card">
+            <h3>☁ Arquitectura Cloud</h3>
+            <p>Azure, Data Lake, SQL, integración segura y escalable.</p>
         </div>
-      </div>
-    </section>
+    </div>
+</section>
 
-    <section id="productos">
-      <div class="container">
-        <h2 style="color:#fff">Catálogo de Productos</h2>
-        <div class="catalog-grid" style="margin-top:18px">
-          <div class="product card fade-up">
-            <div style="font-size:12px; color:var(--muted)">Laptop Corporativa</div>
-            <h4>TEYLON ProBook 15</h4>
-            <div class="muted-block">Intel i7 — 16GB RAM — 512GB NVMe</div>
-            <div class="price">S/ 3,200</div>
-            <div style="margin-top:10px"><a class="btn btn-primary" href="#contacto">Solicitar</a></div>
-          </div>
+<section id="about">
+    <h2 class="section-title">Sobre <span>TELYON</span></h2>
+    <p style="max-width:850px;margin:auto;text-align:center;color:#cfd8ff;font-size:18px;line-height:1.7">
+        Somos una startup digital enfocada en datos, automatización y tecnología.
+        Ayudamos a organizaciones a transformar información en valor mediante
+        analítica moderna, inteligencia artificial y soluciones cloud.
+    </p>
+</section>
 
-          <div class="product card fade-up">
-            <div style="font-size:12px; color:var(--muted)">Servidor Rack</div>
-            <h4>TEYLON RackServer X2</h4>
-            <div class="muted-block">2x Xeon — 64GB — 4TB RAID</div>
-            <div class="price">S/ 18,500</div>
-            <div style="margin-top:10px"><a class="btn btn-primary" href="#contacto">Solicitar</a></div>
-          </div>
+<section id="contact">
+    <h2 class="section-title">Contacto</h2>
+    <p style="text-align:center;color:#cfd8ff;font-size:18px">
+        📧 contacto@telyon.lat <br><br>
+        📍 Lima, Perú
+    </p>
+</section>
 
-          <div class="product card fade-up">
-            <div style="font-size:12px; color:var(--muted)">Firewall & Network</div>
-            <h4>SecureEdge UTM</h4>
-            <div class="muted-block">Protección perimetral y VPN empresarial</div>
-            <div class="price">S/ 4,900</div>
-            <div style="margin-top:10px"><a class="btn btn-primary" href="#contacto">Solicitar</a></div>
-          </div>
-        </div>
-      </div>
-    </section>
+<footer>
+    © 2026 TELYON — Data • Analytics • Automation
+</footer>
 
-    <section id="nosotros">
-      <div class="container">
-        <h2 style="color:#fff">Nosotros</h2>
-        <p class="muted-block" style="max-width:900px">TEYLON SAC se dedica a brindar servicios de consultoría especializada en sistemas de tecnología de la información, incluyendo diseño, implementación, mantenimiento y optimización de infraestructura tecnológica, redes, software y soluciones digitales. También comercializamos y distribuimos equipos tecnológicos orientados a satisfacer necesidades de empresas e instituciones.</p>
-      </div>
-    </section>
-
-    <section id="contacto">
-      <div class="container">
-        <h2 style="color:#fff">Contacto</h2>
-        <div style="display:grid; grid-template-columns:1fr 360px; gap:24px; margin-top:18px">
-          <div class="card">
-            <form onsubmit="sendForm(event)">
-              <label style="display:block; font-weight:700; margin-bottom:8px">Nombre</label>
-              <input id="name" required style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3" />
-              <label style="display:block; font-weight:700; margin:12px 0 8px">Email</label>
-              <input id="email" type="email" required style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3" />
-              <label style="display:block; font-weight:700; margin:12px 0 8px">Mensaje</label>
-              <textarea id="msg" rows="4" style="width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#e6eef3"></textarea>
-              <div style="margin-top:12px; display:flex; justify-content:flex-end"><button class="btn btn-primary" type="submit">Enviar</button></div>
-            </form>
-            <div id="formMsg" style="margin-top:12px; color:var(--muted)"></div>
-          </div>
-
-          <div class="card">
-            <h4>Información</h4>
-            <p class="muted-block">Email: contacto@teylon.com</p>
-            <p class="muted-block">Teléfono: +51 970619270</p>
-            <p class="muted-block">Dirección: Lima, Perú (oficina)</p>
-            <div style="margin-top:10px"><a href="#" class="btn btn-ghost">Mapa</a></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      © 2025 TEYLON SAC — Tecnología y Seguridad. Todos los derechos reservados.
-    </footer>
-  </main>
-
-  <!-- WhatsApp flotante -->
-  <div class="whatsapp">
-    <a class="wa-btn" href="https://wa.me/51970619270" target="_blank" aria-label="WhatsApp TEYLON">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 3.5A11 11 0 0 0 3 20l-1 4 4-1A11 11 0 0 0 20.5 3.5z" fill="#021217" opacity="0.06"/><path d="M17.6 15.3c-.4.9-1.9 1.8-2.7 2.1-.7.3-1.5.5-2.5.2-2.6-.6-4.8-2.4-6.2-4.8-.9-1.5-1.2-2.9-.8-4.1.8-2.6 3.7-4.8 7.4-5.1 2.8-.2 5 1 5.9 1.8.9.8 1.6 2.1 1.3 3.5-.3 1.4-1.4 3-2.4 4.4z" fill="#fff"/></svg>
-    </a>
-  </div>
-
-  <script>
-    // simple AI advisor demo (local simulated answers)
-    function askAI(){
-      const q=document.getElementById('aiQ').value.trim();
-      const out=document.getElementById('aiR');
-      if(!q){ out.textContent='Escribe una consulta breve...'; return }
-      out.textContent='Generando recomendación inteligente...';
-      setTimeout(()=>{
-        out.innerHTML='<strong>Recomendación:</strong> Para "'+escapeHtml(q)+'" recomendamos evaluar un servidor con CPU multi-core, 64GB RAM y almacenamiento NVMe en RAID, además de una solución de firewall UTM. Podemos cotizar en 24h.'
-      },900)
-    }
-    function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-    // contact form mock
-    function sendForm(e){e.preventDefault(); document.getElementById('formMsg').textContent='Gracias — Tu mensaje fue enviado (demo).'; setTimeout(()=>document.getElementById('formMsg').textContent='Podemos integrar envío real vía email/CRM si lo deseas.' ,1800)}
-
-    // in-view animation
-    const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view')} })},{threshold:0.12});
-    document.querySelectorAll('.fade-up').forEach(n=>obs.observe(n));
-
-    // particles background (lightweight)
-    const canvas=document.getElementById('particles'); const ctx=canvas.getContext('2d'); let w,h,particles=[];
-    function resize(){w=canvas.width=innerWidth; h=canvas.height=innerHeight}
-    window.addEventListener('resize',resize); resize();
-    function rand(min,max){return Math.random()*(max-min)+min}
-    function init(){particles=Array.from({length:Math.round((w*h)/90000)},()=>({x:rand(0,w), y:rand(0,h), r:rand(0.4,1.8), vx:rand(-0.2,0.2), vy:rand(-0.1,0.1), hue:rand(160,210)}))}
-    init();
-    function frame(){ctx.clearRect(0,0,w,h); particles.forEach(p=>{p.x+=p.vx; p.y+=p.vy; if(p.x<0) p.x=w; if(p.x> w) p.x=0; if(p.y<0) p.y=h; if(p.y>h) p.y=0; ctx.beginPath(); ctx.fillStyle='hsla('+p.hue+',90%,60%,0.06)'; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();}); requestAnimationFrame(frame)}
-    frame();
-  </script>
 </body>
 </html>
