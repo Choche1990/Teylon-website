@@ -1,29 +1,272 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FREIDEAS | Diseño Interior & Melamina</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TELYON | Data • Analytics • Automation</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #050b16;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 8%;
+            position: fixed;
+            width: 100%;
+            background: rgba(5, 11, 22, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        nav a {
+            margin-left: 28px;
+            text-decoration: none;
+            color: #cfd8ff;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #4da3ff;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 8%;
+            background:
+                radial-gradient(circle at 30% 30%, #123cff55, transparent 40%),
+                radial-gradient(circle at 80% 20%, #00e0ff33, transparent 45%),
+                #050b16;
+        }
+
+        .hero-content {
+            max-width: 620px;
+        }
+
+        .hero h1 {
+            font-size: 54px;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 span {
+            color: #4da3ff;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #cfd8ff;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .buttons a {
+            display: inline-block;
+            padding: 14px 34px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #2f7bff, #00e0ff);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+
+        .btn-secondary {
+            border: 1px solid #4da3ff;
+            color: #4da3ff;
+        }
+
+        .btn-secondary:hover {
+            background: #4da3ff;
+            color: #000;
+        }
+
+        /* ================= SECTIONS ================= */
+
+        section {
+            padding: 110px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 38px;
+            margin-bottom: 70px;
+        }
+
+        .section-title span {
+            color: #4da3ff;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: #0b1426;
+            padding: 40px 30px;
+            border-radius: 18px;
+            border: 1px solid #1c2a4a;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #4da3ff;
+            box-shadow: 0 0 25px #4da3f744;
+        }
+
+        .card h3 {
+            margin-bottom: 18px;
+            color: #4da3ff;
+        }
+
+        .card p {
+            color: #cfd8ff;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px;
+            background: #020611;
+            color: #7c8ccf;
+            font-size: 14px;
+        }
+
+        @media(max-width: 768px){
+            .hero h1 {
+                font-size: 38px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<nav class="navbar">
-<div class="logo">
-<img src="images/logo.png" alt="FREIDEAS">
-</div>
-<ul>
-<li><a href="#servicios">Servicios</a></li>
-<li><a href="#proyectos">Proyectos</a></li>
-<li><a href="#contacto">Contacto</a></li>
-</ul>
-</nav>
+<header>
+    <div class="logo">
+        <img src="images/TELYON.png" alt="TELYON Logo" class="logo-img">
+        <div class="logo-text">TELYON</div>
+    </div>
 
-<header class="hero">
-<div class="overlay">
-<h1>Diseñamos espacios que generan impacto</h1>
-<p>Especialistas en mobiliario en melamina, diseño interior y servicios generales de alta calidad.</p>
-<a href="#contacto" class="btn">Solicitar Asesoría</a>
-</div>
+    <nav>
+        <a href="#services">Servicios</a>
+        <a href="#about">Nosotros</a>
+        <a href="#contact">Contacto</a>
+    </nav>
 </header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Transformamos datos en <span>decisiones inteligentes</span></h1>
+        <p>
+            Analytics, Business Intelligence y Automatización para empresas que buscan
+            eficiencia, escalabilidad y ventaja competitiva basada en datos.
+        </p>
+
+        <div class="buttons">
+            <a href="#services" class="btn-primary">Nuestros servicios</a>
+            <a href="#contact" class="btn-secondary">Contáctanos</a>
+        </div>
+    </div>
+</section>
+
+<section id="services">
+    <h2 class="section-title">Nuestros <span>Servicios</span></h2>
+
+    <div class="cards">
+        <div class="card">
+            <h3>📊 Analytics & BI</h3>
+            <p>Dashboards ejecutivos, KPIs, Power BI, visualización avanzada y gobierno de datos.</p>
+        </div>
+
+        <div class="card">
+            <h3>⚙ Automatización</h3>
+            <p>ETL, APIs, Azure Data Factory, Python, reducción de procesos manuales.</p>
+        </div>
+
+        <div class="card">
+            <h3>🤖 IA & Data Science</h3>
+            <p>Modelos predictivos, optimización, machine learning y analítica avanzada.</p>
+        </div>
+
+        <div class="card">
+            <h3>☁ Arquitectura Cloud</h3>
+            <p>Azure, Data Lake, SQL, integración segura y escalable.</p>
+        </div>
+    </div>
+</section>
+
+<section id="about">
+    <h2 class="section-title">Sobre <span>TELYON</span></h2>
+    <p style="max-width:850px;margin:auto;text-align:center;color:#cfd8ff;font-size:18px;line-height:1.7">
+        Somos una startup digital enfocada en datos, automatización y tecnología.
+        Ayudamos a organizaciones a transformar información en valor mediante
+        analítica moderna, inteligencia artificial y soluciones cloud.
+    </p>
+</section>
+
+<section id="contact">
+    <h2 class="section-title">Contacto</h2>
+    <p style="text-align:center;color:#cfd8ff;font-size:18px">
+        📧 contacto@telyon.lat <br><br>
+        📍 Lima, Perú
+    </p>
+</section>
+
+<footer>
+    © 2026 TELYON — Data • Analytics • Automation
+</footer>
+
+</body>
+</html>
