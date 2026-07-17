@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             form.reset();
 
         } catch (error) {
+            alert("Entró al CATCH");
 
             console.error(error);
 
