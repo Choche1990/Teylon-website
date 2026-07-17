@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //==========================================
 
     form.addEventListener("submit", async function (e) {
-        
+
         e.preventDefault();
 
         messageBox.style.display = "none";
@@ -164,10 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
             form.reset();
 
         } catch (error) {
-            
-            alert("Entró al CATCH");
 
-            alert(error.message);
+            console.error(error);
 
             showMessage(
                 "Ocurrió un problema al registrar la suscripción. Inténtalo nuevamente.",
