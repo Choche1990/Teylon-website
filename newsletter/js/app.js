@@ -166,9 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
             form.reset();
 
         } catch (error) {
+            
             alert("Entró al CATCH");
 
-            console.error(error);
+            alert(error);
 
             showMessage(
                 "Ocurrió un problema al registrar la suscripción. Inténtalo nuevamente.",
