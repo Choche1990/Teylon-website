@@ -82,13 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = {
 
             nombre: form.nombre.value.trim(),
-
             cargo: form.cargo.value.trim(),
-
             empresa: form.empresa.value.trim(),
-
             correo: form.correo.value.trim(),
-
             pais: form.pais.value.trim()
 
         };
@@ -98,21 +94,14 @@ document.addEventListener("DOMContentLoaded", () => {
         //======================================
 
         if (
-
             !data.nombre ||
-
             !data.cargo ||
-
             !data.empresa ||
-
             !data.correo ||
-
             !data.pais
-
         ) {
 
             showMessage("Completa todos los campos.", false);
-
             return;
 
         }
@@ -120,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!validateEmail(data.correo)) {
 
             showMessage("El correo electrónico no es válido.", false);
-
             return;
 
         }
@@ -138,23 +126,12 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const response = await fetch(WEBHOOK_URL, {
-
                 method: "POST",
-
-                headers: {
-
-                    "Content-Type": "application/json"
-
-                },
-
-                body: JSON.stringify(data)
-
+                body: new FormData(form)
             });
 
             if (!response.ok) {
-
                 throw new Error("Error del servidor");
-
             }
 
             showMessage(
@@ -175,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
 
             submitButton.disabled = false;
-
             submitButton.innerText = originalText;
 
         }
