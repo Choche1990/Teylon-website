@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             alert("Entró al CATCH");
 
-            alert(error);
+            alert(error.message);
 
             showMessage(
                 "Ocurrió un problema al registrar la suscripción. Inténtalo nuevamente.",
