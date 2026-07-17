@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // CONFIGURACIÓN
     //==========================================
 
-    const WEBHOOK_URL = "https://n8n-1sjl.srv1612224.hstgr.cloud/webhook-test/9c26e2dd-b6db-40f6-a2ea-303635f5b97d";
+    const WEBHOOK_URL = "https://n8n-1sjl.srv1612224.hstgr.cloud/webhook/9c26e2dd-b6db-40f6-a2ea-303635f5b97d";
 
     //==========================================
     // Crear contenedor de mensajes
