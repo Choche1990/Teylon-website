@@ -4,8 +4,6 @@
 // Newsletter Subscription
 // =========================================
 
-console.log("APP JS CARGADO");
-
 document.addEventListener("DOMContentLoaded", () => {
 
     const form = document.getElementById("newsletterForm");
