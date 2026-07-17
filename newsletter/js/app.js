@@ -5,7 +5,6 @@
 // =========================================
 
 console.log("APP JS CARGADO");
-alert("APP JS CARGADO");
 
 document.addEventListener("DOMContentLoaded", () => {
 
