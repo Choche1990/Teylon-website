@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", async function (e) {
 
+        alert("Entró al submit");
+        
         e.preventDefault();
 
         messageBox.style.display = "none";
