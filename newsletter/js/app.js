@@ -125,28 +125,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const response = await fetch(WEBHOOK_URL, {
-                method: "POST",
-                body: new FormData(form)
-            });
 
-            if (!response.ok) {
-                throw new Error("Error del servidor");
-            }
+    const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        body: new FormData(form)
+    });
 
-            showMessage(
-                "✅ Gracias por suscribirte.<br><br>Muy pronto comenzarás a recibir el AI Executive Brief en tu correo."
-            );
+    if (!response.ok) {
+        throw new Error("Error del servidor");
+    }
 
-            form.reset();
+    const result = await response.json();
 
-        } catch (error) {
+    if (result.status === "already_registered") {
 
-            console.error(error);
+        showMessage(
+            "ℹ️ Este correo ya se encuentra suscrito al AI Executive Brief.",
+            false
+        );
 
-            showMessage(
-                "Ocurrió un problema al registrar la suscripción. Inténtalo nuevamente.",
-                false
+    } else {
+
+        showMessage(
+            "✅ Gracias por suscribirte.<br><br>Muy pronto comenzarás a recibir el AI Executive Brief en tu correo."
+        );
+
+        form.reset();
+
+    }
+
+} catch (error) {
+
+    console.error(error);
+
+    showMessage(
+        "Ocurrió un problema al registrar la suscripción. Inténtalo nuevamente.",
+        false
+
             );
 
         } finally {
