@@ -4,11 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TELYON | Data • Analytics • Automation</title>
+    <meta name="description" content="TELYON es una startup de datos que transforma información en decisiones inteligentes mediante Analytics, Business Intelligence, IA y Automatización." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="TELYON | Data • Analytics • Automation" />
+    <meta property="og:description" content="Analytics, Business Intelligence y Automatización para empresas que buscan eficiencia, escalabilidad y ventaja competitiva basada en datos." />
+    <meta property="og:image" content="Images/TELYON.png" />
+    <meta property="og:type" content="website" />
+
+    <link rel="icon" href="Images/TELYON.png" type="image/png" />
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #050b16;
+            --bg-deep: #020611;
+            --card-bg: #0b1426;
+            --border: #1c2a4a;
+            --text: #ffffff;
+            --text-muted: #cfd8ff;
+            --text-faint: #7c8ccf;
+            --accent: #4da3ff;
+            --accent-2: #00e0ff;
+            --glow-1: #123cff55;
+            --glow-2: #00e0ff33;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,10 +39,17 @@
             font-family: 'Inter', sans-serif;
         }
 
-        body {
-            background: #050b16;
-            color: #ffffff;
+        html {
+            scroll-behavior: smooth;
             overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            width: 100%;
         }
 
         /* ================= HEADER ================= */
@@ -54,33 +84,167 @@
             letter-spacing: 2px;
         }
 
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
         nav a {
             margin-left: 28px;
             text-decoration: none;
-            color: #cfd8ff;
+            color: var(--text-muted);
             font-weight: 500;
             transition: 0.3s;
         }
 
         nav a:hover {
-            color: #4da3ff;
+            color: var(--accent);
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 1100;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .nav-toggle.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
         }
 
         /* ================= HERO ================= */
 
         .hero {
+            position: relative;
             height: 100vh;
             display: flex;
             align-items: center;
             padding: 0 8%;
+            background: var(--bg);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
             background:
-                radial-gradient(circle at 30% 30%, #123cff55, transparent 40%),
-                radial-gradient(circle at 80% 20%, #00e0ff33, transparent 45%),
-                #050b16;
+                radial-gradient(circle at 30% 30%, var(--glow-1), transparent 40%),
+                radial-gradient(circle at 80% 20%, var(--glow-2), transparent 45%),
+                var(--bg);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: -1px;
+            z-index: 1;
+            background-image:
+                repeating-linear-gradient(0deg, rgba(77,163,255,0.08) 0px, rgba(77,163,255,0.08) 1px, transparent 1px, transparent 48px),
+                repeating-linear-gradient(90deg, rgba(77,163,255,0.08) 0px, rgba(77,163,255,0.08) 1px, transparent 1px, transparent 48px);
+            mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 75%);
+            -webkit-mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 75%);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 1;
+            opacity: 0.55;
+            animation: drift 18s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 320px;
+            height: 320px;
+            top: 10%;
+            left: 55%;
+            background: radial-gradient(circle, var(--accent), transparent 70%);
+            animation-duration: 16s;
+        }
+
+        .orb-2 {
+            width: 260px;
+            height: 260px;
+            top: 55%;
+            left: 5%;
+            background: radial-gradient(circle, var(--accent-2), transparent 70%);
+            animation-duration: 22s;
+            animation-delay: -6s;
+        }
+
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            top: 5%;
+            left: 15%;
+            background: radial-gradient(circle, #123cff, transparent 70%);
+            animation-duration: 20s;
+            animation-delay: -3s;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.08); }
+            66% { transform: translate(-25px, 25px) scale(0.95); }
         }
 
         .hero-content {
+            position: relative;
+            z-index: 2;
             max-width: 620px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background: rgba(77, 163, 255, 0.08);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-2);
+            box-shadow: 0 0 8px var(--accent-2);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         .hero h1 {
@@ -90,12 +254,12 @@
         }
 
         .hero h1 span {
-            color: #4da3ff;
+            color: var(--accent);
         }
 
         .hero p {
             font-size: 18px;
-            color: #cfd8ff;
+            color: var(--text-muted);
             margin-bottom: 40px;
             line-height: 1.6;
         }
@@ -111,7 +275,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #2f7bff, #00e0ff);
+            background: linear-gradient(90deg, #2f7bff, var(--accent-2));
             color: #000;
         }
 
@@ -120,12 +284,12 @@
         }
 
         .btn-secondary {
-            border: 1px solid #4da3ff;
-            color: #4da3ff;
+            border: 1px solid var(--accent);
+            color: var(--accent);
         }
 
         .btn-secondary:hover {
-            background: #4da3ff;
+            background: var(--accent);
             color: #000;
         }
 
@@ -142,7 +306,7 @@
         }
 
         .section-title span {
-            color: #4da3ff;
+            color: var(--accent);
         }
 
         .cards {
@@ -152,40 +316,251 @@
         }
 
         .card {
-            background: #0b1426;
+            background: var(--card-bg);
             padding: 40px 30px;
             border-radius: 18px;
-            border: 1px solid #1c2a4a;
+            border: 1px solid var(--border);
             transition: 0.3s;
         }
 
         .card:hover {
             transform: translateY(-8px);
-            border-color: #4da3ff;
+            border-color: var(--accent);
             box-shadow: 0 0 25px #4da3f744;
+        }
+
+        .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(77, 163, 255, 0.1);
+            border: 1px solid var(--border);
+            font-size: 22px;
+            margin-bottom: 18px;
         }
 
         .card h3 {
             margin-bottom: 18px;
-            color: #4da3ff;
+            color: var(--accent);
         }
 
         .card p {
-            color: #cfd8ff;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ================= SHARED TEXT BLOCKS ================= */
+
+        .lead-text {
+            max-width: 780px;
+            margin: 0 auto 60px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        /* ================= ABOUT / ENFOQUE ================= */
+
+        .approach-heading {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 980px;
+            margin: 0 auto 60px;
+        }
+
+        .approach-item {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .approach-item .card-icon {
+            flex-shrink: 0;
+            margin-bottom: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .approach-item h4 {
+            color: var(--text);
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .approach-item p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .highlight-box {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 28px 40px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: rgba(77, 163, 255, 0.06);
+        }
+
+        .highlight-box p {
+            color: var(--text);
+            font-size: 19px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .highlight-box p span {
+            color: var(--accent);
+        }
+
+        /* ================= PROCESS / TIMELINE ================= */
+
+        .timeline {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .timeline-step {
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-step .card-icon {
+            background: var(--card-bg);
+            font-weight: 700;
+        }
+
+        .timeline-step h4 {
+            color: var(--accent);
+            font-size: 17px;
+            margin-bottom: 10px;
+        }
+
+        .timeline-step p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .process-quote {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 20px;
+            font-style: italic;
+            color: var(--text);
             line-height: 1.6;
         }
 
         footer {
             text-align: center;
             padding: 35px;
-            background: #020611;
-            color: #7c8ccf;
+            background: var(--bg-deep);
+            color: var(--text-faint);
             font-size: 14px;
+        }
+
+        /* ================= SCROLL REVEAL ================= */
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .orb, .badge-dot {
+                animation: none !important;
+            }
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+            html {
+                scroll-behavior: auto;
+            }
         }
 
         @media(max-width: 768px){
             .hero h1 {
                 font-size: 38px;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 100%;
+                max-width: 320px;
+                background: rgba(5, 11, 22, 0.98);
+                backdrop-filter: blur(10px);
+                border-left: 1px solid var(--border);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 32px;
+                transform: translateX(100%);
+                transition: transform 0.35s ease;
+            }
+
+            nav.nav-open {
+                transform: translateX(0);
+            }
+
+            nav a {
+                margin-left: 0;
+                font-size: 20px;
+            }
+
+            .timeline {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .timeline::before {
+                display: none;
+            }
+
+            .approach-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -195,19 +570,33 @@
 
 <header>
     <div class="logo">
-        <img src="images/TELYON.png" alt="TELYON Logo" class="logo-img">
+        <img src="Images/TELYON.png" alt="TELYON Logo" class="logo-img">
         <div class="logo-text">TELYON</div>
     </div>
 
-    <nav>
+    <nav id="mainNav">
         <a href="#services">Servicios</a>
         <a href="#about">Nosotros</a>
+        <a href="#process">Cómo trabajamos</a>
         <a href="#contact">Contacto</a>
     </nav>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 </header>
 
 <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
     <div class="hero-content">
+        <span class="badge"><span class="badge-dot"></span> Startup en lanzamiento</span>
         <h1>Transformo datos en <span>decisiones inteligentes</span></h1>
         <p>
             Analytics, Business Intelligence y Automatización para empresas que buscan
@@ -222,51 +611,164 @@
 </section>
 
 <section id="services">
-    <h2 class="section-title">Nuestros <span>Servicios</span></h2>
+    <h2 class="section-title reveal">Nuestros <span>Servicios</span></h2>
 
     <div class="cards">
-        <div class="card">
-            <h3>📊 Analytics & BI</h3>
-            <p>Dashboards ejecutivos, KPIs, Power BI, visualización avanzada y gobierno de datos.</p>
+        <div class="card reveal">
+            <div class="card-icon">🎯</div>
+            <h3>Experiencia & Transformación Digital</h3>
+            <p>Dashboards ejecutivos, analítica avanzada y gobierno de datos para mejorar cada etapa de la experiencia digital de tus clientes.</p>
         </div>
 
-        <div class="card">
-            <h3>⚙ Automatización</h3>
-            <p>ETL, APIs, Azure Data Factory, Python, reducción de procesos manuales.</p>
+        <div class="card reveal">
+            <div class="card-icon">🎓</div>
+            <h3>Talento & Habilitación Digital</h3>
+            <p>Formación, adopción y acompañamiento para que tu equipo aproveche cloud, datos e IA en su día a día.</p>
         </div>
 
-        <div class="card">
-            <h3>🤖 IA & Data Science</h3>
-            <p>Modelos predictivos, optimización, machine learning y analítica avanzada.</p>
+        <div class="card reveal">
+            <div class="card-icon">🧩</div>
+            <h3>Ecosistema Tecnológico & Soluciones</h3>
+            <p>Arquitectura cloud, Data Lake, integración de APIs y las mejores herramientas para tu stack tecnológico.</p>
         </div>
 
-        <div class="card">
-            <h3>☁ Arquitectura Cloud</h3>
-            <p>Azure, Data Lake, SQL, integración segura y escalable.</p>
+        <div class="card reveal">
+            <div class="card-icon">⚙</div>
+            <h3>Operación Inteligente & Automatización</h3>
+            <p>ETL, automatización de procesos y modelos de IA que reducen el trabajo manual y aceleran resultados.</p>
         </div>
     </div>
 </section>
 
 <section id="about">
-    <h2 class="section-title">Sobre <span>TELYON</span></h2>
-    <p style="max-width:850px;margin:auto;text-align:center;color:#cfd8ff;font-size:18px;line-height:1.7">
-        Somos una startup digital enfocada en datos, automatización y tecnología.
-        Ayudamos a organizaciones a transformar información en valor mediante
-        analítica moderna, inteligencia artificial y soluciones cloud.
+    <h2 class="section-title reveal">Sobre <span>TELYON</span></h2>
+    <p class="lead-text reveal">
+        Ayudamos a las organizaciones a crecer y competir en entornos digitales exigentes,
+        transformando la tecnología en un habilitador real del negocio.
+    </p>
+
+    <h3 class="approach-heading reveal">Nuestro enfoque</h3>
+    <div class="approach-grid">
+        <div class="approach-item reveal">
+            <div class="card-icon">01</div>
+            <div>
+                <h4>Modelo data-driven</h4>
+                <p>Análisis de métricas operativas y de negocio para la toma de decisiones tecnológicas.</p>
+            </div>
+        </div>
+
+        <div class="approach-item reveal">
+            <div class="card-icon">02</div>
+            <div>
+                <h4>Especialistas multidisciplinarios</h4>
+                <p>Experiencia en cloud, seguridad, workplace moderno y gestión de servicios TI.</p>
+            </div>
+        </div>
+
+        <div class="approach-item reveal">
+            <div class="card-icon">03</div>
+            <div>
+                <h4>Arquitecturas flexibles y escalables</h4>
+                <p>Soluciones alineadas a estándares y a la evolución tecnológica de tu negocio.</p>
+            </div>
+        </div>
+
+        <div class="approach-item reveal">
+            <div class="card-icon">04</div>
+            <div>
+                <h4>Acompañamiento end-to-end</h4>
+                <p>Assessment, diseño, despliegue, adopción, gobierno y mejora continua.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box reveal">
+        <p>Reducimos la <span>complejidad operativa</span> mientras incrementamos control y eficiencia.</p>
+    </div>
+</section>
+
+<section id="process">
+    <h2 class="section-title reveal">Cómo <span>trabajamos</span></h2>
+    <p class="lead-text reveal">
+        Acompañamos a nuestros clientes de principio a fin para transformar su negocio
+        con tecnología, conocimiento y ejecución real.
+    </p>
+
+    <div class="timeline">
+        <div class="timeline-step reveal">
+            <div class="card-icon">01</div>
+            <h4>Entendemos tu negocio</h4>
+            <p>Comprendemos tus objetivos estratégicos y desafíos operativos para identificar dónde la tecnología genera valor real.</p>
+        </div>
+
+        <div class="timeline-step reveal">
+            <div class="card-icon">02</div>
+            <h4>Diseñamos la solución</h4>
+            <p>Transformamos necesidades en soluciones simples y escalables, con un roadmap claro orientado a resultados.</p>
+        </div>
+
+        <div class="timeline-step reveal">
+            <div class="card-icon">03</div>
+            <h4>Implementamos contigo</h4>
+            <p>Ejecutamos de forma ágil y colaborativa, reduciendo riesgos y transfiriendo conocimiento a tu equipo.</p>
+        </div>
+
+        <div class="timeline-step reveal">
+            <div class="card-icon">04</div>
+            <h4>Optimizamos y evolucionamos</h4>
+            <p>Medimos y mejoramos continuamente para maximizar el valor generado con cada solución.</p>
+        </div>
+    </div>
+
+    <p class="process-quote reveal">
+        "Combinamos agilidad, experiencia y ejecución para convertir la tecnología en resultados tangibles."
     </p>
 </section>
 
 <section id="contact">
-    <h2 class="section-title">Contacto</h2>
-    <p style="text-align:center;color:#cfd8ff;font-size:18px">
+    <h2 class="section-title reveal">Contacto</h2>
+    <p class="reveal" style="text-align:center;color:var(--text-muted);font-size:18px">
         📧 contacto@telyon.lat <br><br>
         📍 Lima, Perú
     </p>
 </section>
 
 <footer>
-    © 2026 TELYON — Data • Analytics • Automation
+    © 2026 TELYON - Data • Analytics • Automation
 </footer>
+
+<script>
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const mainNav = document.getElementById('mainNav');
+
+    navToggle.addEventListener('click', () => {
+        const isOpen = mainNav.classList.toggle('nav-open');
+        navToggle.classList.toggle('active', isOpen);
+        navToggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    mainNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mainNav.classList.remove('nav-open');
+            navToggle.classList.remove('active');
+            navToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('is-visible'), i * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    revealEls.forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
