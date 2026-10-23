@@ -1,1 +1,1678 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metassistance · ILUMI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: rail lateral fijo con la navegación + lienzo de reporte que baja de resumen a detalle */
+:root {
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --surface-2: #f6f8fa;
+  --surface-3: #edf1f5;
+  --ink: #0f1824;
+  --ink-2: #445163;
+  --muted: #6c7888;
+  --line: #e2e7ed;
+  --line-2: #cbd4de;
+  --accent: #2a78d6;
+  --accent-ink: #1c5cab;
+  --accent-soft: #e8f1fc;
+  --on-accent: #ffffff;
+  --series-1: #2a78d6;
+  --series-1-soft: #86b6ef;
+  --series-2: #eb6834;
+  --series-muted: #c3ccd6;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --good-ink: #006300; --good-soft: #e3f4e3;
+  --bad: #d03b3b; --bad-ink: #b02626; --bad-soft: #fbe9e9;
+  --warn: #fab219; --warn-ink: #855600; --warn-soft: #fff3d9;
+  --side-bg: #0f1b2b;
+  --side-ink: #e8eef5;
+  --side-muted: #8d9cb1;
+  --side-line: rgba(255, 255, 255, 0.08);
+  --side-hover: rgba(255, 255, 255, 0.06);
+  --side-active: rgba(57, 135, 229, 0.22);
+  --scrim: rgba(9, 15, 24, 0.45);
+  --font-ui: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radius: 12px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a0f16; --surface: #121a24; --surface-2: #16202c; --surface-3: #1c2734;
+    --ink: #eef3f8; --ink-2: #b5c0cc; --muted: #8793a1; --line: #223040; --line-2: #33435a;
+    --accent: #3987e5; --accent-ink: #86b6ef; --accent-soft: rgba(57, 135, 229, 0.16); --on-accent: #ffffff;
+    --series-1: #3987e5; --series-1-soft: #1c5cab; --series-2: #d95926; --series-muted: #3a4859;
+    --ord-1: #184f95; --ord-2: #256abf; --ord-3: #3987e5; --ord-4: #6da7ec; --ord-5: #9ec5f4;
+    --good: #0ca30c; --good-ink: #3fc93f; --good-soft: rgba(12, 163, 12, 0.16);
+    --bad: #d03b3b; --bad-ink: #f07a7a; --bad-soft: rgba(208, 59, 59, 0.18);
+    --warn: #fab219; --warn-ink: #fab219; --warn-soft: rgba(250, 178, 25, 0.14);
+    --side-bg: #0c131c; --side-ink: #e8eef5; --side-muted: #8593a6;
+    --side-line: rgba(255, 255, 255, 0.07); --side-hover: rgba(255, 255, 255, 0.05); --side-active: rgba(57, 135, 229, 0.2);
+    --scrim: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a0f16; --surface: #121a24; --surface-2: #16202c; --surface-3: #1c2734;
+  --ink: #eef3f8; --ink-2: #b5c0cc; --muted: #8793a1; --line: #223040; --line-2: #33435a;
+  --accent: #3987e5; --accent-ink: #86b6ef; --accent-soft: rgba(57, 135, 229, 0.16); --on-accent: #ffffff;
+  --series-1: #3987e5; --series-1-soft: #1c5cab; --series-2: #d95926; --series-muted: #3a4859;
+  --ord-1: #184f95; --ord-2: #256abf; --ord-3: #3987e5; --ord-4: #6da7ec; --ord-5: #9ec5f4;
+  --good: #0ca30c; --good-ink: #3fc93f; --good-soft: rgba(12, 163, 12, 0.16);
+  --bad: #d03b3b; --bad-ink: #f07a7a; --bad-soft: rgba(208, 59, 59, 0.18);
+  --warn: #fab219; --warn-ink: #fab219; --warn-soft: rgba(250, 178, 25, 0.14);
+  --side-bg: #0c131c; --side-ink: #e8eef5; --side-muted: #8593a6;
+  --side-line: rgba(255, 255, 255, 0.07); --side-hover: rgba(255, 255, 255, 0.05); --side-active: rgba(57, 135, 229, 0.2);
+  --scrim: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.5 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, select, input { font: inherit; color: inherit; }
+a { color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.ic { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Shell ---------- */
+.app { display: grid; grid-template-columns: 256px minmax(0, 1fr); min-height: 100vh; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--side-bg); color: var(--side-ink);
+  display: flex; flex-direction: column; gap: 22px;
+  padding: 22px 14px 18px;
+}
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 8px; }
+.brand-mark { width: 36px; height: 36px; flex: none; }
+.brand-name { font-weight: 800; font-size: 16px; letter-spacing: -0.01em; }
+.brand-sub { font: 500 11px/1.3 var(--font-mono); color: var(--side-muted); letter-spacing: 0.02em; }
+.client {
+  margin: 0 4px; padding: 12px 12px; border: 1px solid var(--side-line); border-radius: 10px;
+  display: grid; gap: 2px;
+}
+.client-label { font: 500 10.5px/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--side-muted); }
+.client-name { font-weight: 700; font-size: 15px; }
+.client-meta { font-size: 12px; color: var(--side-muted); }
+.nav { display: grid; gap: 18px; }
+.nav-group { display: grid; gap: 2px; }
+.nav-title { font: 500 10.5px/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--side-muted); padding: 0 12px 6px; }
+.nav a {
+  display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 8px;
+  color: var(--side-ink); text-decoration: none; font-weight: 500; opacity: 0.82;
+}
+.nav a:hover { background: var(--side-hover); opacity: 1; }
+.nav a[aria-current="page"] { background: var(--side-active); opacity: 1; font-weight: 700; box-shadow: inset 2px 0 0 #3987e5; }
+.nav .count { margin-left: auto; font: 500 11px var(--font-mono); color: var(--side-muted); }
+.side-foot { margin-top: auto; padding: 14px 12px 0; border-top: 1px solid var(--side-line); display: grid; gap: 6px; font-size: 12px; color: var(--side-muted); }
+.side-foot strong { color: var(--side-ink); font-weight: 600; }
+.proto { display: inline-flex; align-items: center; gap: 6px; font: 500 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: #fab219; }
+.proto::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fab219; }
+
+.main { min-width: 0; display: flex; flex-direction: column; }
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 28px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
+}
+.tb-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.tb-eyebrow { font: 500 11px/1.3 var(--font-mono); color: var(--muted); letter-spacing: 0.04em; }
+.tb-title { font-size: 20px; font-weight: 800; letter-spacing: -0.015em; }
+.tb-right { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.field { display: grid; gap: 3px; }
+.field > span { font: 500 10.5px/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+select, input[type="search"] {
+  height: 36px; border: 1px solid var(--line-2); border-radius: 8px; background-color: var(--surface);
+  padding: 0 12px; min-width: 0;
+}
+select {
+  appearance: none; -webkit-appearance: none; padding-right: 32px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237b8591' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 11px center;
+}
+#f-month { min-width: 200px; }
+#f-jefe, #f-sede { min-width: 150px; }
+.icon-btn {
+  width: 36px; height: 36px; display: inline-grid; place-items: center; flex: none;
+  border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); cursor: pointer;
+}
+.icon-btn:hover { background: var(--surface-3); }
+.menu-btn { display: none; }
+.scrim { display: none; }
+
+.content { width: 100%; max-width: 1440px; padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px; }
+.foot { font-size: 12px; color: var(--muted); padding-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+
+/* ---------- Building blocks ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px 20px; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px; }
+.card-head h3 { font-size: 15px; font-weight: 700; letter-spacing: -0.005em; }
+.card-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.card-note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+.link-btn { border: 0; background: none; padding: 0; color: var(--accent-ink); font-weight: 600; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.link-btn:hover { text-decoration: underline; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 20px; }
+.grid-2.even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+
+.hero { display: grid; gap: 8px; padding: 4px 2px 2px; }
+.eyebrow { font: 500 11.5px/1.3 var(--font-mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.headline { font-size: 22px; line-height: 1.35; font-weight: 600; letter-spacing: -0.015em; max-width: 64ch; color: var(--ink-2); }
+.headline strong { color: var(--ink); font-weight: 800; }
+.t-up { color: var(--good-ink); font-weight: 700; white-space: nowrap; }
+.t-down { color: var(--bad-ink); font-weight: 700; white-space: nowrap; }
+
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 12px; display: grid; gap: 4px; min-width: 0; }
+.kpi-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kpi-label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.kpi-value { font-size: 30px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; }
+.kpi-sub { font-size: 12.5px; color: var(--muted); min-height: 19px; }
+.spark { height: 44px; margin-top: 6px; }
+.spark svg { display: block; overflow: visible; }
+.spark-axis { display: flex; justify-content: space-between; font: 500 10px var(--font-mono); color: var(--muted); }
+.mini { padding: 14px 16px; }
+.mini .kpi-value { font-size: 24px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums;
+  background: var(--surface-3); color: var(--ink-2);
+}
+.chip-up { background: var(--good-soft); color: var(--good-ink); }
+.chip-down { background: var(--bad-soft); color: var(--bad-ink); }
+.chip-warn { background: var(--warn-soft); color: var(--warn-ink); }
+.chip-info { background: var(--accent-soft); color: var(--accent-ink); }
+.chip .a { font-size: 9px; }
+.chip .ic { width: 13px; height: 13px; }
+.tag { display: inline-block; font: 500 10.5px/1.4 var(--font-mono); color: var(--muted); border: 1px solid var(--line-2); border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 9px; background: var(--surface-3); flex-wrap: wrap; }
+.seg button { border: 0; background: none; padding: 5px 10px; border-radius: 7px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(15, 24, 36, 0.12); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--ink-2); margin-bottom: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+.sw-line { width: 14px; height: 3px; border-radius: 2px; }
+.chart-box { position: relative; width: 100%; }
+.h-260 { height: 260px; } .h-280 { height: 280px; } .h-300 { height: 300px; } .h-220 { height: 220px; }
+.nochart { display: grid; place-items: center; height: 100%; min-height: 120px; padding: 16px; text-align: center; color: var(--muted); font-size: 13px; border: 1px dashed var(--line-2); border-radius: 10px; }
+
+.insights { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.insights li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: start; font-size: 13.5px; color: var(--ink-2); }
+.insights li:last-child { border-bottom: 0; }
+.insights b { color: var(--ink); font-weight: 700; }
+.ins-ic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; }
+.ins-ic .ic { width: 16px; height: 16px; }
+.k-good .ins-ic { background: var(--good-soft); color: var(--good-ink); }
+.k-bad .ins-ic { background: var(--bad-soft); color: var(--bad-ink); }
+.k-warn .ins-ic { background: var(--warn-soft); color: var(--warn-ink); }
+.k-info .ins-ic { background: var(--accent-soft); color: var(--accent-ink); }
+
+.rank { list-style: none; margin: 0; padding: 0; display: grid; }
+.rank li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.rank li:last-child { border-bottom: 0; }
+.rank .n { font: 600 12px var(--font-mono); color: var(--muted); text-align: center; }
+.rank .who { min-width: 0; display: grid; gap: 4px; }
+.rank .name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank button.name { border: 0; background: none; padding: 0; text-align: left; cursor: pointer; color: var(--ink); }
+.rank button.name:hover { color: var(--accent-ink); text-decoration: underline; }
+.rank .meta { font-size: 12px; color: var(--muted); }
+.rank .val { display: grid; justify-items: end; gap: 3px; font-variant-numeric: tabular-nums; }
+.rank .val strong { font-size: 15px; font-weight: 800; }
+.bar { height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.bar > span { display: block; height: 100%; border-radius: 3px; background: var(--series-1); }
+
+/* ---------- Tables ---------- */
+.table-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+.table-wrap.tall { max-height: 560px; overflow-y: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+.tbl th {
+  font: 600 10.5px/1.25 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line-2); white-space: nowrap;
+  position: sticky; top: 0; background: var(--surface); z-index: 1;
+}
+.tbl td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tbl tbody tr:last-child td { border-bottom: 0; }
+.tbl .num { text-align: right; white-space: nowrap; }
+.tbl .c { text-align: center; }
+.tbl tfoot td { border-top: 1px solid var(--line-2); border-bottom: 0; font-weight: 700; }
+.tbl tr.is-sel td { background: var(--accent-soft); }
+.tbl tr.click { cursor: pointer; }
+.tbl tr.click:hover td { background: var(--surface-2); }
+.tbl th.is-sel { color: var(--accent-ink); }
+.cell-name { font-weight: 600; white-space: nowrap; }
+.cell-sub { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.heat { text-align: center; font-weight: 600; min-width: 40px; border-left: 2px solid var(--surface); }
+.heat.hot { color: var(--on-accent); }
+.heat.zero { color: var(--line-2); font-weight: 400; }
+.mono { font-family: var(--font-mono); font-size: 12px; }
+.ellip { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 14px; }
+.toolbar .grow { flex: 1 1 220px; }
+.toolbar input[type="search"] { width: 100%; }
+.check { display: inline-flex; align-items: center; gap: 8px; height: 36px; font-size: 13px; color: var(--ink-2); cursor: pointer; }
+.check input { width: 16px; height: 16px; accent-color: var(--accent); }
+.pager { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; font-size: 12.5px; color: var(--muted); }
+.pager .btns { display: flex; gap: 6px; }
+.btn { height: 32px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--surface); cursor: pointer; font-size: 13px; font-weight: 600; }
+.btn:hover:not(:disabled) { background: var(--surface-3); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.stat-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.stat-row .chip { font-size: 12.5px; padding: 4px 10px; }
+
+/* ---------- Jefaturas ---------- */
+.jef { display: grid; gap: 12px; }
+.jef-head { display: flex; align-items: center; gap: 10px; }
+.jef-head h3 { font-size: 16px; }
+.jef-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.jef-stats p:first-child { font-size: 12px; color: var(--muted); }
+.jef-stats .v { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+
+/* ---------- Calidad ---------- */
+.pipeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: step; }
+.pipeline li { position: relative; padding: 14px 16px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); display: grid; gap: 4px; counter-increment: step; }
+.pipeline li::before { content: "Paso " counter(step); font: 500 10.5px var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-ink); }
+.pipeline h4 { font-size: 14px; }
+.pipeline p { font-size: 12.5px; color: var(--ink-2); }
+.qgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.q { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; align-items: start; }
+.q .ins-ic { width: 32px; height: 32px; }
+.q strong { display: block; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+.q p { font-size: 12.5px; color: var(--ink-2); }
+
+/* ---------- Drawer ---------- */
+.drawer-wrap { position: fixed; inset: 0; z-index: 60; }
+.drawer-scrim { position: absolute; inset: 0; background: var(--scrim); }
+.drawer {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(560px, 100%);
+  background: var(--surface); border-left: 1px solid var(--line); overflow-y: auto;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 18px;
+}
+.dr-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.dr-head h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.015em; }
+.dr-section h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.dr-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.dr-stats div { padding: 12px; border-radius: 10px; background: var(--surface-2); }
+.dr-stats p { font-size: 12px; color: var(--muted); }
+.dr-stats strong { font-size: 18px; font-weight: 800; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1180px) {
+  .grid-2, .grid-2.even { grid-template-columns: minmax(0, 1fr); }
+  .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .qgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1060px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { position: fixed; inset: 0 auto 0 0; width: 276px; z-index: 50; transform: translateX(-100%); transition: transform 0.22s ease; }
+  .app.nav-open .sidebar { transform: none; }
+  .app.nav-open .scrim { display: block; position: fixed; inset: 0; z-index: 40; background: var(--scrim); }
+  .menu-btn { display: inline-grid; }
+}
+@media (max-width: 900px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .topbar { padding: 12px 16px; }
+  .content { padding: 16px 16px 32px; gap: 16px; }
+  .tb-right, .filters { width: 100%; }
+  .filters .field { flex: 1 1 140px; }
+  .filters .field.f-month { flex-basis: 100%; }
+  #f-month, #f-jefe, #f-sede { min-width: 0; width: 100%; }
+  .tb-right { align-items: stretch; }
+  .tb-left { padding-right: 46px; }
+  .tb-right > .icon-btn { position: absolute; top: 12px; right: 16px; }
+  .topbar { position: sticky; }
+  .kpis, .grid-4, .qgrid, .pipeline, .jef-stats { grid-template-columns: minmax(0, 1fr); }
+  .headline { font-size: 18px; }
+  .kpi-value { font-size: 26px; }
+  .card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M22 17 13.5 8.5 8.5 13.5 2 7"/><path d="M16 17h6v-6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar" aria-label="Navegación">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true">
+        <rect width="36" height="36" rx="9" style="fill:#2a78d6"/>
+        <path d="M9 25V11.5l9 9 9-9V25" style="fill:none;stroke:#ffffff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round"/>
+        <circle cx="27" cy="9" r="3" style="fill:#fab219"/>
+      </svg>
+      <div>
+        <div class="brand-name">Metassistance</div>
+        <div class="brand-sub">Reportes de gestión</div>
+      </div>
+    </div>
+
+    <div class="client">
+      <span class="client-label">Cliente</span>
+      <span class="client-name">ILUMI</span>
+      <span class="client-meta">Venta de equipos + garantía extendida (GEX)</span>
+    </div>
+
+    <nav class="nav" id="nav">
+      <div class="nav-group">
+        <p class="nav-title">Vista ejecutiva</p>
+        <a href="#resumen" data-view="resumen"><svg class="ic"><use href="#i-dash"/></svg>Resumen ejecutivo</a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-title">Detalle</p>
+        <a href="#evolucion" data-view="evolucion"><svg class="ic"><use href="#i-trend"/></svg>Evolución mensual</a>
+        <a href="#asesores" data-view="asesores"><svg class="ic"><use href="#i-users"/></svg>Asesores<span class="count" id="nav-ases"></span></a>
+        <a href="#sedes" data-view="sedes"><svg class="ic"><use href="#i-pin"/></svg>Supervisores y sedes</a>
+        <a href="#jefaturas" data-view="jefaturas"><svg class="ic"><use href="#i-brief"/></svg>Jefaturas</a>
+        <a href="#productos" data-view="productos"><svg class="ic"><use href="#i-box"/></svg>Productos y GEX</a>
+        <a href="#transacciones" data-view="transacciones"><svg class="ic"><use href="#i-list"/></svg>Transacciones<span class="count" id="nav-tx"></span></a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-title">Automatización</p>
+        <a href="#calidad" data-view="calidad"><svg class="ic"><use href="#i-shield"/></svg>Calidad de datos</a>
+      </div>
+    </nav>
+
+    <div class="side-foot">
+      <span class="proto">Prototipo</span>
+      <span>Fuente: <strong id="sf-source"></strong></span>
+      <span>Corte de datos: <strong id="sf-corte"></strong></span>
+      <span>Procesado: <strong id="sf-gen"></strong></span>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Abrir menú"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <div>
+          <p class="tb-eyebrow" id="tb-eyebrow">ILUMI · Venta de equipos y GEX</p>
+          <h1 class="tb-title" id="tb-title">Resumen ejecutivo</h1>
+        </div>
+      </div>
+      <div class="tb-right">
+        <div class="filters" id="filters">
+          <label class="field f-month"><span>Mes de análisis</span><select id="f-month"></select></label>
+          <label class="field"><span>Jefatura</span><select id="f-jefe"></select></label>
+          <label class="field"><span>Sede</span><select id="f-sede"></select></label>
+        </div>
+        <button class="icon-btn" id="theme-btn" type="button" aria-label="Cambiar a modo oscuro"><svg class="ic" id="theme-ic"><use href="#i-moon"/></svg></button>
+      </div>
+    </header>
+
+    <main class="content" id="content" tabindex="-1"></main>
+  </div>
+</div>
+
+<div class="drawer-wrap" id="drawer" hidden>
+  <div class="drawer-scrim" data-close></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" id="drawer-body"></aside>
+</div>
+
+<noscript><p style="padding:24px">Este reporte necesita JavaScript habilitado.</p></noscript>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+'use strict';
+
+const DATA = {"meta":{"source":"Dashboard - ILUMI.xlsx","sheet":"BASE ILUMI","generated":"2026-10-08","inicio":"2025-05-20","corte":"2025-11-11","months":[{"key":"MAYO","name":"Mayo","short":"May","num":5,"year":2025},{"key":"JUNIO","name":"Junio","short":"Jun","num":6,"year":2025},{"key":"JULIO","name":"Julio","short":"Jul","num":7,"year":2025},{"key":"AGOSTO","name":"Agosto","short":"Ago","num":8,"year":2025},{"key":"SETIEMBRE","name":"Setiembre","short":"Set","num":9,"year":2025},{"key":"OCTUBRE","name":"Octubre","short":"Oct","num":10,"year":2025},{"key":"NOVIEMBRE","name":"Noviembre","short":"Nov","num":11,"year":2025}]},"dims":{"asesor":["Karen Ramos","Gloria Espinoza","E. Rodrigo Chino Piña","Alexander Campos","Sefora Tovar","Gino Quispe","Ingrid Soto","Yunny Nuñez","Maria Leon","Christian Valverde","Angie Torres","Yulissa Martinez","Ronald Sandoval","Victor Campodonico","Roberto Bendezu","Jimmy Yauri","Jose Obeso","Irwin Rodriguez","Ever Lachira","Luis Diaz","Lina Sandoval","Daniel Java","Jean Ccopa","Luis Sanchez","Geraldi Paredes","Gabriel Briceño","Merylin Perez","Ruth Martinez","Roy Parco","Osmar Eduardo Garcia","Enrique Ross","Cynthia de la Cruz","Eduardo Guerrero","Giancarlo Gonzáles","Ana Rivasplata","Camila Yribarren","Najaida Enriquez","Kevin Arias","Antonella Monteverde","Jesus Enrique Terrazas","Octavio Cueto","Rodrigo Silvera","Arturo Alvarez","Leonela Rios"],"supervisor":["Irma Santamaria","Giovanna Vilchez","Lucero de la Piedra","Maria Leon","Marina Chaparro","Manuel Davila","Miguel Poma","Percy Huaman","Christel Vargas","Abraham Acuña","Roberto Bendezu"],"jefe":["Cecilia Gil","Alvaro Gomez"],"sede":["Iquitos","Minka","Chiclayo","Primavera","Tacna","VES","Ayllon 2","Circunvalacion","Ayllon 3","Piura","Trujillo","Ayllon 1","Arequipa"]},"rows":[[0,"2025-05-20","YACU RUMI SERVICE SAC","TF-3100H",350,2561.56,350,25,0,0,0,0,0,2],[0,"2025-05-21","REYLUTHI EIRL","LICT-40JR",90,788.0,90,10,1,1,0,1,0,3],[0,"2025-05-23","KAROL WENDY TAFUR AHUANARI DE SIERRA","TF-3100H",350,2621.08,350,25,2,0,0,0,0,4],[0,"2025-05-23","ROSA INES AREVALO ISUIZA","MHS-30S",750,6119.1,750,50,2,0,0,0,0,5],[0,"2025-05-24","CORPORACION HOTELERA Y TURISTICA DEL AMAZONAS SA","IND-200",120,873.08,120,10,2,0,0,0,0,6],[0,"2025-05-26","NESTOR FREDY MAITAHUARI ZUMBA","TF-3600",250,2299.08,250,15,0,0,0,0,0,7],[0,"2025-05-29","ANTONIO PONCIANO WONG WESCHE","CH-06",90,661.0,90,10,0,0,0,0,0,8],[0,"2025-05-29","ANTONIO PONCIANO WONG WESCHE","CH-06",90,661.0,90,10,0,0,0,0,0,9],[0,"2025-05-30","NARUTO LA MOLINA SAC","MHA-20S",480,4399.0,480,25,1,1,0,1,0,10],[1,"2025-06-02","CANNATA RAZURI ROXANA","VRD-75CT",480,3419.1,480,25,3,2,0,2,64,12],[1,"2025-06-02","FRANCISCO WONG WESCHE","C-80MS",180,1255.0,180,15,0,0,0,0,0,13],[1,"2025-06-02","MULTISERVICIOS Y REPRESENTACIONES QUIROZ SAC","TFI-4402GR",300,2159.1,300,25,0,0,0,0,0,14],[1,"2025-06-02","MULTISERVICIOS Y REPRESENTACIONES QUIROZ SAC","TFI-2200DG",180,1214.1,180,15,0,0,0,0,0,15],[1,"2025-06-03","TIERRA NAM SAC","B-20L",290,2550.0,290,15,4,3,1,3,0,16],[1,"2025-06-03","MAURO CRUZ IPARRAGUIRRE","TFI-4402GR",300,2159.1,300,25,0,0,0,0,0,17],[1,"2025-06-05","QUISPE MAQUERA ALONSO ABDON","AMA-15M",480,4050.0,480,25,5,4,0,4,0,18],[1,"2025-06-09","MULTIVENTAS DELFIN EIRL","GD-14002FC",1200,11683.08,1200,100,0,0,0,0,0,19],[1,"2025-06-09","MULTIVENTAS DELFIN EIRL","GD-14002FC",1200,11683.08,1200,100,0,0,0,0,0,20],[1,"2025-06-09","ALIMENTOS COMPLEMENTARIOS S.A.C","LICT-40JR",90,698.28,90,10,6,5,0,5,0,21],[1,"2025-06-09","RUTH DEL PILAR CASTILLO MURGA","BC-3500IV",500,3199.2,500,50,3,2,0,2,64,22],[1,"2025-06-10","RAMBA SERVICIOS EIRL","IND-200",120,873.08,120,10,0,0,0,0,0,23],[1,"2025-06-10","ALEX GIPA SALDAÑA","TFI-3400RE",220,1747.08,220,15,0,0,0,0,0,24],[1,"2025-06-10","LLANELA NORA YAICATE PIZANGO","RE-140RE",90,839.04,90,10,0,0,0,0,0,25],[1,"2025-06-12","VILMA TTICA YUCRA","MPP-160",290,1542.41,290,15,6,5,0,5,0,26],[1,"2025-06-16","RIQUISIMA SAC","LICT-20CP",120,879.0,120,10,5,4,0,4,0,27],[1,"2025-06-16","DARO SOLUTIONS","TFI-4402GR",300,1890.0,300,25,1,1,0,1,0,28],[1,"2025-06-16","MULTIVENTAS DELFIN EIRL","VM-200T",400,3149.1,400,25,0,0,0,0,0,29],[1,"2025-06-16","SARA DEL PIEDAD MAFALDO RICOPA","BC-3500FC",400,2879.0,400,25,0,0,0,0,0,30],[1,"2025-06-16","NOBLECILLA RUSSO KARLA ANNA","LICT-40JR",90,634.84,90,10,6,5,0,5,0,31],[1,"2025-06-17","AGROMIN LA BONITA SAC","GD-14002FC",1200,9785.0,1200,100,7,3,1,3,64,32],[1,"2025-06-17","AGROMIN LA BONITA SAC","GD-14002FC",1200,9785.0,1200,100,7,3,1,3,64,33],[1,"2025-06-17","AGROMIN LA BONITA SAC","BC-9502FC",800,5778.0,800,50,7,3,1,3,64,34],[1,"2025-06-17","AGROMIN LA BONITA SAC","BC-9502FC",800,5778.0,800,50,7,3,1,3,64,35],[1,"2025-06-17","DELGADO PEREZ MILTHON JEINER","MHS-25PC",700,4561.52,700,50,8,3,1,3,64,36],[1,"2025-06-18","PERLITA LUCERO GONZALES DE PAZ","VCM-66",90,809.1,90,10,3,2,0,2,64,37],[1,"2025-06-19","SERVICIOS VILLAVICENCIO E.I.R.L.","CR-121",290,2699.0,290,15,9,6,0,6,32,38],[1,"2025-06-20","HAKIPOD SOCIEDAD ANONIMA CERRADA","MG-60",150,1067.0,150,10,8,3,1,3,64,39],[1,"2025-06-20","CHRISTIAN ALEJANDRO SEGUNDO CAMPO","LIC-04LT",120,1434.0,120,10,10,7,0,7,64,40],[1,"2025-06-20","CANNATA RAZURI ROXANA","GD-7000RE",750,6289.15,750,50,3,2,0,2,64,41],[1,"2025-06-24","VANESSA DEL CARMEN GARCIA SAAVEDRA","VRF-90CT",480,3206.8,480,25,6,5,0,5,64,42],[1,"2025-06-24","GRUPO ALEXANDERS S.A.C.","MH-60",400,3560.44,400,25,8,3,1,3,64,43],[1,"2025-06-23","EMPRESA NIETO ANTARES SOCIEDAD ANÒNIMA CERRADA","LICT-40JR",90,780.0,90,10,11,6,0,8,64,44],[1,"2025-06-24","JUAN CARLOS CHIROQUE ALDANA","MHA-20",750,5649.0,750,50,12,8,0,9,64,45],[1,"2025-06-24","ALONZO MATEO ELARIO CASTRO","EF-802",120,512.73,120,10,6,5,0,5,64,46],[1,"2025-06-24","VALERIA BARBARA SOLÍS LÓPEZ","BC-3500",250,1914.45,250,15,6,5,0,5,64,47],[1,"2025-06-25","AGROPECUARIA F & D S.A.C.","TFI-5502DG",400,3097.0,400,25,11,6,0,8,64,48],[1,"2025-06-25","CONSORCIO HEMISFERICAS HM SAC","CH-06",90,661.48,90,10,0,0,0,0,0,49],[1,"2025-06-25","MELISSA SANDOVAL PIZANGO","TF-3100H",350,2564.1,350,25,0,0,0,0,0,50],[1,"2025-06-25","M&M CAPITAL EIRL","IND-300",120,1103.08,120,10,0,0,0,0,0,51],[1,"2025-06-25","LLONTOP CAPUÑAY ERICK JAVIER","DO-1600",290,2069.1,290,15,13,2,0,2,0,52],[1,"2025-06-26","ERIKA SANCHEZ BARBOZA","TF-2600",250,1889.1,250,15,0,0,0,0,0,53],[1,"2025-06-26","GINECOLOGOPEREZ EIRL","BC-2900FC",290,2710.0,290,15,1,1,0,1,64,54],[1,"2025-06-24","D & S E HIJOS MARKET S.A.C","BC-7502FC",750,5899.0,750,50,8,3,1,3,0,55],[1,"2025-06-26","IRIS YOLANDA VELASQUEZ BARRERA","RE-95BK",90,753.48,90,10,13,2,0,2,0,56],[1,"2025-06-26","SHIRLEY MICIELO CORONEL MURAYARI","MHS-25PC",700,5703.08,700,50,0,0,0,0,1,57],[1,"2025-06-26","GRECLAR E.I.R.L.","RE-425BK",300,1979.0,300,25,14,3,1,3,0,58],[1,"2025-06-27","REYNA FIGUEROA CARLOS CESAR","TF-1100",90,763.71,90,10,15,7,0,7,0,59],[1,"2025-06-27","REYNA FIGUEROA CARLOS CESAR","VCM-120",120,944.39,120,10,15,7,0,7,0,60],[1,"2025-06-27","GAMANIEL CORDOVA HUAMAN","LIC-25LT-P",290,2609.1,290,15,12,8,0,9,1,61],[1,"2025-06-27","VICTOR RAUL VALIENTE VENTURA","VCM-96",120,1133.1,120,10,13,2,0,2,64,62],[1,"2025-06-27","PATRICIA DEL PILAR GONZALES MACAHUACHI","MHS-25PC",700,5579.1,700,50,0,0,0,0,0,63],[1,"2025-06-28","ESMILA VEGA MENDOZA","VRF-1500AI",750,6100.0,750,50,16,6,0,8,64,64],[1,"2025-06-28","JUAN LUIS CHOMBO HEREDIA","LICT-20CP",90,826.0,90,10,11,6,0,8,64,65],[1,"2025-06-28","CAROL ESTEFFANI TAFUR ORBE","VCM-66",90,827.08,90,10,0,0,0,0,0,66],[1,"2025-06-30","RAMIREZ OCHAVANO VAITIERE THAIS","TFI-3400DG",220,1397.21,220,15,8,3,1,3,0,67],[1,"2025-06-30","CUSHMAN & WAKEFIELD PERU S.A.","MH-60",400,2711.45,400,25,8,3,1,3,0,68],[1,"2025-06-30","LA HAVANA EIRL","PG-01",90,785.0,90,10,5,4,0,4,0,69],[1,"2025-06-30","LA HAVANA EIRL","PG-01",90,785.0,90,10,5,4,0,4,0,70],[1,"2025-06-30","IMPORT Y EXPORT CAIZIY E.I.R.L.","VCM-66",90,730.0,90,10,17,7,0,7,0,71],[1,"2025-06-30","INVERSIONES EL PANCITO S.A.C.","MHS-30S",750,5124.72,750,50,8,3,1,3,0,72],[2,"2025-07-02","ELVIS DEIVIS ACUÑA HUAMAN","MPP-250",480,3279.99,480,25,6,5,0,5,0,74],[2,"2025-07-02","CONSORCIO S&P","MG-120",220,679.05,220,15,18,8,0,9,0,75],[2,"2025-07-02","TAIS FOSCA GAGLIUFFI","EF-802",120,601.0,120,10,18,8,0,9,0,76],[2,"2025-07-03","OMAN JAMILL PACHECO RAMOS","VCM-66",90,899.0,90,10,19,3,1,3,64,77],[2,"2025-07-03","PEDRO BORJA VILCHEZ","EF-802",120,512.58,120,10,6,5,0,5,64,78],[2,"2025-07-03","PEDRO BORJA VILCHEZ","RE-275RE",220,1152.82,220,15,6,5,0,5,64,79],[2,"2025-07-03","PAULINA TARMA FERNANDEZ","RE-95RE",90,753.48,90,10,0,0,0,0,0,80],[2,"2025-07-03","CINTHYA VALERI HOLGUÍN ARANDA","RE-95BK",90,603.14,90,10,6,5,0,5,0,81],[2,"2025-07-03","MR. CEVICHE E.I.R.L.","LIC-06LT",180,1522.0,180,15,20,1,0,1,0,82],[2,"2025-07-03","CORPORACION IDROGO","TF-2800V",180,1889.1,180,15,3,2,0,2,64,83],[2,"2025-07-04","RESTAURANT EL PARRALITO Y SERVICIOS","BC-2200FC",250,2589.1,250,15,7,3,1,3,0,84],[2,"2025-07-04","RESTAURANT EL PARRALITO Y SERVICIOS","BC-9502SD",800,8232.2,800,50,7,3,1,3,0,85],[2,"2025-07-04","GAMARRA GARCIA ALCIRA CARMEN","TFI-3400DG",220,1899.0,220,15,7,3,1,3,0,86],[2,"2025-07-05","PANADERIA GISSELA SRL","TFI-10002DG",650,4859.1,650,50,0,0,0,0,0,87],[2,"2025-07-07","JESSICA MARIA REATEGUI RIOS","MHS-25PC",700,5703.08,700,50,0,0,0,0,0,88],[2,"2025-07-07","KYOMU COCINA NIKKEI","LICT-40JR",90,558.25,90,10,6,5,0,5,64,89],[2,"2025-07-07","KYOMU COCINA NIKKEI","AF-7000FC",800,5668.55,800,50,6,5,0,5,64,90],[2,"2025-07-07","ERIKA MARITZA ARTEAGA GUZMAN","PCC-2P",180,1351.48,180,15,21,0,0,0,0,91],[2,"2025-07-07","INDUSTRIAS ALIMENTARIAS LA RECETA DEL NONNO EIRL","SLD-3SD",700,3798.53,700,50,6,5,0,5,0,92],[2,"2025-07-07","LUISET RENGIFO SHAPIAMA","MHS-25",650,5151.08,650,50,0,0,0,0,0,93],[2,"2025-07-07","BUITRON MARQUEZ JULISSA KAREN","LICT-40JR",90,750.0,90,10,9,6,0,6,32,94],[2,"2025-07-07","BUITRON MARQUEZ JULISSA KAREN","LICT-40JR",90,750.0,90,10,9,6,0,6,32,95],[2,"2025-07-08","GRUPO D'EALY S.R.L.","IND-300",120,1162.0,120,10,18,8,0,9,0,96],[2,"2025-07-08","PRODUCTOS NATURALES Y FRUTOS SECOS PALOMINO EIRL","GD-14002FC",1200,11683.08,1200,100,0,0,0,0,0,97],[2,"2025-07-08","MAVILA ROSA ROJAS INGA","TF-3600",250,2249.1,250,15,0,0,0,0,0,98],[2,"2025-07-08","GUERRA SANCHEZ GEYNER","RE-420NF",290,1950.4,290,15,21,0,0,0,0,99],[2,"2025-07-09","ADRIANZA FIGUEROA OLIMAR CAROLINA","VCM-66",90,662.06,90,10,6,5,0,5,0,100],[2,"2025-07-09","LA TORRE PINEDO DIEGO ALONSO","PG-01",90,827.08,90,10,0,0,0,0,0,101],[2,"2025-07-09","AROMAS CAFE DELICATESSEN SAC","PG-01",90,827.0,90,10,7,3,1,3,0,102],[2,"2025-07-09","AROMAS CAFE DELICATESSEN SAC","PG-01",90,827.0,90,10,7,3,1,3,0,103],[2,"2025-07-10","DERICK JEASON CARDENAS VALLEJOS","HCM-200",290,1905.55,290,15,6,5,0,5,0,104],[2,"2025-07-10","RESTAURANTE PERUANO TURISTICO EL TIO JHONY E.I.R.L","VRFH-1500AI",1000,7599.0,1000,100,12,8,0,9,0,105],[2,"2025-07-10","RESTAURANTE PERUANO TURISTICO EL TIO JHONY E.I.R.L","CH-06",90,0.63,90,10,12,8,0,9,0,106],[2,"2025-07-10","MULTIVENTAS PALOMINO EIRL","TF-4200TG",700,5210.43,700,50,0,0,0,0,0,107],[2,"2025-07-11","RODOLFO ARTURO BURNEO SEMINARIO","RE-425BK",300,1650.01,300,25,12,8,0,9,0,108],[2,"2025-07-11","CORPORACIÓN PANDA VIOLET SAC.","LICT-20CP",120,899.1,120,10,13,2,0,2,0,109],[2,"2025-07-11","NEGOCIOS GASTRONÓMICOS DE LAMBAYEQUE EIRL","PCC-2P",180,1322.1,180,15,13,2,0,2,64,110],[2,"2025-07-11","MULTIVENTAS PALOMINO EIRL","BC-11002FCWC",1150,7739.1,1150,100,0,0,0,0,0,111],[2,"2025-07-14","TAPUY SANDI ROSALIA","C-50GS",90,656.03,90,10,0,0,0,0,0,112],[2,"2025-07-14","NABI ASIAN STREET FOOD EIRL","EF-802",120,763.08,120,10,7,3,1,3,0,113],[2,"2025-07-15","BRYAMS BENNEDYK JHYN GUTIERREZ VELASQUEZ","LIC-06LT",180,1280.62,180,15,6,5,0,5,0,114],[2,"2025-07-15","QUISPE TITO ZORAIDA GANHDY","LIC-06LT",180,1274.84,180,15,6,5,0,5,0,115],[2,"2025-07-15","ROSA LUZ PALOMINO DÍAZ","VCM-66",90,647.58,90,10,6,5,0,5,0,116],[2,"2025-07-15","ROSA LUZ PALOMINO DÍAZ","BC-2200FC",250,1872.38,250,15,6,5,0,5,0,117],[2,"2025-07-15","CONSORCIO S&P","B-20L",290,2752.0,290,15,18,8,0,9,64,118],[2,"2025-07-15","CONSORCIO S&P","CH-06",90,713.0,90,10,18,8,0,9,0,119],[2,"2025-07-15","CHAVEZ ROJAS CARLOS ANTHONY","MPP-160",290,1889.1,290,15,3,2,0,2,0,120],[2,"2025-07-16","ROJAS BAY DE MARINI PATRICIA CECILIA","TFI-3400DG",220,1557.18,220,15,22,9,1,10,0,121],[2,"2025-07-16","PONTIFICIA UNIVERSIDAD CATOLICA DEL PERU","BC-5800FC",500,4915.0,500,50,7,3,1,3,0,122],[2,"2025-07-16","TASTA CAFE S.A.C.","LIC-20CP",90,899.0,90,10,7,3,1,3,0,123],[2,"2025-07-16","TASTA CAFE S.A.C.","LIC-20CP",90,899.0,90,10,7,3,1,3,0,124],[2,"2025-07-17","EL FOGON PERU S.A.C.","DJ-182",290,1677.88,290,15,6,5,0,5,0,125],[2,"2025-07-17","THE HOUSE NHQP E.I.R.L","VCM-66",90,792.12,90,10,15,7,0,7,0,126],[2,"2025-07-17","ALIMENTOS PERUANOS SANOS S.A.C.","TF-2600",250,1548.62,250,15,8,3,1,3,0,127],[2,"2025-07-17","ALIMENTOS PERUANOS SANOS S.A.C.","TF-2600",250,1548.62,250,15,8,3,1,3,0,128],[2,"2025-07-17","GORDILLO HURTADO EDUARDO WALTER","MHS-25",650,4750.0,650,50,16,6,0,8,0,129],[2,"2025-07-17","PEDRO DANILO GUTIERREZ ROSAS","LICT-40JR",90,660.0,90,10,16,6,0,8,0,130],[2,"2025-07-17","ENCISO GATTY ALFREDO ANTONIO","TF-3100H",350,2621.08,350,25,0,0,0,0,0,131],[2,"2025-07-17","DAJEMY ALARCON VERÁ","DJ-182",290,1697.21,290,15,6,5,0,5,0,132],[2,"2025-07-17","JAVIER CAKES E.I.R.L.","VRF-1500AI",750,5347.0,750,50,7,3,1,3,0,133],[2,"2025-07-17","JAVIER CAKES E.I.R.L.","VRF-1500AI",750,5347.0,750,50,7,3,1,3,0,134],[2,"2025-07-17","JAVIER CAKES E.I.R.L.","VRF-1500AI",750,5347.0,750,50,7,3,1,3,0,135],[2,"2025-07-17","JAVIER CAKES E.I.R.L.","VRF-1500AI",750,5347.0,750,50,7,3,1,3,0,136],[2,"2025-07-19","KEITH GHERETH ACUÑA ESTRADA","LIC-40JR",90,513.8,90,10,6,5,0,5,64,137],[2,"2025-07-21","CORPORACION DE ALIMENTOS Y SERVICIOS CESODO EIRL","LIC-40JR",90,650.0,90,10,11,6,0,8,64,138],[2,"2025-07-22","LUIS ALFREDO ANDADERA CARRIOLA","LICT-40JR",90,547.51,90,10,6,5,0,5,0,139],[2,"2025-07-24","ROBERTO CHUMBIPUMA ESPIRITU","LIC-40JR",90,650.0,90,10,11,6,0,8,0,140],[2,"2025-07-24","MINERA CAPA E.I.R.L.","TFI-2200",180,1060.04,180,15,23,9,1,10,0,141],[2,"2025-07-24","INVERSIONES RIO SANTA SAC","MPP-160",290,2099.0,290,15,14,3,1,3,0,142],[2,"2025-07-24","INVERSIONES RIO SANTA SAC","LIC-08LT",180,1799.0,180,15,14,3,1,3,0,143],[2,"2025-07-25","MANANITA SHUPINGAHUA ANGELO","MPP-200",290,2429.1,290,15,21,0,0,0,0,144],[2,"2025-07-25","MILTON CRISTHIAN GOMEZ ESTRADA","EF-802",120,599.0,120,10,7,3,1,3,0,145],[2,"2025-07-25","MILTON CRISTHIAN GOMEZ ESTRADA","CE-25LT",90,399.0,90,10,7,3,1,3,0,146],[2,"2025-07-26","ALIMENTOS COMPLEMENTARIOS S.A.C.","LIC-40JR",180,1324.86,180,15,6,5,0,5,0,147],[2,"2025-07-26","CHRISTIAN ALEJANDRO SEGUNDO CAMPO","LIC-40JR",90,627.3,90,10,10,7,0,7,0,148],[2,"2025-07-26","CHRISTIAN ALEJANDRO SEGUNDO CAMPO","LIC-40JR",90,627.3,90,10,10,7,0,7,0,149],[2,"2025-07-30","MEZA RIVERA ZOCIMO","TFI-5502DG",400,2642.65,400,25,21,0,0,0,0,150],[2,"2025-07-30","SAIRAH LILIANA CABRERA CUSTODIO","TF-3100H",350,2421.65,350,25,3,2,0,2,0,151],[2,"2025-07-30","MORALES ABRILL GRETA","VRFH-1500AI",1000,5797.04,1000,100,7,3,1,3,0,152],[2,"2025-07-30","MORALES ABRILL GRETA","B-10L",220,1485.83,220,15,7,3,1,3,0,153],[2,"2025-07-30","MORALES ABRILL GRETA","AMA-15M",480,2972.34,480,25,7,3,1,3,0,154],[2,"2025-07-22","EMPRESA DE PRODUCTORES CALLAHUANCA SOCIEDAD ANONIMA","TFI-3400WH",220,1481.22,220,15,17,7,0,7,0,155],[2,"2025-07-25","GAMARRA DURAN ELVIA YOSELI","VCM-66",90,730.0,90,10,17,7,0,7,0,156],[2,"2025-07-30","CARRASCO VELASCO MARICELA","VCM-66",90,0.8,90,10,12,8,0,9,0,157],[2,"2025-07-31","VITAL CASMA E.I.R.L.","MH-150",800,6077.0,800,50,24,9,1,10,64,158],[2,"2025-07-31","ANGEL MAURICIO CUSIPUMA","BC-3500BK",250,1800.0,250,15,10,7,0,7,0,159],[2,"2025-07-31","MULTISERVICIOS JASA E.I.R.L.","LIC-08LT",180,1524.57,180,15,8,3,1,3,0,160],[2,"2025-07-31","NATURA VIVA IQUITOS SRL","VCM-96",120,1019.79,120,10,25,6,0,8,64,161],[2,"2025-07-31","VIZCACHO CHOQUECOTA ADRIANA","MG-2SD-S",750,4600.0,750,50,5,4,0,4,0,162],[2,"2025-07-31","NATURA VIVA IQUITOS SRL","VRD-75CT",480,3115.17,480,25,25,6,0,8,64,163],[2,"2025-07-31","NATURA VIVA IQUITOS SRL","BC-3200FC",350,2272.73,350,25,25,6,0,8,64,164],[2,"2025-07-31","CHOCANO LOAYZA JEANFHER MANUEL","LICT-40JR",90,650.0,90,10,9,6,0,6,96,165],[2,"2025-07-31","AMA TERRAZA CAFE S.R.L.","VRFH-1000AI",750,4602.42,750,50,7,3,1,3,0,166],[2,"2025-07-31","TEJADA LEON ALISSON SOFIA","TFI3400DG",220,1899.0,220,15,8,3,1,3,0,167],[2,"2025-07-31","CANNATA RAZURI ROXANA","CH-08UFBK",150,1439.1,150,10,3,2,0,2,64,168],[2,"2025-07-18","DALMAU CORP S.A.C.","HGM-602",650,4037.31,650,50,26,3,1,3,0,169],[3,"2025-08-01","BENITO ANTIPORTA ESPIRITU","BC-3200",250,1544.19,250,15,6,5,0,5,0,171],[3,"2025-08-01","ROSA ELENA ORDONEZ DEL AGUILA","B-10L",250,1983.6,250,15,13,2,0,2,64,172],[3,"2025-08-01","SANDY CANALES PALOMINO","BC-3200",90,736.46,90,10,6,5,0,5,0,173],[3,"2025-08-01","MARIN VELIZ MARTHA LOURDES","LIC-40JR",90,606.0,90,10,5,4,0,4,0,174],[3,"2025-08-02","HUACACHI VIENA EDGAR EDUARDO","IND-300",120,1103.08,120,10,0,0,0,0,0,175],[3,"2025-08-04","INVITA PE E.I.R.L.","LICT-40JR",90,558.19,90,10,6,5,0,5,0,176],[3,"2025-08-04","GALVEZ FLORES TAMARA AYDEE","MH-150",800,6439.08,800,50,0,0,0,0,0,177],[3,"2025-08-04","URIBE HUAMAN DIXON","HC-10000",1500,14399.1,1500,120,0,0,0,0,0,178],[3,"2025-08-05","ARMAS ALIAGA ANDRES ALONSO","LIC-04LT",180,1245.0,180,15,7,3,1,3,0,179],[3,"2024-08-05","RESTAURANTE CATHYS S.A.C.","VCM-66",90,764.0,90,10,27,3,1,3,8,180],[3,"2025-08-05","KILLA ANDINA PRODUCTS E.I.R.L.","BC-7502FC",750,5399.0,750,50,7,3,1,3,0,181],[3,"2025-08-05","VILLANUEVA GUEVARA JESUS SEBASTIAN","TF-1100",120,1011.08,120,10,0,0,0,0,0,182],[3,"2025-08-07","MILENARIA BIO COMPANY SAC","TF-3100H",350,2849.0,350,25,7,3,1,3,0,183],[3,"2025-08-07","BETO HUARCAYA CONDORI","LIC-40JR",90,659.0,90,10,11,6,0,8,0,184],[3,"2025-08-07","RENGIFO DA SILVA LIZETH","DJ-182",290,2069.1,290,15,0,0,0,0,0,185],[3,"2025-08-07","MISION CRISTIANA KIDS AND FAMILY","VCM-66",90,827.08,90,10,0,0,0,0,0,186],[3,"2025-08-07","MISION CRISTIANA KIDS AND FAMILY","TF-1100",120,989.1,120,10,0,0,0,0,0,187],[3,"2025-08-07","BARRAGAN CARDENAS ANDREA","MHA-20",750,4148.5,750,50,7,3,1,3,0,188],[3,"2025-08-07","BARRAGAN CARDENAS ANDREA","AF-9000FC-S",1150,5380.28,1150,100,7,3,1,3,0,189],[3,"2025-08-01","PINGÜI ICE E.I.R.L.","BC-5502FC",500,4329.01,500,50,12,8,0,9,0,190],[3,"2025-08-07","SOCIEDAD DE BENEFICENCIA DE PIURA","TF-4600",400,2480.9,400,25,12,8,0,9,0,191],[3,"2025-08-08","OSCAR FRIAS TICLIAHUANCA","RE-95BK",90,737.1,90,10,13,2,0,2,64,192],[3,"2025-08-09","BARRAGAN CARDENAS ANDREA","ICL-1200",1800,8963.39,1800,150,7,3,1,3,0,193],[3,"2025-08-09","BARRAGAN CARDENAS ANDREA","BF-0545",1800,11373.16,1800,150,7,3,1,3,0,194],[3,"2025-08-11","GARCIA MORALES LUCY","BC-7502FC",750,3349.57,750,50,7,3,1,3,0,195],[3,"2025-08-11","JJ6724 E.I.R.L.","TFI-3400DG",220,1542.31,220,15,28,6,0,11,0,196],[3,"2025-08-11","INVERSIONES EL BIJAO E.I.R.L","TF-1100",120,1050.0,120,10,11,6,0,8,64,197],[3,"2025-08-11","LUZ DEL PILAR BACA LA ROSA","LICT-20CP",120,734.86,120,10,6,5,0,5,0,198],[3,"2025-08-11","LUIS ALBERTO ROMERO CORDOVA","VCM-66",90,789.91,90,10,12,8,0,9,0,199],[3,"2025-08-11","LABORATORIO HOFARM S.A.C.","MH-40",400,2711.0,400,25,7,3,1,3,0,200],[3,"2025-08-12","BLOOM CAFE S.A.C.","TFI-1700DG",150,1219.0,150,10,7,3,1,3,0,201],[3,"2025-08-12","ALIMENTOS ANDINOS AMAZONICOS SOCIEDAD ANONIMA CERRADA","LIC-40JR",90,1679.99,90,10,15,7,0,7,0,202],[3,"2025-08-12","ALIMENTOS ANDINOS AMAZONICOS SOCIEDAD ANONIMA CERRADA","LIC-40JR",90,1679.99,90,10,15,7,0,7,0,203],[3,"2025-08-12","ROSALES PONCE RUTH MAGDALENA","TF-3600",250,2029.99,250,15,15,7,0,7,0,204],[3,"2025-08-12","PANADERIA Y PASTELERIA MISKY TANTA S.A.C.","PG-01",90,759.99,90,10,15,7,0,7,0,205],[3,"2025-08-12","SARA RAIDA QUISPE DE LA CRUZ","TFI-2200DG",180,1119.96,180,15,15,7,0,7,0,206],[3,"2025-08-12","JUAN MARTIN VALDIVIA CONDORI","EF-802",120,512.76,120,10,6,5,0,5,0,207],[3,"2025-08-14","OLIMED INNOVA GROUP E.I.R.L.","TF-2800V",180,2099.0,180,15,11,6,0,8,0,208],[3,"2025-08-14","DELFIN AMAZON CRUISES SAC","HCM-400",480,3955.08,480,25,0,0,0,0,0,209],[3,"2025-08-15","COORPORACION IDROGO SAC.","LIC-15LT-P",290,2609.1,290,15,13,2,0,2,64,210],[3,"2025-08-15","ESCOBAR LUJAN JHONATAN ISMAEL","TFI-4402DG",300,1967.18,300,25,0,0,0,0,0,211],[3,"2025-08-16","JEINER ROMERO ALTAMIRANO","LLICT-40JR",90,659.0,90,10,11,6,0,8,64,212],[3,"2025-08-16","FLORES PERIRA DIEGO ANTONIO","MH-60",400,3239.1,400,25,0,0,0,0,0,213],[3,"2025-08-18","FV CONSULTORIA ADMINISTRATIVA E.I.R.L.","MH-60",400,3125.0,400,25,24,9,1,10,0,214],[3,"2025-08-18","FV CONSULTORIA ADMINISTRATIVA E.I.R.L.","TF-2600",250,1822.0,250,15,24,9,1,10,0,215],[3,"2025-08-18","FV CONSULTORIA ADMINISTRATIVA E.I.R.L.","TFI- 2200DG",180,1110.0,180,15,24,9,1,10,0,216],[3,"2025-08-18","EDITH NOEMI RENGIFO SEGURA","BC-3200FC",350,2349.0,350,25,24,9,1,10,0,217],[3,"2025-08-18","INVERSIONES EL GRAN HUEVO SAC","AF-16003FC",1500,11179.0,1500,120,15,7,0,7,0,218],[3,"2025-08-18","INVERSIONES EL GRAN HUEVO SAC","IF-500WHCL",700,4720.0,700,50,15,7,0,7,0,219],[3,"2025-08-15","YTALA NAYELY CANCHO POSTILLON","VCM-66",90,760.0,90,10,17,7,0,7,0,220],[3,"2025-08-19","ESTEBAN RODRIGUEZ CERVANTES","",300,1778.92,300,25,8,3,1,3,1024,221],[3,"2025-08-19","ALFREDO BARRIOS TORRE","TFI-3400DG",220,1342.98,220,15,8,3,1,3,0,222],[3,"2025-08-19","APAZA RODRIGUEZ BERTHA","TF-3200TG",500,3926.0,500,50,5,4,0,4,0,223],[3,"2025-08-19","CAROLA LOPEZ MACA","LIC-6LT",180,1789.0,180,15,25,6,0,8,0,224],[3,"2025-08-20","MACHADO MANZO JUNIOR ALEXANDER","LIC-08LT",180,1570.0,180,15,24,9,1,10,0,225],[3,"2025-08-20","RODRIGUEZ SANJURJO ERIKA MARIA","B-30L",400,3023.1,400,25,0,0,0,0,0,226],[3,"2025-08-21","CENTRO DE CONVENCIONES FORTUNA SOCIEDAD COMERCIAL DE","MG-150",220,1436.36,220,15,7,3,1,3,0,227],[3,"2025-08-21","CENTRO DE CONVENCIONES FORTUNA SOCIEDAD COMERCIAL DE","LICT-40JR",90,574.07,90,10,7,3,1,3,0,228],[3,"2025-08-21","CENTRO DE CONVENCIONES FORTUNA SOCIEDAD COMERCIAL DE","LICT-40JR",90,574.07,90,10,7,3,1,3,0,229],[3,"2025-08-21","CENTRO DE CONVENCIONES FORTUNA SOCIEDAD COMERCIAL DE","AF-11004MX-S",1150,6626.4,1150,100,7,3,1,3,0,230],[3,"2025-08-19","MELISSA CANCHOA TEJADA","LICT-40JR",90,645.15,90,10,1,1,0,1,64,231],[3,"2025-08-21","MANROC SAC","LICT-20CP",120,849.0,120,10,1,1,0,1,64,232],[3,"2025-08-22","DARCO HUANCAS HUAMAN","TFI-2200DG",180,1173.64,180,15,12,8,0,9,0,233],[3,"2025-08-22","PEDROZA GAVILAN NOEMI","VRD-90CT",480,3361.83,480,25,17,7,0,7,0,234],[3,"2025-08-22","CENTRO DE CONVENCIONES FORTUNA SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA","GD-11002RE-S",1150,7130.63,1150,100,7,3,1,3,0,235],[3,"2025-08-22","RAGUBA S.A.C.","MPP-160",290,1544.01,290,15,6,5,0,5,0,236],[3,"2025-08-22","GENERACIONES GONZALO S.R.L.","AF-11004MX",1150,9629.0,1150,100,8,3,1,3,0,237],[3,"2025-08-22","LLOQQUE AMAU ELIZABETH","BC-3500",250,2209.15,250,15,0,0,0,0,0,238],[3,"2025-08-23","DEL CASTILLO MORI HERNANDO","MG-120",220,1545.18,220,15,0,0,0,0,0,239],[3,"2025-08-23","MARTIN IVAN CHAVEZ AVILA","TFI-4402WH",250,1950.15,250,15,24,9,1,10,0,240],[3,"2025-08-24","NATIVIDAD PAREDES FLORES","LIC-20CP",90,999.0,90,10,1,1,0,1,64,241],[3,"2025-08-26","DEL AGUILA ALVAREZ JOSE LUIS","DO-800",120,783.09,120,10,8,3,1,3,0,242],[3,"2025-08-26","PF NUTRITION S.A.C.","LIC-10LT",300,1899.0,300,25,8,3,1,3,64,243],[3,"2025-08-28","LUCERO LIZETH TANTA TABOADA","LIC-20CP",90,849.15,90,10,11,6,0,8,0,244],[3,"2025-08-28","CLAUDIA ALEXANDRA CARDENAS SIGUAS","TFI-3200FC",250,1840.0,250,15,23,9,1,10,0,245],[3,"2025-08-29","INVERSIONES LEON RUDAS S.A.C.","MH-40",400,2600.0,400,25,8,3,1,3,0,246],[3,"2025-08-29","INVERSIONES LEON RUDAS S.A.C.","TFI-3100H",350,2200.0,350,25,8,3,1,3,0,247],[3,"2025-08-29","MAGALY ANGELA ARANCIBIA AVELLANEDA","GD-14002FC-S",1200,9000.0,1200,100,8,3,1,3,0,248],[3,"2025-08-29","MAGALY ANGELA ARANCIBIA AVELLANEDA","GD-9000FC-S",1000,7000.0,1000,100,8,3,1,3,0,249],[3,"2025-08-30","AQUA EXPEDITIONS SAC","GD-14002FC",1200,11994.0,1200,100,0,0,0,0,0,250],[3,"2025-08-30","AQUA EXPEDITIONS SAC","AF-7000FC",800,6544.0,800,50,0,0,0,0,0,251],[3,"2025-08-30","JULISA JANET JHONG ALFARO","BC-3200",250,1514.13,250,15,6,5,0,5,0,252],[3,"2025-08-30","LUIS GABRIEL MEDINA NESTARES","EF-802",120,699.0,120,10,8,3,1,3,0,253],[3,"2025-08-30","CENTRO DE CONVENCIONES FORTUNA","LIC-25LT-P",480,3899.0,480,25,8,3,1,3,0,254],[3,"2025-08-30","INVERSIONES ALEMIA S.A.C","MG-2SDFC",750,4500.0,750,50,8,3,1,3,0,255],[3,"2025-08-30","SINTONIA S.A.C.","BC-3200FC",350,2372.03,350,25,8,3,1,3,0,256],[3,"2025-08-30","","BC-2200FC",250,2202.54,250,15,8,3,1,3,256,257],[4,"2025-09-01","PAULINA ESCOBAR CHIROQUE","BC-2900",220,1397.37,220,15,6,5,0,5,128,259],[4,"2025-09-02","CIEZA CASTAÑEDA BERARDO EDULIN","LICT-40JR",90,558.19,90,10,6,5,0,5,128,260],[4,"2025-09-02","LUCÍA HILARIA AMANQUI PAYE","BC-4900FC",480,2880.64,480,25,6,5,0,5,128,261],[4,"2025-09-02","LUCÍA HILARIA AMANQUI PAYE","DJ-182",290,1658.4,290,15,6,5,0,5,128,262],[4,"2025-09-02","LOPEZ MACA CAROLA","AMA-25M",750,6393.02,750,50,29,6,0,8,128,263],[4,"2025-09-02","GRUPO SABOREA PERU S.A.C.","MH-60",400,2900.0,400,25,7,3,1,3,128,264],[4,"2025-09-02","QUEJIA QUISPE ELIAZAR","TF-3100H",350,2564.1,350,25,0,0,0,0,128,265],[4,"2025-09-02","ABRAHAM CHAMORRO ACOSTA","VCM-66",90,827.08,90,10,30,0,0,0,128,266],[4,"2025-09-02","NEYRA ISUIZA NARDA GIMENA","TF-1100",120,1011.08,120,10,30,0,0,0,128,267],[4,"2025-09-04","JOSSELINNE MILAGROS SERNAQUE CORREA","MH-150",800,5949.0,800,50,4,3,1,3,128,268],[4,"2025-09-04","RAFAEL CASTILLO BENVENUTO","MG-3SD-S",750,5349.0,750,50,5,4,0,4,128,269],[4,"2025-08-29","NIEVA MUZURRIETA ABRAHAM","BC-3500FC",400,3035.0,400,25,9,6,0,8,136,270],[4,"2025-09-03","KEGNEDIN ALVA GARAY","MPP-160",290,1899.0,290,15,9,6,0,8,128,271],[4,"2025-09-04","AROMAS CAFE DELICATESSEN SAC","VRFH-1250",800,6893.0,800,50,7,3,1,3,128,272],[4,"2025-09-04","NEIDA COROMOTO DUIN TOVAR","VCM-66",90,685.6,90,10,31,3,1,3,128,273],[4,"2025-09-05","STAGI KISIC LJUBISA EMILIA","HPE-302",180,1529.1,180,15,32,2,0,2,128,274],[4,"2025-09-05","LUZ YUPE INUMA","TFI-10002DG",650,4967.0,650,50,0,0,0,0,128,275],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","PG-02",220,1689.0,220,15,7,3,1,3,128,276],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","MG-3GD-S",750,5500.0,750,50,7,3,1,3,128,277],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","MG-3SD-S",750,5200.0,750,50,7,3,1,3,128,278],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","AF-14002FC-S",1200,9921.0,1200,100,7,3,1,3,128,279],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","EF-802",120,643.0,120,10,7,3,1,3,128,280],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","SLD-3TS",500,4279.0,500,50,7,3,1,3,128,281],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","TF-1600",180,1359.0,220,15,7,3,1,3,2176,282],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","LICT-40JR",90,799.0,90,10,7,3,1,3,128,283],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","LICT-40JR",90,799.0,90,10,7,3,1,3,128,284],[4,"2025-09-05","P & B INTERNATIONAL CORPORATION S.A.C.","BC-5800FC",250,3300.0,250,15,7,3,1,3,128,285],[4,"2025-09-08","CARBON & SABOR E.I.R.L.","VM-200T",400,3149.0,400,25,33,3,1,3,128,286],[4,"2025-09-09","JIM KEVIN DIAZ RONCAL","BC-2200FC",250,2339.1,250,15,0,0,0,0,128,287],[4,"2025-09-09","BOND STATION E.I.R.L.","MG-2SD-S",750,4501.0,750,50,7,3,1,3,128,288],[4,"2025-09-09","NIKKEI FOOD S.A.C.","LIC-06LT",180,1669.0,180,15,7,3,1,3,128,289],[4,"2025-09-09","ELIAZAR QUEJIA QUISPE","BC-3500FC",400,2789.1,400,25,0,0,0,0,128,290],[4,"2025-09-09","CHAMORRO SNACKS E.I.R.L.","VCM-66",90,899.0,90,10,7,3,1,3,128,291],[4,"2025-09-09","DIANA CARMIN RIOS GREFFA","TF-3100H",350,2564.1,350,25,0,0,0,0,192,292],[4,"2025-09-09","ANZAB BIENES Y SERVICIOS EIRL","VRDH-1250AI",750,6844.0,750,50,30,0,0,0,128,293],[4,"2025-09-09","ANZAB BIENES Y SERVICIOS EIRL","BC-5502FC",500,4443.0,500,50,30,0,0,0,128,294],[4,"2025-09-09","AGATHA MEDINA PADILLA","GD-11002RE-S",1000,6291.75,1000,100,34,3,1,3,128,295],[4,"2025-09-09","WALTER TAMAYO CHOTA","LIC-04LT",180,1484.1,180,15,0,0,0,0,128,296],[4,"2025-09-09","CARLOS ALFONSO LOPEZ QUESQUEN","TFI-2200DG",180,1214.1,180,15,13,2,0,2,192,297],[4,"2025-09-09","BENDEZU SARMIENTO SAMUEL EMERSON","MHA-20",750,5890.0,750,50,7,3,1,3,128,298],[4,"2025-09-08","SANTOS MARIA CPRONEL PERALTA","EF-802",120,629.0,120,10,13,2,0,2,192,299],[4,"2025-09-10","ALEXANDER JESÚS TIBURCIO CONEJO","BC-4900FC",480,2880.64,480,25,6,5,0,5,128,300],[4,"2025-09-10","NE-MACA-2024-PAQUETE 29","TF-3100H",350,2350.0,350,25,4,3,1,3,128,301],[4,"2025-09-11","USTUA OYOLO NOELIA","VRD-1500AI",750,6489.0,750,50,7,3,1,3,128,302],[4,"2025-09-11","DANIEL ANTONIO GARCIA RUTTI","BC-3500FC",400,2700.0,400,25,7,3,1,3,128,303],[4,"2025-09-11","UNION DE OBRAS DE ASISTENCIA SOCIAL","TFI-4402FC",250,2399.0,250,15,7,3,1,3,128,304],[4,"2025-09-11","ROBERT BEJAR COLLAZOS","LICT-40JR",90,474.7,90,10,6,5,0,5,128,305],[4,"2025-09-11","ROBERT BEJAR COLLAZOS","TF-1600",180,1081.31,180,15,6,5,0,5,128,306],[4,"2025-09-11","DOLORES SANDOVAL CASTRO","TF-3100H",350,2621.08,350,25,30,0,0,0,128,307],[4,"2025-09-12","EDWIN CRISTOBAL MURO SOSA","EF-802",120,699.0,120,10,29,6,0,8,128,308],[4,"2025-09-12","EDWIN CRISTOBAL MURO SOSA","LICT-40JR",90,759.0,90,10,29,6,0,8,128,309],[4,"2025-09-11","JORGE CORREA","DO-1600",290,2299.0,290,15,19,3,1,3,128,310],[4,"2025-09-12","MAX GUERRERO BULNES","MHS-25PC",700,5083.18,700,50,32,2,0,2,192,311],[4,"2025-09-13","ALMEYDA ANAMPA MARCOS ANTONIO","LIC-20CP",90,735.6,90,10,6,5,0,5,128,312],[4,"2025-09-13","CYNTHIA PILAR MEDINA USURIAGA","TF-3600",250,2249.1,250,15,0,0,0,0,128,313],[4,"2025-09-13","ISRAEL JONAS SOTERO ESTACIO","TFI-3200FC",250,1840.0,250,15,0,0,0,0,128,314],[4,"2025-09-13","INNOVACIONES INDUSTRIALES RIPER SOCIEDAD ANONIMA","HCM-400",480,3819.0,480,25,4,3,1,3,128,315],[4,"2025-09-13","INNOVACIONES INDUSTRIALES RIPER SOCIEDAD ANONIMA","B-30L",400,2959.0,400,25,4,3,1,3,128,316],[4,"2025-09-13","INNOVACIONES INDUSTRIALES RIPER SOCIEDAD ANONIMA","LICT-40JR",90,669.0,90,10,4,3,1,3,128,317],[4,"2025-09-13","INNOVACIONES INDUSTRIALES RIPER SOCIEDAD ANONIMA","LICT-40JR",90,669.0,90,10,4,3,1,3,128,318],[4,"2025-09-15","ERLINDA MEZA TAQUIRI","TF-4200TG",700,5610.0,700,50,11,6,0,8,192,319],[4,"2025-09-10","ANTONINA MARTHA JIMENEZ CAVIEDES","MHA-20",750,5567.0,750,50,26,3,1,3,192,320],[4,"2025-09-15","RAMIRO ANDERSON GAYOSO MEJIA","BC-3200FC",350,2519.1,350,25,13,2,0,2,192,321],[4,"2025-09-15","CYNTHIA PILAR MEDINA USURIAGA","DJ-182",290,2069.09,290,15,0,0,0,0,0,322],[4,"2025-09-15","JORGE RENGIFO SHAPIAMA","TF-3100H",350,2621.07,350,25,0,0,0,0,0,323],[4,"2025-09-15","MOSCOL COLLANTES CARLOS EDUARDO","BC-7502FC",750,4300.0,750,50,7,3,1,3,0,324],[4,"2025-09-15","INVERSIONES JOSSAB E.I.R.L","TFI-3200FC",650,4300.0,650,50,7,3,1,3,0,325],[4,"2025-09-15","INVERSIONES JOSSAB E.I.R.L","TFI-3200FC",650,4300.0,650,50,7,3,1,3,0,326],[4,"2025-09-15","MEDINA ROMANI DEISY GIULIZA","B-10L",250,2204.0,250,15,7,3,1,3,0,327],[4,"2025-09-15","SILVA DIAZ DIANA CAROLINA","WR-01",150,850.86,150,10,8,3,1,3,0,328],[4,"2025-09-15","","BC-5502FC",500,3440.0,500,50,8,3,1,3,256,329],[4,"2025-09-16","CALLUPE REATEGUI ALAIN RAFAEL","LIC-20CP",90,735.7,90,10,6,5,0,5,0,330],[4,"2025-09-16","RODRIGUEZ GUTIERREZ JOSE LUIS","TFI-3200FC",250,1840.0,250,15,23,9,1,10,0,331],[4,"2025-09-16","SINTI VASQUEZ SUSY","LIC-20CP",90,849.15,90,10,23,9,1,10,0,332],[4,"2025-09-16","NE-MACA-2024-PAQUETE 31","TF-3100H",350,2350.0,350,25,4,3,1,3,0,333],[4,"2025-09-16","FAME CAFE SAC","LIC-04LT",180,1649.0,180,15,1,1,0,1,64,334],[4,"2025-09-16","ARAM OCHOA DE LA CRUZ","HPE-301",120,1199.0,120,10,1,1,0,1,64,335],[4,"2025-09-16","KAREN BEL OLAVARRIA","BC-3700F",190,2509.0,290,15,18,8,0,9,2112,336],[4,"2025-09-17","WILMER SALDAÑA","GD-14002RE",1150,7511.97,1150,100,8,3,1,3,0,337],[4,"2025-09-17","WILMER SALDAÑA","BC-2900FC",290,1943.87,290,15,8,3,1,3,0,338],[4,"2025-09-17","CARLA CECILIA DIOSES ROMERO","TF-5200TG",750,5626.0,750,50,4,3,1,3,0,339],[4,"2025-09-17","","GD-9000FC",1150,6651.71,1150,100,8,3,1,3,256,340],[4,"2025-09-17","","BC-15003FC",1000,7470.96,1000,100,8,3,1,3,256,341],[4,"2025-09-17","","TFI-4402DG",250,2159.0,250,15,8,3,1,3,256,342],[4,"2025-09-17","DIAZ LOPEZ JOSE ARMANDO","VRDH-1500AI",1000,6168.7,1000,100,8,3,1,3,0,343],[4,"2025-09-17","CYNTHIA PILAR MEDINA USURIAGA","MH-60",400,3311.01,400,25,0,0,0,0,0,344],[4,"2025-09-17","MIRIAM ELIZBETH IPANAQUE MENDOZA","B-30L",400,2855.15,400,25,13,2,0,2,64,345],[4,"2025-09-17","PRODUCTOS OTTONE S.A.C.","GD-14002FC-S",1200,9300.0,1200,100,16,6,0,11,64,346],[4,"2025-09-18","FRISANCHO PILLCO MELCHOR","HC-10000",1500,null,1500,120,26,3,1,3,66,347],[4,"2025-09-17","FRISANCHO PILLCO MELCHOR","B-20L",290,null,290,15,26,3,1,3,66,348],[4,"2025-09-17","FRISANCHO PILLCO MELCHOR","LICT-40JR",90,null,90,10,26,3,1,3,66,349],[4,"2025-09-18","JORGE LUIS SEGUNDO OCMIN PINEDO","DO-800",120,1099.0,120,10,7,3,1,3,0,350],[4,"2025-09-18","ANIBAL CLAUDIO APONTE","SLD-3TS",750,5599.0,750,50,7,3,1,3,0,351],[4,"2025-09-18","ANIBAL CLAUDIO APONTE","LICT-40JR",90,759.0,90,10,7,3,1,3,64,352],[4,"2025-09-18","P Y SAL S.A.C","B-20L",250,2204.0,250,15,7,3,1,3,0,353],[4,"2025-09-18","ENVASADORA DE AGUA DE MESA PIZANA S.A.C.","TF-1100",120,999.0,120,10,7,3,1,3,0,354],[4,"2025-09-18","PAOLO ENRIQUE VALDIVIA GORDILLO","MH-190",800,7600.0,800,50,7,3,1,3,0,355],[4,"2025-09-18","NAVARRO MORALES LUZ ANALY","CR-123",750,6000.0,750,50,7,3,1,3,0,356],[4,"2025-09-18","MIGUEL MARTIN FERNANDO CHAVEZ LOYA","BC-200FC",350,2519.1,350,25,13,2,0,2,64,357],[4,"2025-09-19","COOKIE REPUBLIC S.A.C.","LIC-04LT",220,1200.0,220,15,7,3,1,3,0,358],[4,"2025-09-19","CYNTHIA VICENTA CARLA MORALES TOMAS","GD-9000FC",800,7500.0,750,50,7,3,1,3,2048,359],[4,"2025-09-19","PF NUTRITION S.A.C.","OM-10GLP",400,3599.0,400,25,7,3,1,3,0,360],[4,"2025-09-19","","MG-3SDFC-S",800,6242.99,800,50,29,6,0,8,384,361],[4,"2025-09-20","BUZZO GARCIA WILLIAM DAN","HPE-302",180,1563.0,180,15,0,0,0,0,128,362],[4,"2025-09-22","GUSTAVO LUIS CACERES AVILA","LIC-40JR",90,659.0,90,10,29,6,0,8,128,363],[4,"2025-09-22","BEAS BENAVENTE VICTOR ANTONIO","VCM-66",150,1099.0,150,10,7,3,1,3,128,364],[4,"2025-09-22","BEAS BENAVENTE VICTOR ANTONIO","WR-01",120,999.0,120,10,7,3,1,3,128,365],[4,"2025-09-22","BEAS BENAVENTE VICTOR ANTONIO","CM-01",120,899.0,120,10,7,3,1,3,128,366],[4,"2025-09-22","CORPORACION FREB E.I.R.L.","TFI-4402DG",250,2299.0,250,15,7,3,1,3,128,367],[4,"2025-09-22","CORPORACION FREB E.I.R.L.","TFI-4402DG",250,2299.0,250,15,7,3,1,3,128,368],[4,"2025-09-22","CORPORACION FREB E.I.R.L.","WOK-100",90,799.0,90,10,7,3,1,3,128,369],[4,"2025-09-19","INDUSTRIA Y ARQUITECTURA","IND-200",90,946.0,90,10,33,3,1,3,128,370],[4,"2025-09-18","TABLA CALIENTE SAC","LIC-40JR",90,950.0,90,10,33,3,1,3,128,371],[4,"2025-09-16","ALVA PELAEZ HELEN KATHERINE","AF-11004MX-S",1000,7359.0,1000,100,22,9,1,10,192,372],[4,"2025-09-22","BRAULIO VASQUEZ","IF-1000DGCL",1000,8244.15,1000,100,32,2,0,2,192,373],[4,"2025-09-22","CUEVA DE ESTRADA GENARA","HCM-200",290,2200.65,290,15,13,2,0,2,192,374],[4,"2025-09-22","CRISTINA SUZETH MEZA AMPUERO","VCM-120",220,1223.1,220,15,0,0,0,0,128,375],[4,"2025-09-20","LOZANO LOPEZ OSCAR BRIAN ADEMIR","B-10L",250,2204.0,250,15,1,1,0,1,64,376],[4,"2025-09-23","HUGO HERNAN SANCHEZ QUIROZ","VCM-66",90,763.97,90,10,12,8,0,9,0,377],[4,"2025-09-23","MULTISERVICIOS KIMBA E.I.R.L.","BC-9502FC",800,6374.9,800,50,23,9,1,10,0,378],[4,"2025-09-20","VIRGINIA FORA MAQUERA","LIC-40JR",90,650.0,90,10,9,6,0,8,0,379],[4,"2025-09-20","VIRGINIA FORA MAQUERA","LIC-40JR",90,650.0,90,10,9,6,0,8,0,380],[4,"2025-09-23","ISABEL DEL CARMEN CURITIMA APAGUEÑO","CH-06",90,719.0,90,10,0,0,0,0,0,381],[4,"2025-09-24","DURAND ARROYO ALEJANDRINA SOLEDAD","BC-15003FC",1000,7399.0,1000,100,11,6,0,8,0,382],[4,"2025-09-24","MARIANA ESPINOZA ANGELES","LIC-40JR",90,593.1,90,10,13,2,0,2,4,383],[4,"2025-09-24","PARIONA LIZANA VILMA DOMINGA","LIC-20CP",90,909.0,90,10,11,6,0,8,68,384],[4,"2025-09-24","ROSA YOLANDA FLORES PEREZ","BC-1200",120,1100.0,120,10,5,4,0,4,4,385],[4,"2025-09-24","SIGUAS BORJAS MELISSA LIZBETH","HPE-302",180,1444.15,180,15,20,1,0,1,68,386],[4,"2025-09-24","INVERCIONES DE JULIA","MH-85",500,4999.0,500,50,1,1,0,1,64,387],[4,"2025-09-24","INVERCIONES DE JULIA","MG-3SD",750,6399.0,750,50,1,1,0,1,64,388],[4,"2025-09-26","TL MARKET E.I.R.L","GD-14002FC-S",1200,9499.99,1200,100,25,6,0,8,64,389],[4,"2025-09-26","MIRCH E.I.R.L","TF-2800V",180,1800.0,180,15,11,6,0,8,64,390],[4,"2025-09-26","CESAR YLLANES","GD-14002FC-S",1200,9839.19,1200,100,12,8,0,9,0,391],[4,"2025-09-27","SERVICIOS GENERALES REBAZA S.A.C.","CH-06",90,629.0,90,10,24,9,1,10,64,392],[4,"2025-09-26","VSD ALIMENTOS Y BEBIDAS E.I.R.L.","DJ-182",290,1870.0,290,15,7,3,1,3,0,393],[4,"2025-09-26","JESUS FERNANDO SALAZAR AROTINCO","LIC-40JR",90,659.0,90,10,7,3,1,3,0,394],[4,"2025-09-27","YORGELIS CRUZ CRUZ","BC-3500FC",400,2101.02,400,25,6,5,0,5,0,395],[4,"2025-09-27","CONDE QUINTO JESUSA","LIC-40JR",90,659.0,90,10,7,3,1,3,0,396],[4,"2025-09-29","JAMES ANDERSEN CONDE VARILLAS","PG-01",90,685.68,90,10,31,3,1,3,0,397],[4,"2025-09-29","MARÍA ANTONIETA VASQUEZ ARRIETA","LICT-20CP",120,719.62,120,10,6,5,0,5,0,398],[4,"2025-09-29","FUEGO LENTO BONE BROTH S.A.C.","DO-800",120,1044.0,120,10,7,3,1,3,0,399],[4,"2025-09-29","LAURA ISABEL MORALES URETA","HPE-302",180,1519.0,180,15,4,3,1,3,0,400],[4,"2025-09-29","WALTER GUILLERMO SOTO ROJAS","MH-190",1000,7623.0,1000,100,7,3,1,3,0,401],[4,"2025-09-29","CORPORACION ARCHI C & M S.A.C.","BF-1045",1800,16975.0,1800,150,7,3,1,3,0,402],[4,"2025-09-29","CORPORACION ARCHI C & M S.A.C.","AF-14002FC-S",1200,9853.0,1200,100,7,3,1,3,0,403],[4,"2025-09-29","CORPORACION ARCHI C & M S.A.C.","AF-9000FC-S",1000,6886.0,1000,100,7,3,1,3,0,404],[4,"2025-09-20","Carlos Concepcion","MH-190",1000,7354.0,1000,100,19,3,1,3,64,405],[4,"2025-09-29","ANA BELEN LIMACHE SAAVEDRA","TF-4200TG",700,5210.43,700,50,5,4,0,4,0,406],[4,"2025-09-29","JACKELINE ROSARIO VALDIVIA","TFI-4402RE",250,2149.0,250,15,5,4,0,4,64,407],[4,"2025-09-30","JOEL ALFONSO VILLAR SANCHEZ","LIC-40JR",90,650.0,90,10,11,6,0,8,0,408],[4,"2025-09-02","CHAVEZ GARCIA JUAN CARLOS","TFI-2200DG",180,1053.0,180,15,15,7,0,7,0,409],[4,"2025-09-08","DIANA KAROLINA ADCO CASTRO","EF-800",90,429.16,90,10,17,7,0,7,0,410],[4,"2025-09-08","ROXANA MAGALY MAZA VILLALOBOS","LICT-40JR",90,735.15,90,10,17,7,0,7,0,411],[4,"2025-09-11","Diaz Maita Felicita","PG-02",220,1830.0,220,15,10,7,0,7,64,412],[4,"2025-09-11","Diaz Maita Felicita","PG-02",220,1830.0,220,15,10,7,0,7,0,413],[4,"2025-09-11","Diaz Maita Felicita","BC-9500SD",800,6950.0,800,50,10,7,0,7,0,414],[4,"2025-09-11","Diaz Maita Felicita","GD-14002RE",1150,10800.0,1150,100,10,7,0,7,0,415],[4,"2025-09-13","ABELARDO COKE GUTIERREZ CALISAYA","CR-123",750,null,750,50,15,7,0,7,2,416],[4,"2025-09-13","ABELARDO COKE GUTIERREZ CALISAYA","MHA-20",750,null,750,50,15,7,0,7,2,417],[4,"2025-09-15","SAMANTHA YAKARI HERNANDEZ GARCIA","LIC-04LT",180,1520.0,180,15,15,7,0,7,64,418],[4,"2025-09-16","JAIME HENRY SEGOVIA CHUMPITAZ","BC-9505FC",800,5981.42,800,50,10,7,0,7,64,419],[4,"2025-09-22","","TFI-2200DG",180,1245.71,180,15,17,7,0,7,256,420],[4,"2025-09-22","","BC-2200FC",250,2459.15,250,15,17,7,0,7,256,421],[4,"2025-09-23","THE HOUSE NHQP E.I.R.L.","LIC-40JR",90,750.0,90,10,15,7,0,7,0,422],[4,"2025-09-26","JULIA VILLANUEVA ASTUVILCA","EF-802",120,750.0,120,10,15,7,0,7,0,423],[4,"2025-09-26","JOSE NAVARRO","TFI-2200DG",250,2100.0,250,15,15,7,0,7,0,424],[4,"2025-09-26","QUISPE PINO JULIO IVAN","TFI-44002DG",250,2500.0,250,15,15,7,0,7,0,425],[4,"2025-09-24","MICHELL PACHECO","BC-15003FC",1000,7800.0,1000,100,10,7,0,7,0,426],[4,"2025-09-25","CONNIE LIZETH PARIONA HUAMANI","BC-7502FC",750,5587.0,750,50,17,7,0,7,0,427],[4,"2025-09-26","CHANTILLI SA","AF-7000FC",800,null,800,50,35,3,1,3,2,428],[4,"2025-09-26","CHANTILLI SA","AF-14002FC-S",1200,null,1200,100,35,3,1,3,2,429],[4,"2025-09-26","CHANTILLI SA","BC-2900FC",290,null,290,15,35,3,1,3,2,430],[4,"2025-09-26","CHANTILLI SA","TFI-4500SS",400,null,400,25,35,3,1,3,2,431],[4,"2025-09-30","BELDY PINEDO","B-30L",400,2455.0,400,25,26,3,1,3,0,432],[4,"2025-09-30","CARMEN FLORENCIA GERONIMO FLORES DE MANDARACHI","AF-11002MX-S",1000,8360.0,1000,100,11,6,0,8,0,433],[4,"2025-09-30","KATHERINE LISSET CASAS ARMAS","LIC-40JR",90,5700.0,90,10,29,6,0,8,0,434],[4,"2025-09-30","ROSA CULE QUISPE","LIC-40JR",90,2600.0,90,10,29,6,0,8,0,435],[4,"2025-09-30","MIRIAM PILAR ESPINOZA ARGOTE","DJ-182",290,null,290,15,6,5,0,5,2,436],[4,"2025-09-29","MARIA DEL CARMEN MONTERO CARPIO","TFI-5502DG",400,2550.0,400,25,9,6,0,8,0,437],[4,"2025-09-29","MARIA DEL CARMEN MONTERO CARPIO","LIC-40JR",90,650.0,90,10,9,6,0,8,0,438],[4,"2025-09-30","DULPANE E.I.R.L","BC-5502FC",500,4050.0,500,50,9,6,0,8,0,439],[4,"2025-09-30","ALIANZA DE APOYO AL INEN","AF-14002FC-S",1000,11500.0,1000,100,7,3,1,3,0,440],[4,"2025-09-30","ALIANZA DE APOYO AL INEN","GD-14002RE-S",1000,11000.0,1000,100,7,3,1,3,0,441],[4,"2025-09-30","ALIANZA DE APOYO AL INEN","BC-9502SD",800,8500.0,800,50,7,3,1,3,0,442],[4,"2025-09-30","ALIANZA DE APOYO AL INEN","VCM",90,659.0,90,10,7,3,1,3,0,443],[4,"2025-09-30","DOLCE VITA PERU E.I.R.L.","GD-14002RE",1000,10500.0,1000,100,7,3,1,3,0,444],[4,"2025-09-30","AROMA'S CAFÉ & CREPES S.A.C.","MG-2SD",750,4591.0,750,50,7,3,1,3,0,445],[4,"2025-09-30","Rumy Villanueva Vega","OJM-01AI",480,3398.0,480,25,7,3,1,3,0,446],[4,"2025-09-30","Rumy Villanueva Vega","B-30L",400,2854.0,400,25,7,3,1,3,0,447],[4,"2025-09-30","Rumy Villanueva Vega","OMR-7L",290,1803.0,290,15,7,3,1,3,0,448],[4,"2025-09-30","Rumy Villanueva Vega","BC 2900",220,1614.0,220,15,7,3,1,3,0,449],[4,"2025-09-30","LESLY FIORELLA MUÑOZ CAMPOS","TFI-2200DG",180,1172.0,180,15,7,3,1,3,0,450],[4,"2025-09-30","STELLATO COFFEEY EIRL","MH-40",120,2719.15,120,10,33,3,1,3,0,451],[4,"2025-09-30","STELLATO COFFEEY EIRL","MG-2SD-S",150,5599.0,150,10,33,3,1,3,0,452],[4,"2025-09-30","STELLATO COFFEEY EIRL","WR-01",400,1154.0,400,25,33,3,1,3,0,453],[4,"2025-09-30","STELLATO COFFEEY EIRL","HPE-301",750,1019.15,750,50,33,3,1,3,0,454],[4,"2025-09-30","HERLESS FLORES","HC-12000",1800,null,1800,150,35,3,1,3,2,455],[4,"2025-09-30","NELIDA GONZALES CENTENO","LICT-40JR",90,750.0,90,10,36,10,1,12,0,456],[4,"2025-09-01","SILVA DIAZ DIANA CAROLINA","BC-2200FC",250,2202.54,250,15,8,3,1,3,0,457],[4,"2025-09-30","DIFLOVER SERVICIOS GENERALES EIRL","B-20L",290,2560.0,290,15,25,6,0,8,0,458],[4,"2025-09-30","SIMPLE ALIMENTACIÓN SALUDABLE EIRL","GD-9000FC",1150,7649.15,1150,100,13,2,0,2,64,459],[4,"2025-09-30","GINA KAREN DUEÑAS PAUCAR","BC-5502FC",500,4459.79,500,50,17,7,0,7,0,460],[4,"2025-09-30","DEUDOR RAMIREZ RODRIGO ALONSO","VRFH-1500AI",1000,7879.0,1000,100,17,7,0,7,0,461],[4,"2025-09-30","MUTISERVICIOS BRADYEL SAC","",290,null,290,15,37,4,0,4,1026,462],[5,"2025-10-01","MULTISERVICIOS 2G S.A.C.","LIC-06LT",180,1486.65,180,15,22,9,1,10,0,464],[5,"2025-10-01","AUREA ALARCON CORDOVA","HCM-400",480,4123.0,500,50,7,3,1,3,2048,465],[5,"2025-10-02","BARRETO QUISPE JUAN","MS-180",220,1537.15,220,15,11,6,0,8,0,466],[5,"2025-10-02","GRUPO PUIGARDEN S.A.C.S","TFI-2200DG",180,1240.0,180,15,11,6,0,8,64,467],[5,"2025-10-02","GRUPO PUIGARDEN S.A.C.S","BC-3200FC",350,2700.0,350,25,11,6,0,8,64,468],[5,"2025-10-02","CARMEN RAQUEL NUÑEZ RENGIFO","RE-140RE",90,839.0,90,10,0,0,0,0,0,469],[5,"2025-10-03","Bruno Mendoza","DO-1600",290,null,290,15,19,3,1,3,66,470],[5,"2025-10-03","RIOS CARO JOICE FRIEDA","LIC-20CP",90,919.08,90,10,0,0,0,0,0,471],[5,"2025-10-04","MARCOS ANTONIO ALMEYDA ANAMPA","LICT-20CP",120,734.86,120,10,6,5,0,5,0,472],[5,"2025-10-04","FOODSPONSABLE S.A.C.","TFI-4500SS",350,2949.0,350,25,7,3,1,3,0,473],[5,"2025-10-04","HENRY MEDINA SUSANIBAR","LIC-40JR",90,734.86,90,10,6,5,0,5,0,474],[5,"2025-10-04","HENRY MEDINA SUSANIBAR","DJ-182",290,3312.91,290,15,6,5,0,5,0,475],[5,"2025-09-26","HECTOR REVILLA","LIC-40JR",90,650.0,90,10,33,3,1,3,8,476],[5,"2025-10-07","GUILLERMO VENANCIO SANDI TUITUY","DJ-182",290,2069.1,290,15,0,0,0,0,0,477],[5,"2025-10-07","CASA DE CONVIVENCIAS JUAN PABLO II","VCM-99",90,899.0,90,10,7,3,1,3,0,478],[5,"2025-10-07","BARRAGAN CARDENAS ANDREA","HC-5000",1000,8999.0,1000,100,7,3,1,3,0,479],[5,"2025-10-07","BARRAGAN CARDENAS ANDREA","RE-420NF",300,2100.0,300,25,7,3,1,3,0,480],[5,"2025-10-03","ADAN CORNEJO","BC-2900FC",290,2500.0,290,15,27,3,1,3,0,481],[5,"2025-10-08","GUISELA ELIZABETH HUARICALLO CUEVA","TF-1600",180,1420.0,180,15,27,3,1,3,0,482],[5,"2025-10-07","GLADYS HAIDEE ULLOA CONDOR","LIC-40JR",90,660.0,90,10,29,6,0,8,0,483],[5,"2025-10-07","MANUELA LEONOR GALLEGOS GARCIA","LIC-40JR",90,650.0,90,10,9,6,0,8,0,484],[5,"2025-10-01","JACKELINE ROSARIO RIOS CALDERON","LIC-40JR",90,650.0,90,10,9,6,0,8,0,485],[5,"2025-10-09","PERCY VIDAL OHA TICONA","LIC-40JR",90,660.0,90,10,29,6,0,8,0,486],[5,"2025-10-09","ESAIT OSCAR CALDERON DAVILA","TF-3600",250,2200.0,250,15,7,3,1,3,0,487],[5,"2025-10-09","ESAIT OSCAR CALDERON DAVILA","TF-1600",180,1500.0,180,15,7,3,1,3,0,488],[5,"2025-10-09","ESAIT OSCAR CALDERON DAVILA","LIC-40JR",90,750.0,90,10,7,3,1,3,0,489],[5,"2025-10-09","MAYLI REBECA CALDERON DAVILA","LIC-40JR",90,750.0,90,10,7,3,1,3,0,490],[5,"2025-10-10","REBATTA BRICEÑO JUANA YRIS","TFI-3500SS",250,2099.0,250,15,26,3,1,3,64,491],[5,"2025-10-10","PATRICIA OCAMPO","CH-06",90,719.0,90,10,30,0,0,0,0,492],[5,"2025-10-10","HUARI AMAO SUSY","DJ-182",290,1656.06,290,15,6,5,0,5,0,493],[5,"2025-10-10","HUARI AMAO SUSY","LIC-40JR",90,469.12,90,10,6,5,0,5,0,494],[5,"2025-10-11","ALBORNOZ FERNANDEZ SILVANA CAROLINA","LICT-20CP",120,879.0,120,10,24,9,1,10,64,495],[5,"2025-10-11","EFRAIN JAIRO BRICEÑO RODRIGUEZ","LICT-20CP",120,849.0,120,10,22,9,1,10,0,496],[5,"2025-10-13","RESTAURANT POLLERIA MOYOS CHICKEN E.I.R.L.","TF-1100",120,1099.0,120,10,7,3,1,3,0,497],[5,"2025-10-13","RESTAURANT POLLERIA MOYOS CHICKEN E.I.R.L.","VCM-66",90,899.0,90,10,7,3,1,3,0,498],[5,"2025-10-13","AGUIRRE ANDRADE ELDER","MG-3SD-S",750,5400.0,750,50,27,3,1,3,0,499],[5,"2025-10-13","AGUIRRE ANDRADE ELDER","MG-3SD-S",750,5400.0,750,50,27,3,1,3,0,500],[5,"2025-10-03","ORIETTA CHONG","MHS-25PC",700,5873.18,700,50,38,3,1,3,0,501],[5,"2025-10-13","GILBERT VILLCA","BC-1200",120,null,120,10,38,3,1,3,2,502],[5,"2025-10-13","GILBERT VILLCA","BC-2900FC",290,null,290,15,38,3,1,3,2,503],[5,"2025-10-07","Jorge Alberto López Gutiérrez","",90,null,90,10,39,10,1,12,1026,504],[5,"2025-10-13","CHICMANA VILCAPOMA ALEX","TFI-4402WH",250,2399.0,250,15,7,3,1,3,0,505],[5,"2025-10-13","CHICMANA VILCAPOMA ALEX","BC-9502SD",800,8699.0,800,50,7,3,1,3,0,506],[5,"2025-10-13","BETTY YOSHIE ANAYA PHUÑO","MH-40",400,2251.23,400,25,6,5,0,5,0,507],[5,"2025-10-13","BETTY YOSHIE ANAYA PHUÑO","LICT-20CP",120,703.39,120,10,6,5,0,5,64,508],[5,"2025-10-13","BETTY YOSHIE ANAYA PHUÑO","LIC-40JR",90,463.56,90,10,6,5,0,5,0,509],[5,"2025-10-13","BETTY YOSHIE ANAYA PHUÑO","LIC-40JR",90,463.56,90,10,6,5,0,5,0,510],[5,"2025-10-13","TORRES VASQUEZ ELIZABETH URSULA","RE-420NF",290,1830.0,290,15,24,9,1,10,0,511],[5,"2025-10-13","TORRES VASQUEZ ELIZABETH URSULA","LIC-40JR",90,569.0,90,10,24,9,1,10,0,512],[5,"2025-10-11","JUAN CARLOS HUAMAN ATAHUAMAN","LIC-40JR",90,560.0,90,10,40,6,0,11,0,513],[5,"2025-10-14","MARLLURY AREVALO SHILING","OJM-01AI",480,3399.0,480,25,0,0,0,0,0,514],[5,"2025-10-14","ARTURO MANSILLA DIAZ","BC-4600FC",480,3299.0,480,25,0,0,0,0,0,515],[5,"2025-10-14","MARIA ISABEL HUARIPATA MOSQUEIRA","HCM-200",290,2400.0,290,15,41,3,1,3,0,516],[5,"2025-10-14","GRUPO INVERSIONES R.B.J. S.A.C.","BC-9502FC",800,6196.0,800,50,41,3,1,3,0,517],[5,"2025-10-14","GRUPO INVERSIONES R.B.J. S.A.C.","TF-3600",250,2065.0,250,15,41,3,1,3,0,518],[5,"2025-10-14","GRUPO INVERSIONES R.B.J. S.A.C.","GD-14002FC",1200,10490.0,1200,100,41,3,1,3,0,519],[5,"2025-10-07","CORPORACIÓN SAN PALERMO","AF-14002FC",1150,11434.0,1150,100,33,3,1,3,0,520],[5,"2025-10-07","CORPORACIÓN SAN PALERMO","GF-900",480,4559.0,480,25,33,3,1,3,0,521],[5,"2025-10-09","INVERSIONES ANPEKA SCRL","MH-85",500,8819.0,500,50,33,3,1,3,0,522],[5,"2025-10-09","INVERSIONES ANPEKA SCRL","LIC-40JR",90,716.0,90,10,33,3,1,3,0,523],[5,"2025-10-06","ALDO MUÑOZ","MH-40",400,3119.0,400,25,33,3,1,3,0,524],[5,"2025-10-13","AXEL PEREZ","B-10L",220,2123.0,220,15,33,3,1,3,0,525],[5,"2025-10-13","JOSE ALEXANDER TORRES ALVARADO","CM-02",180,1664.0,180,15,22,9,1,10,0,526],[5,"2025-10-13","CONSORCIO OLORTEGUI MENDOZA S.A.C.","EF-802",120,594.01,120,10,22,9,1,10,0,527],[5,"2025-10-15","Margareth Olivera","GD-14002FC-S",800,9200.0,800,50,19,3,1,3,16,528],[5,"2025-10-16","Carlos Raul Rodriguez Vargas","AF-11004MX-S",1000,9003.0,1000,100,38,3,1,3,0,529],[5,"2025-10-16","Carlos Raul Rodriguez Vargas","LICT-20CP",120,989.0,120,10,38,3,1,3,0,530],[5,"2025-10-02","ANGELICA ANA MAURICIO SARAVIA","HCM-200",290,2200.0,290,15,25,6,0,11,0,531],[5,"2025-10-07","","HGM-601",300,2479.0,300,25,25,6,0,11,320,532],[5,"2025-10-07","","LIC-40JR",90,560.0,90,10,25,6,0,11,320,533],[5,"2025-10-16","","MHA-20",750,5649.0,750,50,8,3,1,3,256,534],[5,"2025-10-16","MALENNY IVONNE SERRANO CABANILLAS","BC-3500",250,1863.79,250,15,6,5,0,5,0,535],[5,"2025-10-16","PABLO DA CRUZ","HCM-400",480,3799.0,480,25,0,0,0,0,0,536],[5,"2025-10-16","JORGE LUCIANO CRISOSTOMO ARQUIÑEGO","LIC-40JR",90,569.0,90,10,4,3,1,3,0,537],[5,"2025-10-16","ARMANDO CALDERON","TFI-4500SS",350,2949.0,350,25,33,3,1,3,0,538],[5,"2025-10-16","TOTAL GRUPO INVERSOR SAC","TF-3600",250,2374.0,250,15,33,3,1,3,0,539],[5,"2025-10-14","MARIA LIZAMA","TFI-3500SS",250,2247.0,250,15,33,3,1,3,0,540],[5,"2025-10-01","ENGELS CATERING S.A.C.","",400,null,400,25,1,1,0,1,1026,541],[5,"2025-10-07","RONCEROS BUSTINZA LETICIA","",350,null,350,25,1,1,0,1,1026,542],[5,"2025-10-10","FAME CAFE S.A.C.","",220,null,220,15,1,1,0,1,1026,543],[5,"2025-10-17","LINARES CRUZ SEMIRA","TF-1100",120,1011.0,120,10,0,0,0,0,0,544],[5,"2025-10-18","SUSAN LISETT HUARSOCCA CANTENO","LIC-40JR",90,660.0,90,10,29,6,0,8,0,545],[5,"2025-10-17","MIGUEL MARTIN FERNANDO CHAVEZ LOYA","OMG-5L",180,1449.0,180,15,13,2,0,2,64,546],[5,"2025-10-17","MIGUEL MARTIN FERNANDO CHAVEZ LOYA","OMG-5L",180,1449.0,180,15,13,2,0,2,64,547],[5,"2025-10-20","INKA COMFORT HOTELES DEL PERU SAC","LIC-15LT-P",290,2754.0,290,15,36,10,1,12,0,548],[5,"2025-10-20","INKA COMFORT HOTELES DEL PERU SAC","LIC-25LT-P",480,3704.0,480,25,36,10,1,12,64,549],[5,"2025-10-20","QUISPE HUAMAN YESSY MILAGROS","VCM-96",120,1190.0,120,10,11,6,0,8,0,550],[5,"2025-10-20","TALIA ROMERO","CR-122",700,5544.0,700,50,33,3,1,3,0,551],[5,"2025-10-20","MARIA ANTONIETA VASQUEZ ARRIETA","MHA-20",750,4609.45,750,50,6,5,0,5,0,552],[5,"2025-10-20","Antonella Vasquez","",400,5509.0,400,25,19,3,1,3,1104,553],[5,"2025-10-21","Albert Atencio Tapia","TF-3500GD",480,4789.0,480,25,38,3,1,3,0,554],[5,"2025-10-17","LOS TRES PISQUEROS S.A.C.","LICT-20CP",90,821.29,90,10,39,10,1,12,0,555],[5,"2025-10-21","MENDOZA YARASCA MARIO MASVIDAL","SLD-3TS",700,4591.0,700,50,8,3,1,3,0,556],[5,"2025-10-21","MENDOZA YARASCA MARIO MASVIDAL","SLD-3TS",700,4591.0,700,50,8,3,1,3,0,557],[5,"2025-10-21","KARINA ELENA LEON COLLACHAGUA","LIC-40JR",90,570.0,90,10,25,6,0,11,0,558],[5,"2025-10-17","ALBAREX SORIANO MARIBEL","EF-802",120,699.0,120,10,1,1,0,1,0,559],[5,"2025-10-17","KOTEI RAMEL SAC","BC3200FC",350,2798.0,350,25,1,1,0,1,0,560],[5,"2025-10-21","LOPEZ PINTADO VANESSA","LIC-40JR",90,649.0,90,10,1,1,0,1,0,561],[5,"2025-10-31","RICARDO DAVID IBAÑEZ PERALES","DO-800",120,869.0,120,10,24,9,1,10,64,562],[5,"2025-10-31","IRIS VIOLETA PERALES RODRIGUEZ","DO-800",120,869.0,120,10,24,9,1,10,64,563],[5,"2025-10-21","IVAN IRWIN ESPINOZA REVOLO","EF-802",90,678.0,90,10,42,10,1,12,64,564],[5,"2025-10-21","MANUEL ALEJANDRO CORDOVA LOPEZ","TF-3200FR",650,4799.0,650,50,0,0,0,0,0,565],[5,"2025-10-21","LUIS SANTOS","AF-9000FC-S",1000,6972.0,1000,100,33,3,1,3,0,566],[5,"2025-10-21","VIVIAN CERDEÑA VIZCARRA","HC-10000",1500,14559.0,1500,120,7,3,1,3,0,567],[5,"2025-10-22","","LIC-40JR",90,569.0,90,10,25,6,0,11,256,568],[5,"2025-10-22","DE LA CRUZ ORIHUELA JUDITH VERONICA","BC-5200SZ",700,5129.0,700,50,7,3,1,3,0,569],[5,"2025-10-22","SILVER JOSE IDROGO CALAMPA","EF-800",90,699.0,90,10,7,3,1,3,0,570],[5,"2025-10-22","MIRIAN BAUTISTA DIAZ","CR-123",750,5899.0,750,50,13,2,0,2,64,571],[5,"2025-10-22","CACERES CASTRO CELINDA","VM-500T",700,5699.0,700,50,11,6,0,8,0,572],[5,"2025-10-22","MARIA CLAUDIA CARRASCO BABILONIA","LIC-15LT-P",290,2899.0,290,15,30,0,0,0,0,573],[5,"2025-10-23","MARIA ELIZABETH DEL PILAR ARELLANO OROYA DE VELITA","LIC-40JR",90,650.0,90,10,11,6,0,8,0,574],[5,"2025-10-23","ADAIR JHOEL MENDOZA TORRES","VRF-1250AI",750,5005.0,750,50,8,3,1,3,0,575],[5,"2025-10-23","GLORIA VIVIANA BARRIOS RIVERA","EF-802",120,null,120,10,43,5,0,5,66,576],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","HCM-200",290,2200.0,290,15,7,3,1,3,0,577],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","HCM-200",290,2200.0,290,15,7,3,1,3,0,578],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","MG-2SD-S",1000,5500.0,1000,100,7,3,1,3,0,579],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","MG-2SDFC-S",1000,6000.0,1000,100,7,3,1,3,0,580],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","PG-01",90,999.0,90,10,7,3,1,3,0,581],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","LICT-20CP",90,999.0,90,10,7,3,1,3,0,582],[5,"2025-10-24","TARUKA COFFEE & BEAN ROOTS S.A.C.","BC-1200",120,1099.0,120,10,7,3,1,3,0,583],[5,"2025-10-24","INVERSIONES MILLPO N & R SAC","TFI-4402DG",220,2999.0,220,15,7,3,1,3,0,584],[5,"2025-10-24","ENGELS CATERING SAC","",400,2999.0,400,25,1,1,0,1,1024,585],[5,"2025-10-24","ENGELS CATERING SAC","",400,2999.0,400,25,1,1,0,1,1024,586],[5,"2025-10-24","MARIA YSABEL MOGOLLON AYALA DE YAJAHUANCA","TFI-3500SS",250,2999.0,250,15,18,8,0,9,0,587],[5,"2025-10-24","MARIA MILAGROS MARQUEZ CHAVEZ","B-30L",400,2859.0,400,25,18,8,0,9,0,588],[5,"2025-10-25","DE LA CRUZ SOTO ELIAS","BC-2900FC",290,2500.0,290,15,27,3,1,3,0,589],[5,"2025-10-25","JOSE PEÑA","LIC-40JR",90,659.0,90,10,29,6,0,8,0,590],[5,"2025-10-25","JOSE PEÑA","LIC-40JR",90,659.0,90,10,29,6,0,8,0,591],[5,"2025-10-25","JOSE PEÑA","LIC-40JR",90,659.0,90,10,29,6,0,8,0,592],[5,"2025-10-25","AMELIA LUISA PERICHE AMAYA","TF-3600",250,2499.0,250,15,20,1,0,1,0,593],[5,"2025-10-25","PEQUIS PERU E.I.R.L.","TF-3200FR",650,4070.0,650,50,11,6,0,8,0,594],[5,"2025-10-25","PEQUIS PERU E.I.R.L.","TF-3200FR",650,4070.0,650,50,11,6,0,8,0,595],[5,"2025-10-25","PEQUIS PERU E.I.R.L.","TF-3200FR",650,4070.0,650,50,11,6,0,8,0,596],[5,"2025-10-25","ZHOU JIANHUI","HGM-601",300,3120.0,300,25,11,6,0,8,0,597],[5,"2025-10-25","ZHOU JIANHUI","B-20L",290,2879.0,290,15,11,6,0,8,0,598],[5,"2025-10-25","MESONES OLIVA ANTONIO MARTIN","LICT-20CP",120,849.0,120,10,13,2,0,2,0,599],[5,"2025-10-25","INGECO SOCIEDAD ANONIMA CERRADA","MG-120",220,1275.2,220,15,22,9,1,10,64,600],[5,"2025-10-25","INGECO SOCIEDAD ANONIMA CERRADA","MG-120",220,1275.2,220,15,22,9,1,10,64,601],[5,"2025-10-25","INGECO SOCIEDAD ANONIMA CERRADA","MG-120",220,1275.2,220,15,22,9,1,10,64,602],[5,"2025-10-25","","LIC-20CP",90,849.15,90,10,23,9,1,10,256,603],[5,"2025-10-27","FLAVIO ALVAREZ","TF-1600",180,1299.04,180,15,0,0,0,0,0,604],[5,"2025-10-27","RODOLFO ROJAS DEL AGUILA","BC-3200FC",350,2399.0,350,25,0,0,0,0,0,605],[5,"2025-10-27","EFRAIN ORCSO HUARAYA","CR-122",500,5129.0,500,50,7,3,1,3,0,606],[5,"2025-10-27","RONALDO DANIEL LUGO COLINA",".",1000,6399.0,1000,100,7,3,1,3,0,607],[5,"2025-10-27","LLACCHUARIMAY CUSI OSCAR","LIC-40JR",120,849.0,120,10,7,3,1,3,0,608],[5,"2025-10-27","MEDINA MOREANO INES","TF-3200TG",500,4388.0,500,50,7,3,1,3,0,609],[5,"2025-10-27","JORGE LUIS CABANA TUERO","TFI-8002DG",480,3654.0,480,25,31,3,1,3,0,610],[5,"2025-10-27","JOSE JENNER ANGELES SERRAN","DJ-181",180,1529.0,180,15,31,3,1,3,0,611],[5,"2025-10-28","PACAYA ANGELES JACKLIN","WR-01",150,1054.0,150,10,0,0,0,0,0,612],[5,"2025-10-28","COLQUE MAMANI MELQUIADES","TFI-1700DG",150,950.0,150,10,43,5,0,5,64,613],[5,"2025-10-28","MÍA ISABEL RUIZ GUERRERO","BC-3500FC",400,2649.0,400,25,43,5,0,5,64,614],[5,"2025-10-28","MINIMARKET D'LORENZO EIRL","SLD-2SD",480,3899.0,480,25,43,5,0,5,64,615],[5,"2025-10-28","VINATEA LLOSA INES","TF-3500GD",400,4300.0,400,25,7,3,1,3,0,616],[5,"2025-10-28","GIANELLA LARA CAYCHO","VRF-1250AI",750,5249.0,750,50,43,5,0,5,64,617],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","BC-15003FC",1000,6000.0,1000,100,7,3,1,3,0,618],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","BC-15003FC",1000,6000.0,1000,100,7,3,1,3,0,619],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","BC-11002FCWC",1000,8200.0,1000,100,7,3,1,3,0,620],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","BC-11002FCWC",1000,8200.0,1000,100,7,3,1,3,0,621],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","TF-5200TG",1000,5900.0,1000,100,7,3,1,3,0,622],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","MHA-20",1000,6000.0,1000,100,7,3,1,3,0,623],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","TF-11002GDWC",1150,6600.0,1150,100,7,3,1,3,0,624],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","TF-11002GDWC",1150,6600.0,1150,100,7,3,1,3,0,625],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","SLD-2SD",500,4000.0,500,50,7,3,1,3,0,626],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","SLD-2SD",500,4000.0,500,50,7,3,1,3,0,627],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","MG-2SD-S",500,4500.0,500,50,7,3,1,3,0,628],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","MG-2SD-S",500,4500.0,500,50,7,3,1,3,0,629],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","CR-122",700,5200.0,700,50,7,3,1,3,0,630],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","VRFH-1250AI",700,5300.0,700,50,7,3,1,3,0,631],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","PG-01",90,899.0,90,10,7,3,1,3,0,632],[5,"2025-10-28","NEGOCIOS Y SERVICIOS MARANATHA E.I.R.L.","PG-01",90,899.0,90,10,7,3,1,3,0,633],[5,"2025-10-28","DEYANIRA VELA","VRFH-1000AI",750,6546.0,750,50,33,3,1,3,0,634],[5,"2025-10-28","GUERRERO CULLASH JHUNIOR MANASSERO","TFI-4500SS",400,2850.0,400,25,11,6,0,8,0,635],[5,"2025-10-28","FERNANDO GONZALES","GD-14002FC-S",1200,10999.0,1200,100,30,0,0,0,0,636],[5,"2025-10-28","FERNANDO GONZALES","TFI-8002DG",480,3649.0,480,25,30,0,0,0,0,637],[5,"2025-10-28","FERNANDO GONZALES","IND-300",120,1049.0,120,10,30,0,0,0,0,638],[5,"2025-10-28","FERNANDO GONZALES","VRD-1250AI",700,5049.0,700,50,30,0,0,0,0,639],[5,"2025-10-28","Geronimo Aguilar","AF-11002MX",1000,null,1000,100,19,3,1,3,66,640],[5,"2025-10-28","Geronimo Aguilar","AF-11002MX",1000,null,1000,100,19,3,1,3,66,641],[5,"2025-10-28","geronimo Aguilar","HGM-601",300,null,300,25,19,3,1,3,66,642],[5,"2025-10-29","RUSBEL MURILLO BONIFACIO","MHS-25",650,4686.0,650,50,41,3,1,3,64,643],[5,"2025-10-28","ARNULFO PINEDO CHANCHARI","LIC-40JR",90,540.0,90,10,28,6,0,11,0,644],[5,"2025-10-28","JAVIER CALCINA","BC-750FC",750,5014.1,750,50,31,3,1,3,64,645],[5,"2025-10-29","WALTER EFRAIN BALDEÓN HUAMANCHAQUI","TFI-5502DG",400,2600.0,400,25,43,5,0,5,64,646],[5,"2025-10-29","RENZO HERHUAY TROEVAS","LIC-40JR",90,749.0,90,10,7,3,1,3,0,647],[5,"2025-10-29","RAFAEL URBINA","DJ-182",290,2244.0,290,15,33,3,1,3,0,648],[5,"2025-10-29","RAFAEL URBINA","CM-01",120,927.0,120,10,33,3,1,3,0,649],[5,"2025-10-29","JANETTE LUZ TAFUR SERRANO","TF-2800V",250,2099.0,250,15,7,3,1,3,0,650],[5,"2025-10-29","CAMILO PEREZ GONZALES","LIC-40JR",90,659.0,90,10,29,6,0,8,0,651],[5,"2025-10-29","PAUCA CHURO ELSA NELLY","BC-2900FC",290,2500.0,290,15,27,3,1,3,0,652],[5,"2025-10-29","VANESA SUCLUPE QUESADA","GEX LIC-40JR",90,659.0,90,10,1,1,0,1,64,653],[5,"2025-10-30","SUSANA VALENZUELA BECERRA","TFI-1100WH",120,694.98,120,10,6,5,0,5,0,654],[5,"2025-10-30","CHUPETERIA Y HELADERIA ROBIN SRL","TFI-4402DG",300,2049.0,300,25,0,0,0,0,0,655],[5,"2025-10-30","SONIA ESCOBAR CASTRO","BC-220FC",250,2420.0,250,15,37,4,0,4,0,656],[5,"2025-10-30","CARLOS ENRIQUE LAYME RIVERA","MHS-25PC",700,5200.0,700,50,5,4,0,4,0,657],[5,"2025-10-30","CARMEN ROSMERY CESPEDES ISLA","TF-3600",250,2099.0,250,15,0,0,0,0,0,658],[5,"2025-10-31","JUAN MAURICIO BENVENUTTO ALEGRIA","TF-5200TG",1000,null,1000,100,19,3,1,3,82,659],[5,"2025-10-31","Felicia Quenta Canchaco","TF-4600",250,2325.0,250,15,8,3,1,3,0,660],[5,"2025-10-31","FRANK CARBAJAL","BC-3500IV",500,3899.0,500,50,38,3,1,3,0,661],[5,"2025-10-28","MOLINATTA PASTELERIA FINA S.R.L.","AF-9000FC",1000,null,1000,100,4,3,1,3,2,662],[5,"2025-10-28","MOLINATTA PASTELERIA FINA S.R.L.","TFI-2200DG",220,null,220,15,4,3,1,3,2,663],[5,"2025-10-30","INTERASIA TRADING S.A.C.","LICT-20CP",120,null,120,10,4,3,1,3,2,664],[5,"2025-10-31","CESAR CUEVA","IND-200",120,799.0,120,10,0,0,0,0,0,665],[5,"2025-10-31","EDWIN AVELINO ROMERO TUÑOQUE","TFI-3400DG",220,1599.0,220,15,0,0,0,0,0,666],[5,"2025-10-31","CARMEN RAMIREZ QUISPE VDA DE LUNA","TFI-1100WH",120,969.0,120,10,20,1,0,1,0,667],[5,"2025-10-31","LINARES ROJAS SOLANO","BC-15003FC",1000,6959.0,1000,100,24,9,1,10,0,668],[5,"2025-10-31","JUDITH VANESSA QUISPE ZAVALA","TF-2600",250,2000.0,250,15,41,3,1,3,0,669],[5,"2025-10-31","JURICAKES EMPRESA INDIVIDUAL DE RESPONSABILIDAD LIMITADA","TF-1100",120,1099.0,120,10,41,3,1,3,0,670],[5,"2025-10-31","LUCIA VICTORIA PONCIANO ALEJO","LIC-40JR",90,660.0,90,10,29,6,0,8,0,671],[5,"2025-10-31","INVERSIONES KUSI CAJAMARCA E.I.R.L.","VRFH-1250AI",750,5551.0,750,50,8,3,1,3,0,672],[5,"2025-10-31","INVERSIONES KUSI CAJAMARCA E.I.R.L.","TF-1100",120,1058.0,120,10,8,3,1,3,0,673],[5,"2025-10-31","INVESTMENT GROUP S.A.C.","VRFH-1250AI",800,5744.0,800,50,8,3,1,3,0,674],[5,"2025-10-31","JANCCO YAURI DEYVI ESDRUHUAL","TFI-2200DG",120,1111.56,120,10,42,10,1,12,0,675],[5,"2025-10-28","ARNULFO PINEDO CHANCHARI","LIC-40JR",90,540.0,90,10,28,6,0,11,0,676],[5,"2025-10-22","SHIMABUKO RUIZ MARIA ELIZABETH","TFI-2200DG",180,1106.18,180,15,22,9,1,10,0,677],[5,"2025-10-14","Patricia Quiñones","LIC-40JR",90,650.0,90,10,10,7,0,7,0,678],[5,"2025-10-14","Patricia Quiñones","LIC-40JR",90,650.0,90,10,10,7,0,7,0,679],[5,"2025-10-22","REYNA FIGUEROA CARLOS CESAR","EF-802",120,714.0,120,10,15,7,0,7,0,680],[5,"2025-10-22","Adriana Martinez Carvajal","LIC-40JR",90,650.0,90,10,10,7,0,7,4,681],[5,"2025-10-22","MOTTA RODRIGUEZ RONAL CRISTIAM","LIC-40JR",90,630.0,90,10,15,7,0,7,0,682],[5,"2025-10-22","THREISY SOFIA FERNANDEZ MARTINEZ","BC-3500BK",250,1800.0,250,15,15,7,0,7,0,683],[5,"2025-10-28","LIMAS MONTEJO DAVID ALFREDO","SLD-3SD",700,null,700,50,10,7,0,7,2,684],[5,"2025-10-28","LIMAS MONTEJO DAVID ALFREDO","GF-1200",700,null,700,50,10,7,0,7,2,685],[5,"2025-10-28","LIMAS MONTEJO DAVID ALFREDO","MH-40",400,null,400,25,10,7,0,7,2,686],[5,"2025-10-28","LIMAS MONTEJO DAVID ALFREDO","TFI-3200FC",250,null,250,15,10,7,0,7,2,687],[5,"2025-10-28","LIMAS MONTEJO DAVID ALFREDO","GEX-90",90,null,90,10,10,7,0,7,2,688],[5,"2025-10-28","ROLANDO ADRIAN MONZON TORRES","LIC-40JR",90,null,90,10,10,7,0,7,2,689],[5,"2025-10-07","LOS TARRILLOS RESTOBAR S.A.C.","LIC-40JR",90,650.0,90,10,17,7,0,7,0,690],[5,"2025-10-09","SUPERMERCADOS EL KAZMEÑO E.I.R.L.","CR-123",750,5864.0,750,50,17,7,0,7,0,691],[5,"2025-10-28","DIMELO REY ENTERTAINMENT E.I.R.L.","AF-9000FC",1000,7338.98,1000,100,17,7,0,7,0,692],[5,"2025-10-30","FAFI S.A.C.","WR-02",220,1722.0,220,15,17,7,0,7,0,693],[5,"2025-10-30","FAFI S.A.C.","WR-02",220,1722.0,220,15,17,7,0,7,0,694],[5,"2025-10-31","JUAN ELISEO GUERRA CABELLO","BC-9502SD",800,6300.0,800,50,17,7,0,7,0,695],[5,"2025-10-31","IV PASTRY S.A.C.","BC-7502FC",750,null,750,50,15,7,0,7,2,696],[5,"2025-10-31","XXXX","DJ-182",290,null,290,15,10,7,0,7,514,697],[6,"2025-11-03","Epifana Quijia","TF-3200FR",650,null,650,50,39,10,1,12,18,699],[6,"2025-11-03","LIZ MAGALY GAMARRA ROMERO","VRF-1250AI",1000,6299.0,1000,100,7,3,1,3,0,700],[6,"2025-11-03","CALLE ABRAMONTE GLENY","VCM-66",120,1259.0,120,10,27,3,1,3,0,701],[6,"2025-11-03","ROJAS ROJAS EPOLITO","MHS-25PC",700,5969.15,700,50,32,2,0,2,0,702],[6,"2025-11-03","YORGELIZ CRUZ QUINTERO","MH-60",400,2562.0,400,25,6,5,0,5,0,703],[6,"2025-11-03","TEOFILO ANICETO RUBIO DE LA CRUZ","BC-2900",220,4081.0,220,15,41,3,1,3,0,704],[6,"2025-11-03","TEOFILO ANICETO RUBIO DE LA CRUZ","TFI-3500SS",250,4081.0,250,15,41,3,1,3,0,705],[6,"2025-11-04","EDWIN CHIROQUE GONZALES","AF-11002MX",1150,9009.0,1150,100,22,9,1,10,0,706],[6,"2025-11-04","GILBERTO MENDOZA PARRAGUEZ","RE-80DG",90,550.0,90,10,13,2,0,2,0,707],[6,"2025-11-02","INVERSIONES SUNMERCHAND PERU S.A.C.","TF-1100",120,1099.0,120,10,20,1,0,1,0,708],[6,"2025-11-02","LUZ MARIA CANCHAN SILVA","BC-1200",120,1099.0,120,10,20,1,0,1,0,709],[6,"2025-11-02","IN SURCO SAC","F001-13407",750,6299.0,750,50,1,1,0,1,0,710],[6,"2025-11-02","IN SURCO SAC","LIC-20CP",90,999.0,90,10,1,1,0,1,0,711],[6,"2025-11-03","RIVERA ESTUPIÑAN CARLA","TF-3600",250,2499.0,250,15,20,1,0,1,0,712],[6,"2025-11-04","CHAVEZ ROCA MARIA JESSICA","BC-7502FC",750,4279.27,750,50,6,5,0,5,0,713],[6,"2025-11-04","Charles López","LICT-20CP",120,745.02,120,10,6,5,0,5,0,714],[6,"2025-11-04","MARIA YSABEL MURO REYES","AMA-15",480,3720.0,480,25,43,5,0,5,64,715],[6,"2025-11-05","FLOR ELIZA TANTARICO COBOS","VCM-96",120,1109.0,120,10,13,2,0,2,0,716],[6,"2025-11-05","HECTOR LANDA","SLD-3SD",700,4673.2,700,50,12,8,0,9,1,717],[6,"2025-11-05","HECTOR LANDA","TFI-3200FC",250,1803.2,250,15,12,8,0,9,1,718],[6,"2025-11-06","Luis Yamunaque Inga","DJ-181",180,null,180,15,19,3,1,3,2,719],[6,"2025-11-06","Danitza Alexandra Silva Campusano","B-30L",400,3358.95,400,25,38,3,1,3,0,720],[6,"2025-11-06","OCTAVIO ARON CASTAÑEDA HUALLANCA","TFI-4500SS",400,2160.55,400,25,6,5,0,5,0,721],[6,"2025-11-06","VICTORIANA ROJAS MOLOCHO","LICT-20CP",120,null,120,10,43,5,0,5,66,722],[6,"2025-11-06","EMPRESA DE TRANSPORTES SANTO CRISTO DE PACHACAMILLA","CH-06BK",90,629.0,90,10,4,3,1,3,0,723],[6,"2025-11-06","KEVIN ANTONY HUAMANCAYO ROJAS","TFI-4402DG",250,1728.3,250,15,6,5,0,5,0,724],[6,"2025-11-06","HUAMANCHUMO LLONTOP PAOLA","CH-06BK",90,619.0,90,10,32,2,0,2,0,725],[6,"2025-11-06","MARIA ELIZABETH PALACIOS RUIZ","BC-5200SZ",750,4599.0,750,50,13,2,0,2,0,726],[6,"2025-11-06","MARIA ELIZABETH PALACIOS RUIZ","BC-3200FC",350,2399.0,350,25,13,2,0,2,0,727],[6,"2025-11-05","CARMEN RAMIREZ","AF-14002FC",1150,11434.0,1150,100,33,3,1,3,0,728],[6,"2025-11-05","CARMEN RAMIREZ","TF-5200TG",750,6376.0,750,50,33,3,1,3,0,729],[6,"2025-11-05","CARMEN RAMIREZ","TF-4200TG",700,5791.0,700,50,33,3,1,3,0,730],[6,"2025-11-06","JHONNE JAIME VELIZ BARZOLA","BC-7502IV",800,6494.0,800,50,33,3,1,3,0,731],[6,"2025-11-06","TALIA ROMERO","MHS-30S",750,6529.0,750,50,33,3,1,3,0,732],[6,"2025-11-06","FLOR MARÍA TUERO","VRFH-1500AI",1000,8309.0,1000,100,33,3,1,3,0,733],[6,"2025-11-06","COMPAÑIA DE SERVICIOS A & M S.A.C.","HPE-301",120,959.92,120,10,22,9,1,10,0,734],[6,"2025-11-07","Gabriela Perales Ramirez","AF-11004MX",1000,null,1000,100,19,3,1,3,66,735],[6,"2025-11-07","SUPER HELADO E.I.R.L.","TF-4200TG",650,4725.0,650,50,41,3,1,3,0,736],[6,"2025-11-07","SUPER HELADO E.I.R.L.","TF-4200TG",650,4725.0,650,50,41,3,1,3,64,737],[6,"2025-11-06","","B-30L",400,2774.0,400,25,42,10,1,12,256,738],[6,"2025-11-07","SANCHEZ SEGURA JHOJAN JOSE","BC-3200FC",350,2379.0,350,25,22,9,1,10,0,739],[6,"2025-11-06","ROCCA CANALES RENZO JOSE","OMG-5L",180,1573.0,180,15,27,3,1,3,0,740],[6,"2025-11-07","ARTELI FOOD E.I.R.L.","TF-4200TG",700,5611.0,700,50,27,3,1,3,0,741],[6,"2025-11-07","LABORATORIO KUMIR S.A.C.","AMA-15M",480,4095.0,480,25,27,3,1,3,0,742],[6,"2025-11-08","YOLANDA MARINA IRARICA","PG-02",220,1699.0,480,25,0,0,0,0,2048,743],[6,"2025-11-08","RICHARD REATEGUI","TFI-3500SS",220,2149.0,220,15,0,0,0,0,0,744],[6,"2025-11-08","RICHARD REATEGUI","TFI-4402WH",250,2119.0,250,15,0,0,0,0,0,745],[6,"2025-11-08","RICHARD REATEGUI","LIC-04LT",180,1399.0,180,15,0,0,0,0,0,746],[6,"2025-11-08","ALARCON ARRIARAN ERIKA","LICT-20CP",120,959.0,120,10,43,5,0,5,64,747],[6,"2025-11-08","ALARCON ARRIARAN ERIKA","LIC-10TL",300,1895.0,300,25,43,5,0,5,64,748],[6,"2025-11-08","IJUMA RENGIFO ROGELIO","TFI-4402GR",300,2099.0,300,25,0,0,0,0,0,749],[6,"2025-11-08","MARISOL ROJAS CABANILLAS","HC-5000",1000,8699.0,1000,100,13,2,0,2,0,750],[6,"2025-11-10","LEYDI ANCCO","LIC-10LT",220,1834.0,220,15,38,3,1,3,0,751],[6,"2025-11-10","Jhonny Salazar","BC-1200",120,null,120,10,19,3,1,3,66,752],[6,"2025-11-10","Jhonatan Galindo Machaca","TFI-2200DG",180,null,180,15,19,3,1,3,66,753],[6,"2025-11-10","SANCHEZ CORNELIO ANGEL","LIC-06LT",180,1749.0,180,15,1,1,0,1,0,754],[6,"2025-11-10","SARA JIMENA FERNANDEZ CONDOR","TF-3100H",350,2290.0,350,25,9,6,0,8,0,755],[6,"2025-11-10","CARMEN JULIA CERVANTES ZARATE","B-20L",290,2470.0,290,15,5,4,0,4,0,756],[6,"2025-11-11","MANUEL CONCEPCION CRUZADO MOSTACERO","BC-5800FC",500,3935.0,500,50,22,9,1,10,0,757],[6,"2025-11-11","YESSICA PAOLA ESPINOLA LEYVA","B-20L",290,2350.0,290,15,24,9,1,10,16,758],[6,"2025-11-11","Gloria Espinoza","DJ-162",300,null,300,25,19,3,1,3,66,759],[6,"2025-11-11","Gloria Espinoza","WR-01",150,null,150,10,38,3,1,3,66,760],[6,"2025-11-11","Luis Fernando Salazar Ruiz","IF-500WHCL",700,5999.0,700,50,38,3,1,3,0,761],[6,"2025-11-11","Luis Fernando Salazar Ruiz","IF-500WHCL",700,5999.0,700,50,38,3,1,3,0,762],[6,"2025-11-11","Jessica Collazos Bravo","TF-2800V",180,2099.0,180,15,11,6,0,8,32,763],[6,"2025-11-11","DURAN ARMAS LUD ZORAIDA","HC-10000",1500,13100.0,1500,120,20,1,0,1,64,764],[6,"2025-11-11","Miguel De la Cruz","WR-02",220,null,220,15,19,3,1,3,2,765]],"quality":{"rawRows":764,"repeatedHeaders":6,"records":758,"flags":{"GEX_FORMATO":124,"SEDE_NORMALIZADA":5,"PRECIO_TEXTO":4,"FECHA_FUERA_MES":3,"SKU_VACIO":9,"CLIENTE_VACIO":14,"MES_UNIFICADO":78,"GEX_INCONSISTENTE":5,"PRECIO_FALTANTE":44,"FECHA_TEXTO":5,"NOMBRE_NORMALIZADO":5,"CLIENTE_PLACEHOLDER":1},"flagBits":{"PRECIO_TEXTO":1,"PRECIO_FALTANTE":2,"FECHA_TEXTO":4,"FECHA_FUERA_MES":8,"NOMBRE_NORMALIZADO":16,"SEDE_NORMALIZADA":32,"GEX_FORMATO":64,"MES_UNIFICADO":128,"CLIENTE_VACIO":256,"CLIENTE_PLACEHOLDER":512,"SKU_VACIO":1024,"GEX_INCONSISTENTE":2048},"nameVariantsMerged":4,"asesoresRaw":48,"asesoresClean":44,"sedesRaw":14,"sedesClean":13,"comisionOk":758,"incentivos":{"90":10,"120":10,"150":10,"180":15,"220":15,"250":15,"290":15,"300":25,"350":25,"400":25,"480":25,"500":50,"650":50,"700":50,"750":50,"800":50,"1000":100,"1150":100,"1200":100,"1500":120,"1800":150}}};
+
+/* ================= Datos ================= */
+const MONTHS = DATA.meta.months;
+const DIM = DATA.dims;
+const Q = DATA.quality;
+const FB = Q.flagBits;
+const LAST = MONTHS.length - 1;
+const CORTE_DAY = +DATA.meta.corte.slice(8, 10);
+const INICIO_DAY = +DATA.meta.inicio.slice(8, 10);
+const daysIn = m => new Date(MONTHS[m].year, MONTHS[m].num, 0).getDate();
+const partialEnd = m => m === LAST && CORTE_DAY < daysIn(LAST);
+const partialStart = m => m === 0 && INICIO_DAY > 1;
+const pad2 = n => String(n).padStart(2, '0');
+
+const ROWS = DATA.rows.map((r, i) => ({
+  id: i, m: r[0], date: r[1], day: r[1] ? +r[1].slice(8, 10) : 0, cliente: r[2], sku: r[3],
+  gex: r[4], precio: r[5], pgex: r[6], com: r[7], a: r[8], s: r[9], j: r[10], se: r[11],
+  flags: r[12], xrow: r[13],
+}));
+
+const FLAG_INFO = {
+  MES_UNIFICADO:       { label: 'Mes "SEPTIEMBRE" unificado a Setiembre', kind: 'fixed' },
+  NOMBRE_NORMALIZADO:  { label: 'Nombre de asesor unificado', kind: 'fixed' },
+  SEDE_NORMALIZADA:    { label: 'Nombre de sede unificado', kind: 'fixed' },
+  GEX_FORMATO:         { label: 'Formato de GEX estandarizado', kind: 'fixed' },
+  PRECIO_TEXTO:        { label: 'Precio escrito como texto, convertido a número', kind: 'fixed' },
+  FECHA_TEXTO:         { label: 'Fecha escrita como texto, convertida', kind: 'fixed' },
+  PRECIO_FALTANTE:     { label: 'Sin precio de equipo', kind: 'review' },
+  CLIENTE_VACIO:       { label: 'Sin cliente registrado', kind: 'review' },
+  CLIENTE_PLACEHOLDER: { label: 'Cliente de prueba ("XXXX")', kind: 'review' },
+  SKU_VACIO:           { label: 'Sin SKU', kind: 'review' },
+  FECHA_FUERA_MES:     { label: 'Fecha no coincide con el mes declarado', kind: 'review' },
+  GEX_INCONSISTENTE:   { label: 'Etiqueta GEX distinta al precio GEX', kind: 'review' },
+};
+const REVIEW_MASK = Object.keys(FLAG_INFO).filter(k => FLAG_INFO[k].kind === 'review').reduce((a, k) => a | FB[k], 0);
+const FIXED_MASK = Object.keys(FLAG_INFO).filter(k => FLAG_INFO[k].kind === 'fixed').reduce((a, k) => a | FB[k], 0);
+const flagList = (f, kind) => Object.keys(FLAG_INFO).filter(k => (f & FB[k]) && (!kind || FLAG_INFO[k].kind === kind)).map(k => FLAG_INFO[k].label);
+
+// Tramos de GEX según la tabla de incentivos del Excel (columnas GEX / INCENTIVO)
+const INCENT = Object.entries(Q.incentivos).map(([g, v]) => [+g, v]).sort((a, b) => a[0] - b[0]);
+const TIERS = (() => {
+  const groups = [];
+  for (const [g, v] of INCENT) {
+    const key = v >= 100 ? 100 : v;
+    let t = groups.find(x => x.key === key);
+    if (!t) { t = { key, min: g, max: g, inc: new Set() }; groups.push(t); }
+    t.min = Math.min(t.min, g); t.max = Math.max(t.max, g); t.inc.add(v);
+  }
+  return groups.map((t, i) => {
+    const incs = [...t.inc].sort((a, b) => a - b);
+    return {
+      i, min: t.min, max: t.max,
+      label: `GEX ${t.min}–${t.max}`,
+      inc: incs.length > 1 ? `S/ ${incs[0]}–${incs[incs.length - 1]}` : `S/ ${incs[0]}`,
+    };
+  });
+})();
+const tierOf = r => { const t = TIERS.findIndex(t => r.pgex >= t.min && r.pgex <= t.max); return t < 0 ? TIERS.length - 1 : t; };
+
+/* ================= Formato ================= */
+const nf0 = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 });
+const nf1 = new Intl.NumberFormat('es-PE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const fmtInt = v => nf0.format(Math.round(v || 0));
+const fmtMoney = v => 'S/ ' + nf0.format(Math.round(v || 0));
+const fmtMoneyC = v => Math.abs(v) >= 1e6 ? 'S/ ' + nf1.format(v / 1e6) + ' M' : Math.abs(v) >= 1e4 ? 'S/ ' + nf0.format(v / 1e3) + ' mil' : fmtMoney(v);
+const fmtPct = v => (v > 0 ? '+' : v < 0 ? '−' : '') + nf1.format(Math.abs(v) * 100) + '%';
+const fmtAbsPct = v => nf1.format(Math.abs(v) * 100) + '%';
+const fmtShare = v => nf1.format((v || 0) * 100) + '%';
+const fmtDate = iso => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : '—';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pct = (cur, prev) => prev ? (cur - prev) / prev : null;
+const ic = (id, cls = 'ic') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+
+const monthName = m => `${MONTHS[m].name} ${MONTHS[m].year}`;
+const monthTag = m => partialEnd(m) ? `al ${CORTE_DAY}/${pad2(MONTHS[m].num)}` : partialStart(m) ? `desde ${INICIO_DAY}/${pad2(MONTHS[m].num)}` : '';
+
+/* ================= Estado ================= */
+const state = {
+  view: 'resumen',
+  month: partialEnd(LAST) ? LAST - 1 : LAST,
+  jefe: -1,
+  sede: -1,
+  metric: 'eq',
+  ases: { q: '', sort: 'mes' },
+  tx: { q: '', m: -1, a: -1, issues: false, page: 0 },
+};
+
+const base = () => ROWS.filter(r => (state.jefe < 0 || r.j === state.jefe) && (state.sede < 0 || r.se === state.sede));
+const inMonth = (rows, m) => rows.filter(r => r.m === m);
+// Mes anterior; si el mes está en curso se compara contra los mismos días del mes previo
+const prevOf = (rows, m) => m > 0 ? rows.filter(r => r.m === m - 1 && (!partialEnd(m) || r.day <= CORTE_DAY)) : [];
+const cmpMode = m => m === 0 ? 'none' : (m === 1 && partialStart(0)) ? 'base' : partialEnd(m) ? 'same' : 'full';
+const refText = m => cmpMode(m) === 'same' ? `${MONTHS[m - 1].short} 1–${CORTE_DAY}` : MONTHS[m - 1] ? MONTHS[m - 1].name : '';
+
+function agg(rows) {
+  const o = { eq: 0, venta: 0, nPrecio: 0, gex: 0, gexP: 0, com: 0, ases: new Set(), skus: new Set() };
+  for (const r of rows) {
+    o.eq++; o.gex += r.pgex; o.com += r.com; o.ases.add(r.a);
+    if (r.sku) o.skus.add(r.sku);
+    if (r.precio != null) { o.venta += r.precio; o.nPrecio++; o.gexP += r.pgex; }
+  }
+  o.ticket = o.nPrecio ? o.venta / o.nPrecio : 0;
+  o.nAses = o.ases.size;
+  o.eqAses = o.nAses ? o.eq / o.nAses : 0;
+  o.gexEq = o.eq ? o.gex / o.eq : 0;
+  o.comEq = o.eq ? o.com / o.eq : 0;
+  o.gexShare = o.venta ? o.gexP / o.venta : 0;
+  o.nSkus = o.skus.size;
+  return o;
+}
+function cmp(rows, m) {
+  const mode = cmpMode(m);
+  return { mode, cur: agg(inMonth(rows, m)), prev: mode === 'none' ? null : agg(prevOf(rows, m)) };
+}
+const groupBy = (rows, key) => {
+  const g = new Map();
+  for (const r of rows) { const k = r[key]; if (!g.has(k)) g.set(k, []); g.get(k).push(r); }
+  return g;
+};
+const mostCommon = (rows, key) => {
+  const c = new Map(); let best = null, n = 0;
+  for (const r of rows) { const v = (c.get(r[key]) || 0) + 1; c.set(r[key], v); if (v > n) { n = v; best = r[key]; } }
+  return best;
+};
+
+const MET = {
+  eq:     { label: 'Equipos vendidos', short: 'Equipos', fmt: fmtInt, axis: fmtInt, add: true },
+  venta:  { label: 'Venta de equipos', short: 'Venta equipos', fmt: fmtMoney, axis: fmtMoneyC, add: true },
+  gex:    { label: 'Venta GEX', short: 'Venta GEX', fmt: fmtMoney, axis: fmtMoneyC, add: true },
+  com:    { label: 'Comisiones', short: 'Comisiones', fmt: fmtMoney, axis: fmtMoneyC, add: true },
+  ticket: { label: 'Ticket promedio', short: 'Ticket', fmt: fmtMoney, axis: fmtMoneyC, add: false },
+  nAses:  { label: 'Asesores activos', short: 'Asesores', fmt: fmtInt, axis: fmtInt, add: false },
+};
+const project = (v, m) => v * daysIn(m) / CORTE_DAY;
+
+/* ================= Piezas de UI ================= */
+function delta(cur, prev, mode, opts = {}) {
+  if (mode === 'none') return `<span class="chip" title="Primer mes con ventas registradas">${opts.noneText || 'Inicio'}</span>`;
+  if (mode === 'base') return `<span class="chip" title="Mayo inició el ${INICIO_DAY}/05; no es una base comparable">Base parcial</span>`;
+  if (!prev) return cur ? `<span class="chip chip-info">${opts.zeroText || 'Nuevo'}</span>` : `<span class="chip">—</span>`;
+  const d = (cur - prev) / prev;
+  const cls = Math.abs(d) < 0.0005 ? '' : d > 0 ? 'chip-up' : 'chip-down';
+  const arrow = d > 0.0005 ? '▲' : d < -0.0005 ? '▼' : '■';
+  return `<span class="chip ${cls}"><span class="a" aria-hidden="true">${arrow}</span>${fmtPct(d)}</span>`;
+}
+const trendSpan = d => d == null ? 'sin base de comparación' : `<span class="${d >= 0 ? 't-up' : 't-down'}">${fmtPct(d)}</span>`;
+
+function metricSeg(keys) {
+  return `<div class="seg" role="group" aria-label="Métrica">${keys.map(k =>
+    `<button type="button" data-metric="${k}" aria-pressed="${state.metric === k}">${MET[k].short}</button>`).join('')}</div>`;
+}
+
+function sparkSVG(vals, sel, w, h) {
+  const pad = 5, n = vals.length, max = Math.max(...vals) || 1;
+  const x = i => pad + i * (w - 2 * pad) / (n - 1);
+  const y = v => h - pad - (v / max) * (h - 2 * pad);
+  const pts = vals.map((v, i) => [x(i), y(v)]);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const area = `${line} L${x(n - 1).toFixed(1)} ${h - pad} L${x(0).toFixed(1)} ${h - pad} Z`;
+  let dots = '';
+  pts.forEach((p, i) => {
+    const partial = partialEnd(i) || partialStart(i);
+    if (i === sel) dots += `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" style="fill:var(--series-1);stroke:var(--surface);stroke-width:2"/>`;
+    else if (partial) dots += `<circle cx="${p[0]}" cy="${p[1]}" r="3" style="fill:var(--surface);stroke:var(--series-1);stroke-width:1.5"/>`;
+  });
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="presentation">
+    <line x1="${pad}" x2="${w - pad}" y1="${h - pad}" y2="${h - pad}" style="stroke:var(--line);stroke-width:1"/>
+    <path d="${area}" style="fill:var(--series-1);fill-opacity:.1"/>
+    <path d="${line}" style="fill:none;stroke:var(--series-1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round"/>${dots}</svg>`;
+}
+let sparkData = null;
+function drawSparks() {
+  if (!sparkData) return;
+  document.querySelectorAll('.spark[data-k]').forEach(el => {
+    const vals = sparkData.series.map(s => s[el.dataset.k]);
+    const w = Math.max(80, el.clientWidth);
+    el.innerHTML = sparkSVG(vals, sparkData.sel, w, 34) +
+      `<div class="spark-axis"><span>${MONTHS[0].short}</span><span>${MONTHS[LAST].short}${partialEnd(LAST) ? ' (parcial)' : ''}</span></div>`;
+  });
+}
+
+/* ================= Gráficos ================= */
+const charts = {};
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hasChart = () => typeof window.Chart !== 'undefined';
+
+if (hasChart()) {
+  Chart.register({
+    id: 'labels',
+    afterDatasetsDraw(chart, _args, opts) {
+      if (!opts || !opts.items || !opts.items.length) return;
+      const { ctx } = chart;
+      ctx.save();
+      ctx.font = `700 12px ${css('--font-ui') || 'system-ui'}`;
+      for (const it of opts.items) {
+        const el = chart.getDatasetMeta(it.ds).data[it.i];
+        if (!el || it.text == null) continue;
+        ctx.fillStyle = it.color || opts.color;
+        ctx.textAlign = it.align || 'center';
+        ctx.textBaseline = it.base || 'bottom';
+        ctx.fillText(it.text, el.x + (it.dx || 0), (it.y != null ? it.y : el.y) + (it.dy == null ? -6 : it.dy));
+      }
+      ctx.restore();
+    },
+  });
+}
+function chartTheme() {
+  return {
+    ink: css('--ink'), ink2: css('--ink-2'), muted: css('--muted'), line: css('--line'), line2: css('--line-2'),
+    surface: css('--surface'), s1: css('--series-1'), s1soft: css('--series-1-soft'), s2: css('--series-2'),
+    smuted: css('--series-muted'), good: css('--good'), bad: css('--bad'),
+    ord: [1, 2, 3, 4, 5].map(i => css('--ord-' + i)),
+  };
+}
+function baseOptions(t, extra = {}) {
+  return Object.assign({
+    responsive: true, maintainAspectRatio: false,
+    animation: reducedMotion ? false : { duration: 350 },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: t.surface, borderColor: t.line2, borderWidth: 1, titleColor: t.ink, bodyColor: t.ink2,
+        footerColor: t.muted, padding: 10, cornerRadius: 8, boxPadding: 4, usePointStyle: true,
+        titleFont: { weight: '700' }, footerFont: { weight: '500', size: 11 },
+      },
+    },
+  }, extra);
+}
+function axis(t, fmt, extra = {}) {
+  return Object.assign({
+    beginAtZero: true, grid: { color: t.line, drawTicks: false }, border: { display: false },
+    ticks: { color: t.muted, padding: 8, callback: v => fmt(v), maxTicksLimit: 6 },
+  }, extra);
+}
+function catAxis(t, extra = {}) {
+  return Object.assign({ grid: { display: false }, border: { color: t.line2 }, ticks: { color: t.muted, padding: 6 } }, extra);
+}
+function mkChart(id, cfg) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!hasChart()) {
+    el.parentElement.innerHTML = '<div class="nochart">El gráfico necesita conexión a internet para cargarse. Los mismos datos están en las tablas.</div>';
+    return;
+  }
+  charts[id] = new Chart(el, cfg);
+}
+function destroyCharts(only) {
+  for (const id of Object.keys(charts)) if (only ? id === only : id !== 'ch-ases') { charts[id].destroy(); delete charts[id]; }
+}
+
+/* ================= Vistas ================= */
+const VIEWS = {
+  resumen:       { title: 'Resumen ejecutivo', render: renderResumen },
+  evolucion:     { title: 'Evolución mensual', render: renderEvolucion },
+  asesores:      { title: 'Asesores', render: renderAsesores },
+  sedes:         { title: 'Supervisores y sedes', render: renderSedes },
+  jefaturas:     { title: 'Jefaturas', render: renderJefaturas },
+  productos:     { title: 'Productos y GEX', render: renderProductos },
+  transacciones: { title: 'Transacciones', render: renderTransacciones },
+  calidad:       { title: 'Calidad de datos', render: renderCalidad },
+};
+const content = document.getElementById('content');
+
+function scopeText() {
+  const parts = [];
+  if (state.jefe >= 0) parts.push(`Jefatura ${DIM.jefe[state.jefe]}`);
+  if (state.sede >= 0) parts.push(`Sede ${DIM.sede[state.sede]}`);
+  return parts.length ? parts.join(' · ') : 'Toda la red';
+}
+function footer() {
+  return `<footer class="foot"><span>Generado automáticamente por Metassistance</span><span>Fuente: ${esc(DATA.meta.source)} · hoja ${esc(DATA.meta.sheet)}</span><span>${fmtInt(Q.records)} registros</span><span>Corte de datos: ${fmtDate(DATA.meta.corte)}</span></footer>`;
+}
+
+/* ---------- Resumen ejecutivo ---------- */
+function headline(c, m) {
+  const M = MONTHS[m];
+  const when = `${M.name}${partialEnd(m) ? ` (al ${CORTE_DAY}/${pad2(M.num)})` : ''}`;
+  if (!c.cur.eq) return `${when}: sin ventas registradas para ${esc(scopeText())}.`;
+  if (c.mode === 'none') return `${when} abrió la operación el ${INICIO_DAY}/${pad2(M.num)} con <strong>${fmtInt(c.cur.eq)} equipos</strong> vendidos y ${fmtMoney(c.cur.venta)} en venta de equipos.`;
+  if (c.mode === 'base') return `${when}, primer mes completo de operación: <strong>${fmtInt(c.cur.eq)} equipos</strong> vendidos y <strong>${fmtMoneyC(c.cur.venta)}</strong> en venta de equipos.`;
+  const dEq = pct(c.cur.eq, c.prev.eq), dV = pct(c.cur.venta, c.prev.venta), dT = pct(c.cur.ticket, c.prev.ticket);
+  const ref = c.mode === 'same' ? `frente a los mismos días de ${MONTHS[m - 1].name}` : `frente a ${MONTHS[m - 1].name}`;
+  let s = `${when}: <strong>${fmtInt(c.cur.eq)} equipos</strong> vendidos, ${trendSpan(dEq)} ${ref}.`;
+  if (dEq != null && dV != null && dT != null && Math.sign(dEq) !== Math.sign(dV)) {
+    s += ` La venta de equipos ${dV < 0 ? 'bajó' : 'subió'} ${trendSpan(dV)} porque el ticket promedio ${dT < 0 ? 'cayó' : 'subió'} ${fmtAbsPct(dT)}.`;
+  } else if (dV != null) {
+    s += ` La venta de equipos ${dV < 0 ? 'bajó' : 'creció'} ${trendSpan(dV)} y llegó a <strong>${fmtMoneyC(c.cur.venta)}</strong>.`;
+  }
+  return s;
+}
+
+function kpiTile(k, c, m) {
+  const cur = c.cur[k], prev = c.prev ? c.prev[k] : null, F = MET[k].fmt;
+  let sub;
+  if (c.mode === 'none') sub = `Inicio de operación el ${INICIO_DAY}/${pad2(MONTHS[m].num)}`;
+  else if (c.mode === 'base') sub = `${MONTHS[m - 1].short}: ${F(prev)} (mes parcial)`;
+  else sub = `${F(prev)} en ${refText(m)}`;
+  if (c.mode === 'same' && MET[k].add) sub += ` · cierre proyectado ≈ ${F(project(cur, m))}`;
+  if (k === 'nAses') sub += ` · ${nf1.format(c.cur.eqAses)} equipos por asesor`;
+  if (k === 'ticket') sub += ` · sobre ${fmtInt(c.cur.nPrecio)} ventas con precio`;
+  return `<article class="kpi">
+    <div class="kpi-top"><h3 class="kpi-label">${MET[k].label}</h3>${delta(cur, prev, c.mode)}</div>
+    <p class="kpi-value">${F(cur)}</p>
+    <p class="kpi-sub">${sub}</p>
+    <div class="spark" data-k="${k}" aria-hidden="true"></div>
+  </article>`;
+}
+
+function asesorStats(rows, m) {
+  const cur = groupBy(inMonth(rows, m), 'a'), prev = groupBy(prevOf(rows, m), 'a');
+  const first = new Map();
+  for (const r of rows) if (!first.has(r.a) || r.m < first.get(r.a)) first.set(r.a, r.m);
+  const ids = new Set([...cur.keys(), ...prev.keys()]);
+  return [...ids].map(a => {
+    const cr = cur.get(a) || [], pr = prev.get(a) || [];
+    const ca = agg(cr);
+    return { a, eq: cr.length, prev: pr.length, venta: ca.venta, com: ca.com, sede: mostCommon(cr.length ? cr : pr, 'se'), first: first.get(a) };
+  });
+}
+
+function insights(rows, c, m) {
+  const out = [];
+  const ref = refText(m);
+  if (c.mode === 'full' || c.mode === 'same') {
+    const d = pct(c.cur.eq, c.prev.eq);
+    if (d != null) out.push({ k: d >= 0 ? 'good' : 'bad', icon: d >= 0 ? 'trend' : 'down', t: `Equipos ${d >= 0 ? 'crecieron' : 'cayeron'} <b>${fmtAbsPct(d)}</b>: ${fmtInt(c.cur.eq)} frente a ${fmtInt(c.prev.eq)} en ${ref}.` });
+    const dt = pct(c.cur.ticket, c.prev.ticket);
+    if (dt != null && Math.abs(dt) >= 0.02) out.push({ k: dt >= 0 ? 'good' : 'warn', icon: dt >= 0 ? 'trend' : 'alert', t: `El ticket promedio ${dt >= 0 ? 'subió' : 'bajó'} <b>${fmtAbsPct(dt)}</b> y quedó en ${fmtMoney(c.cur.ticket)} por equipo.` });
+  }
+  if (partialEnd(LAST)) {
+    const now = agg(inMonth(rows, LAST)), full = agg(inMonth(rows, LAST - 1));
+    const p = project(now.eq, LAST), d = pct(p, full.eq);
+    if (now.eq) out.push({ k: 'info', icon: 'info', t: `${MONTHS[LAST].name} lleva ${fmtInt(now.eq)} equipos al ${CORTE_DAY}/${pad2(MONTHS[LAST].num)}. Al ritmo actual cerraría en <b>≈ ${fmtInt(p)}</b>${d != null ? ` (${fmtPct(d)} vs ${MONTHS[LAST - 1].name})` : ''}.` });
+  }
+  const st = asesorStats(rows, m).filter(s => s.eq).sort((a, b) => b.eq - a.eq || b.venta - a.venta);
+  if (st.length) {
+    const t = st[0], dd = pct(t.eq, t.prev);
+    out.push({ k: 'good', icon: 'star', t: `<b>${esc(DIM.asesor[t.a])}</b> lidera el mes con ${fmtInt(t.eq)} equipos${(c.mode === 'full' || c.mode === 'same') && dd != null ? ` (${fmtPct(dd)} vs ${ref})` : ''}.` });
+  }
+  if (state.sede < 0 && c.cur.eq) {
+    const bySede = [...groupBy(inMonth(rows, m), 'se')].sort((a, b) => b[1].length - a[1].length);
+    if (bySede.length > 1) out.push({ k: 'info', icon: 'pin', t: `<b>${esc(DIM.sede[bySede[0][0]])}</b> concentra ${fmtShare(bySede[0][1].length / c.cur.eq)} de los equipos del mes.` });
+  }
+  if (c.mode === 'full' || c.mode === 'same') {
+    const all = asesorStats(rows, m).filter(s => s.prev > 0);
+    const down = all.filter(s => s.eq < s.prev).length;
+    if (down) out.push({ k: 'warn', icon: 'down', t: `<b>${down} de ${all.length}</b> asesores que vendieron en ${ref} vendieron menos este mes.` });
+  }
+  const sinPrecio = inMonth(rows, m).filter(r => r.flags & FB.PRECIO_FALTANTE).length;
+  if (sinPrecio) out.push({ k: 'warn', icon: 'alert', t: `<b>${sinPrecio} ventas</b> no tienen precio de equipo en el Excel, así que la venta en S/ del mes está subestimada.` });
+  return out.slice(0, 6);
+}
+
+function renderResumen() {
+  const rows = base(), m = state.month, c = cmp(rows, m);
+  const series = MONTHS.map((_, i) => agg(inMonth(rows, i)));
+  sparkData = { series, sel: m };
+
+  const stats = asesorStats(rows, m).filter(s => s.eq).sort((a, b) => b.eq - a.eq || b.venta - a.venta);
+  const top = stats.slice(0, 5), topMax = top.length ? top[0].eq : 1;
+  const showDelta = c.mode === 'full' || c.mode === 'same';
+
+  const sedes = [...groupBy(inMonth(rows, m), 'se')].map(([se, rs]) => ({ se, eq: rs.length, prev: prevOf(rows, m).filter(r => r.se === se).length }))
+    .sort((a, b) => b.eq - a.eq);
+  const sedeMax = sedes.length ? sedes[0].eq : 1;
+
+  const ins = insights(rows, c, m);
+
+  content.innerHTML = `
+    <section class="hero">
+      <p class="eyebrow">${esc(monthName(m))}${monthTag(m) ? ' · ' + monthTag(m) : ''} · ${esc(scopeText())}</p>
+      <h2 class="headline">${headline(c, m)}</h2>
+    </section>
+
+    <section class="kpis" aria-label="Indicadores principales">
+      ${['eq', 'venta', 'gex', 'com', 'ticket', 'nAses'].map(k => kpiTile(k, c, m)).join('')}
+    </section>
+
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-head">
+          <div><h3>Evolución mensual</h3><p class="card-sub">${MET[state.metric].label} · ${MONTHS[0].name} a ${MONTHS[LAST].name} ${MONTHS[LAST].year}</p></div>
+          ${metricSeg(['eq', 'venta', 'gex', 'com'])}
+        </header>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--series-1)"></i>${esc(MONTHS[m].name)} (mes de análisis)</span>
+          <span><i class="sw" style="background:var(--series-1-soft)"></i>Otros meses</span>
+          ${partialEnd(LAST) ? `<span><i class="sw" style="background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--series-1)"></i>Proyección al cierre de ${esc(MONTHS[LAST].name)}</span>` : ''}
+        </div>
+        <div class="chart-box h-280"><canvas id="ch-evo" role="img" aria-label="Evolución mensual de ${esc(MET[state.metric].label)}"></canvas></div>
+        <p class="card-note">${esc(MONTHS[0].name)} empezó el ${INICIO_DAY}/${pad2(MONTHS[0].num)}${partialEnd(LAST) ? ` y ${esc(MONTHS[LAST].name)} tiene datos hasta el ${CORTE_DAY}/${pad2(MONTHS[LAST].num)}` : ''}.</p>
+      </section>
+
+      <section class="card">
+        <header class="card-head"><div><h3>Lo que hay que saber</h3><p class="card-sub">Lectura automática de ${esc(MONTHS[m].name)}</p></div></header>
+        ${ins.length ? `<ul class="insights">${ins.map(i => `<li class="k-${i.k}"><span class="ins-ic">${ic(i.icon)}</span><span>${i.t}</span></li>`).join('')}</ul>` : '<p class="card-sub">Sin datos para este filtro.</p>'}
+      </section>
+    </div>
+
+    <div class="grid-2 even">
+      <section class="card">
+        <header class="card-head">
+          <div><h3>Top 5 asesores</h3><p class="card-sub">Equipos vendidos en ${esc(MONTHS[m].name)}${showDelta ? ` · variación vs ${esc(refText(m))}` : ''}</p></div>
+          <button class="link-btn" type="button" data-go="asesores">Ver ranking completo ${ic('arrow', 'ic')}</button>
+        </header>
+        ${top.length ? `<ol class="rank">${top.map((s, i) => `
+          <li>
+            <span class="n">${i + 1}</span>
+            <div class="who">
+              <button class="name" type="button" data-asesor="${s.a}">${esc(DIM.asesor[s.a])}</button>
+              <span class="meta">${esc(DIM.sede[s.sede])} · ${fmtMoney(s.venta)}</span>
+              <div class="bar"><span style="width:${(s.eq / topMax * 100).toFixed(1)}%"></span></div>
+            </div>
+            <div class="val"><strong>${fmtInt(s.eq)}</strong>${showDelta ? delta(s.eq, s.prev, c.mode, { zeroText: s.first === m ? 'Nuevo' : 'Reactivado' }) : ''}</div>
+          </li>`).join('')}</ol>` : '<p class="card-sub">Sin ventas en este mes.</p>'}
+      </section>
+
+      <section class="card">
+        <header class="card-head">
+          <div><h3>Equipos por sede</h3><p class="card-sub">Participación en ${esc(MONTHS[m].name)}${showDelta ? ` · variación vs ${esc(refText(m))}` : ''}</p></div>
+          <button class="link-btn" type="button" data-go="sedes">Ver supervisores y sedes ${ic('arrow', 'ic')}</button>
+        </header>
+        ${sedes.length ? `<ol class="rank">${sedes.slice(0, 6).map(s => `
+          <li>
+            <span class="n">${ic('pin', 'ic')}</span>
+            <div class="who">
+              <span class="name">${esc(DIM.sede[s.se])}</span>
+              <span class="meta">${fmtShare(s.eq / c.cur.eq)} del mes</span>
+              <div class="bar"><span style="width:${(s.eq / sedeMax * 100).toFixed(1)}%"></span></div>
+            </div>
+            <div class="val"><strong>${fmtInt(s.eq)}</strong>${showDelta ? delta(s.eq, s.prev, c.mode) : ''}</div>
+          </li>`).join('')}</ol>
+          ${sedes.length > 6 ? `<p class="card-note">${sedes.length - 6} sedes más en el detalle.</p>` : ''}` : '<p class="card-sub">Sin ventas en este mes.</p>'}
+      </section>
+    </div>
+    ${footer()}`;
+
+  drawSparks();
+  drawEvoChart(rows, series, m);
+}
+
+function drawEvoChart(rows, series, m) {
+  const t = chartTheme(), k = state.metric, M = MET[k];
+  const vals = series.map(s => s[k]);
+  const hasProj = partialEnd(LAST);
+  const proj = MONTHS.map((_, i) => hasProj && i === LAST ? Math.max(0, project(vals[i], i) - vals[i]) : null);
+  const labels = MONTHS.map((x, i) => x.short + (partialEnd(i) || partialStart(i) ? '*' : ''));
+  const datasets = [{
+    label: M.label, data: vals, stack: 's',
+    backgroundColor: vals.map((_, i) => i === m ? t.s1 : t.s1soft),
+    borderRadius: hasProj ? vals.map((_, i) => i === LAST ? 0 : 4) : 4, borderSkipped: 'start', maxBarThickness: 46,
+  }];
+  if (hasProj) datasets.push({
+    label: 'Proyección al cierre', data: proj, stack: 's',
+    backgroundColor: css('--accent-soft'), borderColor: t.s1, borderWidth: 1, borderRadius: 4, borderSkipped: 'start', maxBarThickness: 46,
+  });
+  const items = [{ ds: 0, i: m, text: M.axis(vals[m]), color: t.ink }];
+  if (hasProj) items.push({ ds: 1, i: LAST, text: '≈ ' + M.axis(vals[LAST] + proj[LAST]), color: t.muted });
+  mkChart('ch-evo', {
+    type: 'bar',
+    data: { labels, datasets },
+    options: baseOptions(t, {
+      layout: { padding: { top: 22 } },
+      scales: { x: catAxis(t, { stacked: true }), y: axis(t, M.axis, { stacked: true }) },
+      plugins: Object.assign(baseOptions(t).plugins, {
+        labels: { items, color: t.ink },
+        tooltip: Object.assign(baseOptions(t).plugins.tooltip, {
+          filter: item => item.raw != null && !(item.datasetIndex === 1 && !item.raw),
+          callbacks: {
+            title: items => { const i = items[0].dataIndex; return monthName(i) + (monthTag(i) ? ` (${monthTag(i)})` : ''); },
+            label: ctx => ctx.datasetIndex === 0 ? `${M.label}: ${M.fmt(ctx.raw)}` : (ctx.raw ? `Proyección al cierre: ${M.fmt(vals[LAST] + ctx.raw)}` : null),
+            footer: items => { const i = items[0].dataIndex; if (i < 1 || cmpMode(i) === 'base') return ''; const c = cmp(rows, i); const d = pct(c.cur[k], c.prev[k]); return d == null ? '' : `${fmtPct(d)} vs ${refText(i)}`; },
+          },
+        }),
+      }),
+    }),
+  });
+}
+
+/* ---------- Evolución mensual ---------- */
+function renderEvolucion() {
+  const rows = base(), tot = agg(rows);
+  const series = MONTHS.map((_, i) => ({ i, c: cmp(rows, i) }));
+  const full = series.filter(s => !partialEnd(s.i) && !partialStart(s.i));
+  const avg = k => full.length ? full.reduce((a, s) => a + s.c.cur[k], 0) / full.length : 0;
+  let acum = 0;
+  const k = MET[state.metric].add ? state.metric : 'eq';
+
+  const tiles = [
+    ['Equipos acumulados', fmtInt(tot.eq), `Promedio ${fmtInt(avg('eq'))} por mes completo`],
+    ['Venta de equipos acumulada', fmtMoneyC(tot.venta), `Promedio ${fmtMoneyC(avg('venta'))} por mes completo`],
+    ['Venta GEX acumulada', fmtMoneyC(tot.gex), `${fmtShare(tot.gexShare)} sobre la venta de equipos`],
+    ['Comisiones acumuladas', fmtMoney(tot.com), `${fmtMoney(tot.comEq)} por equipo en promedio`],
+  ];
+
+  const dCell = (s, key) => s.c.mode === 'none' ? '<td class="num">—</td>' : `<td class="num">${delta(s.c.cur[key], s.c.prev[key], s.c.mode)}</td>`;
+
+  content.innerHTML = `
+    <section class="grid-4" aria-label="Acumulado del periodo">
+      ${tiles.map(([l, v, s]) => `<article class="kpi mini"><h3 class="kpi-label">${l}</h3><p class="kpi-value">${v}</p><p class="kpi-sub">${s}</p></article>`).join('')}
+    </section>
+
+    <section class="card">
+      <header class="card-head">
+        <div><h3>Crecimiento mes a mes</h3><p class="card-sub">Variación % de ${esc(MET[k].label.toLowerCase())} frente al mes anterior</p></div>
+        ${metricSeg(['eq', 'venta', 'gex', 'com'])}
+      </header>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--good)"></i>▲ Crecimiento</span>
+        <span><i class="sw" style="background:var(--bad)"></i>▼ Caída</span>
+      </div>
+      <div class="chart-box h-260"><canvas id="ch-growth" role="img" aria-label="Crecimiento porcentual mes a mes"></canvas></div>
+      <p class="card-note">${esc(MONTHS[1].name)} no se compara porque ${esc(MONTHS[0].name)} arrancó el ${INICIO_DAY}/${pad2(MONTHS[0].num)}.${partialEnd(LAST) ? ` ${esc(MONTHS[LAST].name)}* se compara contra ${esc(MONTHS[LAST - 1].name)} del 1 al ${CORTE_DAY}.` : ''}</p>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Detalle mensual</h3><p class="card-sub">${esc(scopeText())} · la fila resaltada es el mes de análisis</p></div></header>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr>
+            <th>Mes</th><th class="num">Equipos</th><th class="num">Var.</th><th class="num">Venta equipos</th><th class="num">Var.</th>
+            <th class="num">Venta GEX</th><th class="num">Var.</th><th class="num">Comisiones</th><th class="num">Ticket prom.</th>
+            <th class="num">Asesores</th><th class="num">Eq./asesor</th><th class="num">Acumulado</th>
+          </tr></thead>
+          <tbody>${series.map(s => {
+            const a = s.c.cur; acum += a.eq;
+            return `<tr class="${s.i === state.month ? 'is-sel' : ''}">
+              <td><span class="cell-name">${esc(MONTHS[s.i].name)}</span> ${monthTag(s.i) ? `<span class="tag">${monthTag(s.i)}</span>` : ''}</td>
+              <td class="num">${fmtInt(a.eq)}</td>${dCell(s, 'eq')}
+              <td class="num">${fmtMoney(a.venta)}</td>${dCell(s, 'venta')}
+              <td class="num">${fmtMoney(a.gex)}</td>${dCell(s, 'gex')}
+              <td class="num">${fmtMoney(a.com)}</td>
+              <td class="num">${fmtMoney(a.ticket)}</td>
+              <td class="num">${fmtInt(a.nAses)}</td>
+              <td class="num">${nf1.format(a.eqAses)}</td>
+              <td class="num">${fmtInt(acum)}</td>
+            </tr>`;
+          }).join('')}</tbody>
+          <tfoot><tr>
+            <td>Total</td><td class="num">${fmtInt(tot.eq)}</td><td></td><td class="num">${fmtMoney(tot.venta)}</td><td></td>
+            <td class="num">${fmtMoney(tot.gex)}</td><td></td><td class="num">${fmtMoney(tot.com)}</td><td class="num">${fmtMoney(tot.ticket)}</td>
+            <td class="num">${fmtInt(tot.nAses)}</td><td class="num">${nf1.format(tot.eqAses)}</td><td class="num">${fmtInt(tot.eq)}</td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <p class="card-note">Var. de ${esc(MONTHS[LAST].name)} compara contra los mismos días de ${esc(MONTHS[LAST - 1].name)}. La venta de equipos excluye ${fmtInt(rows.filter(r => r.precio == null).length)} ventas sin precio registrado.</p>
+    </section>
+    ${footer()}`;
+
+  const t = chartTheme();
+  const pts = series.filter(s => s.c.mode === 'full' || s.c.mode === 'same');
+  const vals = pts.map(s => { const d = pct(s.c.cur[k], s.c.prev[k]); return d == null ? 0 : d * 100; });
+  mkChart('ch-growth', {
+    type: 'bar',
+    data: {
+      labels: pts.map(s => MONTHS[s.i].short + (s.c.mode === 'same' ? '*' : '')),
+      datasets: [{ data: vals, backgroundColor: vals.map(v => v >= 0 ? t.good : t.bad), borderRadius: 4, borderSkipped: 'start', maxBarThickness: 56 }],
+    },
+    options: baseOptions(t, {
+      layout: { padding: { top: 22, bottom: 4 } },
+      scales: {
+        x: catAxis(t),
+        y: axis(t, v => nf0.format(v) + '%', { beginAtZero: true, grace: '12%' }),
+      },
+      plugins: Object.assign(baseOptions(t).plugins, {
+        labels: { items: vals.map((v, i) => ({ ds: 0, i, text: fmtPct(v / 100), dy: v >= 0 ? -6 : 6, base: v >= 0 ? 'bottom' : 'top', color: t.ink })) },
+        tooltip: Object.assign(baseOptions(t).plugins.tooltip, {
+          callbacks: {
+            title: it => monthName(pts[it[0].dataIndex].i),
+            label: ctx => { const s = pts[ctx.dataIndex]; return `${MET[k].label}: ${MET[k].fmt(s.c.cur[k])} vs ${MET[k].fmt(s.c.prev[k])} (${refText(s.i)})`; },
+          },
+        }),
+      }),
+    }),
+  });
+}
+
+/* ---------- Asesores ---------- */
+function renderAsesores() {
+  const rows = base(), m = state.month, mode = cmpMode(m);
+  const byA = groupBy(rows, 'a');
+  const st = new Map(asesorStats(rows, m).map(s => [s.a, s]));
+  const showDelta = mode === 'full' || mode === 'same';
+  let list = [...byA].map(([a, rs]) => {
+    const s = st.get(a) || { eq: 0, prev: 0, venta: 0, com: 0 };
+    const months = MONTHS.map((_, i) => rs.filter(r => r.m === i).length);
+    const first = months.findIndex(v => v > 0);
+    return {
+      a, name: DIM.asesor[a], sede: mostCommon(rs, 'se'), sup: mostCommon(rs, 's'), months, total: rs.length,
+      eq: s.eq, prev: s.prev, venta: s.venta, com: s.com, first, d: pct(s.eq, s.prev),
+    };
+  });
+  const active = list.filter(x => x.eq > 0).length;
+  const up = list.filter(x => x.prev > 0 && x.eq > x.prev).length;
+  const down = list.filter(x => x.prev > 0 && x.eq < x.prev).length;
+  const nuevos = list.filter(x => x.first === m).length;
+
+  const q = state.ases.q.trim().toLowerCase();
+  if (q) list = list.filter(x => x.name.toLowerCase().includes(q) || DIM.sede[x.sede].toLowerCase().includes(q));
+  const sorters = {
+    mes: (a, b) => b.eq - a.eq || b.venta - a.venta || b.total - a.total,
+    var: (a, b) => (b.d == null ? -Infinity : b.d) - (a.d == null ? -Infinity : a.d) || b.eq - a.eq,
+    total: (a, b) => b.total - a.total,
+    venta: (a, b) => b.venta - a.venta,
+    nombre: (a, b) => a.name.localeCompare(b.name, 'es'),
+  };
+  list.sort(sorters[state.ases.sort] || sorters.mes);
+  const max = Math.max(1, ...list.flatMap(x => x.months));
+
+  const heat = v => {
+    if (!v) return `<td class="heat zero">·</td>`;
+    const p = Math.round(14 + Math.sqrt(v / max) * 76);
+    return `<td class="heat${p >= 58 ? ' hot' : ''}" style="background:color-mix(in srgb, var(--series-1) ${p}%, transparent)">${v}</td>`;
+  };
+
+  content.innerHTML = `
+    <section class="card">
+      <header class="card-head">
+        <div><h3>Ranking de asesores</h3><p class="card-sub">Equipos vendidos por asesor y mes · ${esc(scopeText())} · clic en una fila para ver el detalle</p></div>
+      </header>
+      <div class="stat-row">
+        <span class="chip chip-info">${ic('users', 'ic')} ${active} activos en ${esc(MONTHS[m].name)}</span>
+        ${showDelta ? `<span class="chip chip-up"><span class="a">▲</span> ${up} crecieron</span><span class="chip chip-down"><span class="a">▼</span> ${down} bajaron</span>` : ''}
+        <span class="chip">${nuevos} ${nuevos === 1 ? 'nuevo' : 'nuevos'} este mes</span>
+      </div>
+      <div class="toolbar">
+        <label class="field grow"><span>Buscar</span><input type="search" id="ases-q" placeholder="Nombre de asesor o sede" value="${esc(state.ases.q)}" autocomplete="off"></label>
+        <label class="field"><span>Ordenar por</span>
+          <select id="ases-sort">
+            ${[['mes', `Equipos en ${MONTHS[m].name}`], ['var', 'Variación vs mes anterior'], ['total', 'Total del periodo'], ['venta', `Venta en ${MONTHS[m].name}`], ['nombre', 'Nombre']]
+              .map(([v, l]) => `<option value="${v}"${state.ases.sort === v ? ' selected' : ''}>${l}</option>`).join('')}
+          </select>
+        </label>
+      </div>
+      <div class="table-wrap tall">
+        <table class="tbl">
+          <thead><tr>
+            <th>#</th><th>Asesor</th>
+            ${MONTHS.map((x, i) => `<th class="c${i === m ? ' is-sel' : ''}">${x.short}${partialEnd(i) || partialStart(i) ? '*' : ''}</th>`).join('')}
+            <th class="num">Total</th><th class="num">Venta ${esc(MONTHS[m].short)}</th><th class="num">Comisión ${esc(MONTHS[m].short)}</th><th class="num">Var. ${esc(MONTHS[m].short)}</th>
+          </tr></thead>
+          <tbody>${list.map((x, i) => `
+            <tr class="click" data-asesor="${x.a}" tabindex="0">
+              <td class="mono">${i + 1}</td>
+              <td><div class="cell-name">${esc(x.name)}</div><div class="cell-sub">${esc(DIM.sede[x.sede])} · ${esc(DIM.supervisor[x.sup])}</div></td>
+              ${x.months.map(heat).join('')}
+              <td class="num"><strong>${fmtInt(x.total)}</strong></td>
+              <td class="num">${x.eq ? fmtMoney(x.venta) : '—'}</td>
+              <td class="num">${x.eq ? fmtMoney(x.com) : '—'}</td>
+              <td class="num">${showDelta ? delta(x.eq, x.prev, mode, { zeroText: x.first === m ? 'Nuevo' : 'Reactivado' }) : (x.first === m ? '<span class="chip chip-info">Nuevo</span>' : '—')}</td>
+            </tr>`).join('') || `<tr><td colspan="${MONTHS.length + 6}">Ningún asesor coincide con la búsqueda.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <p class="card-note">Intensidad del color = equipos vendidos en el mes. * Mes parcial (${esc(MONTHS[0].short)} desde el ${INICIO_DAY}/${pad2(MONTHS[0].num)}${partialEnd(LAST) ? `, ${esc(MONTHS[LAST].short)} hasta el ${CORTE_DAY}/${pad2(MONTHS[LAST].num)}` : ''}).</p>
+    </section>
+    ${footer()}`;
+
+  const qi = document.getElementById('ases-q');
+  qi.addEventListener('input', () => {
+    state.ases.q = qi.value;
+    const pos = qi.selectionStart;
+    renderAsesores();
+    const n = document.getElementById('ases-q'); n.focus(); n.setSelectionRange(pos, pos);
+  });
+  document.getElementById('ases-sort').addEventListener('change', e => { state.ases.sort = e.target.value; renderAsesores(); });
+}
+
+function openAsesor(a) {
+  const rows = base().filter(r => r.a === a);
+  const all = rows.length ? rows : ROWS.filter(r => r.a === a);
+  const tot = agg(all);
+  const months = MONTHS.map((_, i) => all.filter(r => r.m === i).length);
+  const skus = [...groupBy(all.filter(r => r.sku), 'sku')].map(([k, rs]) => [k, rs.length]).sort((x, y) => y[1] - x[1]).slice(0, 5);
+  const last = [...all].sort((x, y) => (y.date || '').localeCompare(x.date || '') || y.id - x.id).slice(0, 8);
+  const body = document.getElementById('drawer-body');
+  body.innerHTML = `
+    <div class="dr-head">
+      <div>
+        <p class="eyebrow">Asesor</p>
+        <h2 id="dr-title">${esc(DIM.asesor[a])}</h2>
+        <p class="card-sub">${esc(DIM.sede[mostCommon(all, 'se')])} · Supervisor: ${esc(DIM.supervisor[mostCommon(all, 's')])} · Jefatura: ${esc(DIM.jefe[mostCommon(all, 'j')])}</p>
+      </div>
+      <button class="icon-btn" type="button" data-close aria-label="Cerrar detalle">${ic('x')}</button>
+    </div>
+    <div class="dr-stats">
+      <div><p>Equipos del periodo</p><strong>${fmtInt(tot.eq)}</strong></div>
+      <div><p>Venta de equipos</p><strong>${fmtMoney(tot.venta)}</strong></div>
+      <div><p>Comisiones</p><strong>${fmtMoney(tot.com)}</strong></div>
+      <div><p>Ticket promedio</p><strong>${fmtMoney(tot.ticket)}</strong></div>
+    </div>
+    <section class="dr-section">
+      <h4>Equipos por mes</h4>
+      <div class="chart-box h-220"><canvas id="ch-ases" role="img" aria-label="Equipos por mes de ${esc(DIM.asesor[a])}"></canvas></div>
+      <p class="card-note">${MONTHS.map((x, i) => `${x.short} ${months[i]}`).join(' · ')}</p>
+    </section>
+    <section class="dr-section">
+      <h4>Productos más vendidos</h4>
+      <ol class="rank">${skus.map(([k, n]) => `<li><span class="n">${ic('box')}</span><div class="who"><span class="name mono">${esc(k)}</span><div class="bar"><span style="width:${(n / skus[0][1] * 100).toFixed(1)}%"></span></div></div><div class="val"><strong>${n}</strong></div></li>`).join('')}</ol>
+    </section>
+    <section class="dr-section">
+      <h4>Últimas ventas</h4>
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>Fecha</th><th>Cliente</th><th>SKU</th><th class="num">GEX</th></tr></thead>
+        <tbody>${last.map(r => `<tr><td class="mono">${fmtDate(r.date)}</td><td class="ellip" title="${esc(r.cliente)}">${esc(r.cliente || 'Sin cliente registrado')}</td><td class="mono">${esc(r.sku || '—')}</td><td class="num">${fmtMoney(r.pgex)}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </section>`;
+  const wrap = document.getElementById('drawer');
+  wrap.hidden = false;
+  document.body.style.overflow = 'hidden';
+  body.querySelector('[data-close]').focus();
+  const t = chartTheme();
+  mkChart('ch-ases', {
+    type: 'bar',
+    data: { labels: MONTHS.map((x, i) => x.short + (partialEnd(i) || partialStart(i) ? '*' : '')), datasets: [{ label: 'Equipos', data: months, backgroundColor: months.map((_, i) => i === state.month ? t.s1 : t.s1soft), borderRadius: 4, borderSkipped: 'start', maxBarThickness: 36 }] },
+    options: baseOptions(t, {
+      layout: { padding: { top: 20 } },
+      scales: { x: catAxis(t), y: axis(t, fmtInt, { ticks: { color: t.muted, padding: 8, precision: 0, maxTicksLimit: 5 } }) },
+      plugins: Object.assign(baseOptions(t).plugins, {
+        labels: { items: [{ ds: 0, i: state.month, text: String(months[state.month]), color: t.ink }] },
+        tooltip: Object.assign(baseOptions(t).plugins.tooltip, { callbacks: { title: it => monthName(it[0].dataIndex), label: ctx => `Equipos: ${ctx.raw}` } }),
+      }),
+    }),
+  });
+}
+let drawerReturn = null;
+function closeDrawer() {
+  const wrap = document.getElementById('drawer');
+  if (wrap.hidden) return;
+  wrap.hidden = true;
+  document.body.style.overflow = '';
+  destroyCharts('ch-ases');
+  if (drawerReturn && document.body.contains(drawerReturn)) drawerReturn.focus();
+}
+
+/* ---------- Supervisores y sedes ---------- */
+function renderSedes() {
+  const rows = base(), m = state.month, mode = cmpMode(m), showDelta = mode === 'full' || mode === 'same';
+  const cur = inMonth(rows, m), prev = prevOf(rows, m);
+  const sedes = [...new Set(rows.map(r => r.se))].map(se => ({
+    se, eq: cur.filter(r => r.se === se).length, prev: prev.filter(r => r.se === se).length,
+  })).filter(s => s.eq || s.prev).sort((a, b) => b.eq - a.eq || b.prev - a.prev);
+
+  const sups = [...groupBy(rows, 's')].map(([s, rs]) => {
+    const c = rs.filter(r => r.m === m), p = prev.filter(r => r.s === s), ca = agg(c);
+    return {
+      s, sedes: [...new Set(rs.map(r => DIM.sede[r.se]))].sort().join(', '), jefe: mostCommon(rs, 'j'),
+      eq: c.length, prev: p.length, venta: ca.venta, nAses: ca.nAses, eqAses: ca.eqAses, total: rs.length,
+    };
+  }).sort((a, b) => b.eq - a.eq || b.total - a.total);
+  const totEq = cur.length || 1;
+
+  content.innerHTML = `
+    <section class="card">
+      <header class="card-head">
+        <div><h3>Equipos por sede</h3><p class="card-sub">${esc(MONTHS[m].name)}${mode !== 'none' ? ` frente a ${esc(refText(m))}` : ''} · ${esc(scopeText())}</p></div>
+      </header>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--series-1)"></i>${esc(MONTHS[m].name)}${monthTag(m) ? ' (' + monthTag(m) + ')' : ''}</span>
+        ${mode !== 'none' ? `<span><i class="sw" style="background:var(--series-muted)"></i>${esc(refText(m))}</span>` : ''}
+      </div>
+      <div class="chart-box" style="height:${Math.max(200, sedes.length * 40 + 50)}px"><canvas id="ch-sedes" role="img" aria-label="Equipos por sede"></canvas></div>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Desempeño por supervisor</h3><p class="card-sub">${esc(MONTHS[m].name)} · la variación compara contra ${mode === 'none' ? 'ningún mes previo' : esc(refText(m))}</p></div></header>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr>
+            <th>Supervisor</th><th>Jefatura</th><th class="num">Asesores activos</th><th class="num">Equipos</th><th class="num">Var.</th>
+            <th class="num">Participación</th><th class="num">Venta equipos</th><th class="num">Eq./asesor</th><th class="num">Total periodo</th>
+          </tr></thead>
+          <tbody>${sups.map(x => `
+            <tr>
+              <td><div class="cell-name">${esc(DIM.supervisor[x.s])}</div><div class="cell-sub">${esc(x.sedes)}</div></td>
+              <td>${esc(DIM.jefe[x.jefe])}</td>
+              <td class="num">${fmtInt(x.nAses)}</td>
+              <td class="num"><strong>${fmtInt(x.eq)}</strong></td>
+              <td class="num">${showDelta ? delta(x.eq, x.prev, mode) : '—'}</td>
+              <td class="num">${fmtShare(x.eq / totEq)}</td>
+              <td class="num">${x.eq ? fmtMoney(x.venta) : '—'}</td>
+              <td class="num">${x.eq ? nf1.format(x.eqAses) : '—'}</td>
+              <td class="num">${fmtInt(x.total)}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </section>
+    ${footer()}`;
+
+  const t = chartTheme();
+  const ds = [{ label: MONTHS[m].name, data: sedes.map(s => s.eq), backgroundColor: t.s1, borderRadius: 4, borderSkipped: 'start', barPercentage: 0.9, categoryPercentage: 0.72 }];
+  if (mode !== 'none') ds.push({ label: refText(m), data: sedes.map(s => s.prev), backgroundColor: t.smuted, borderRadius: 4, borderSkipped: 'start', barPercentage: 0.9, categoryPercentage: 0.72 });
+  mkChart('ch-sedes', {
+    type: 'bar',
+    data: { labels: sedes.map(s => DIM.sede[s.se]), datasets: ds },
+    options: baseOptions(t, {
+      indexAxis: 'y',
+      interaction: { mode: 'index', intersect: false, axis: 'y' },
+      scales: {
+        x: axis(t, fmtInt, { ticks: { color: t.muted, padding: 6, precision: 0, maxTicksLimit: 6 } }),
+        y: catAxis(t, { ticks: { color: t.ink2, padding: 8, autoSkip: false } }),
+      },
+      plugins: Object.assign(baseOptions(t).plugins, {
+        tooltip: Object.assign(baseOptions(t).plugins.tooltip, {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${fmtInt(ctx.raw)} equipos`,
+            footer: it => { const s = sedes[it[0].dataIndex]; const d = pct(s.eq, s.prev); return mode !== 'none' && d != null && mode !== 'base' ? `Variación: ${fmtPct(d)}` : ''; },
+          },
+        }),
+      }),
+    }),
+  });
+}
+
+/* ---------- Jefaturas ---------- */
+const JEF_COLOR = j => j === 0 ? 'var(--series-1)' : 'var(--series-2)';
+function renderJefaturas() {
+  const rows = base(), m = state.month, mode = cmpMode(m), showDelta = mode === 'full' || mode === 'same';
+  const jefes = [...new Set(rows.map(r => r.j))].sort((a, b) => a - b);
+  const totM = inMonth(rows, m).length || 1;
+  const cards = jefes.map(j => {
+    const rs = rows.filter(r => r.j === j), c = cmp(rs, m);
+    return { j, c, sups: new Set(rs.map(r => r.s)).size, sedes: new Set(rs.map(r => r.se)).size, share: c.cur.eq / totM };
+  });
+  const byMonth = MONTHS.map((_, i) => jefes.map(j => rows.filter(r => r.m === i && r.j === j).length));
+
+  content.innerHTML = `
+    <div class="grid-2 even">
+      ${cards.map(x => `
+        <section class="card jef">
+          <div class="jef-head"><i class="sw" style="background:${JEF_COLOR(x.j)};width:12px;height:12px"></i><h3>${esc(DIM.jefe[x.j])}</h3></div>
+          <p class="card-sub">${x.sups} supervisores · ${x.sedes} sedes · ${fmtInt(x.c.cur.nAses)} asesores activos en ${esc(MONTHS[m].name)}</p>
+          <div class="jef-stats">
+            <div><p>Equipos</p><p class="v">${fmtInt(x.c.cur.eq)}</p>${showDelta ? delta(x.c.cur.eq, x.c.prev.eq, mode) : ''}</div>
+            <div><p>Venta equipos</p><p class="v">${fmtMoneyC(x.c.cur.venta)}</p>${showDelta ? delta(x.c.cur.venta, x.c.prev.venta, mode) : ''}</div>
+            <div><p>Participación</p><p class="v">${fmtShare(x.share)}</p><span class="chip">de los equipos</span></div>
+          </div>
+          <div class="bar"><span style="width:${(x.share * 100).toFixed(1)}%;background:${JEF_COLOR(x.j)}"></span></div>
+        </section>`).join('')}
+    </div>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Equipos por jefatura</h3><p class="card-sub">Tendencia mensual · ${esc(scopeText())}</p></div></header>
+      <div class="legend">${jefes.map(j => `<span><i class="sw sw-line" style="background:${JEF_COLOR(j)}"></i>${esc(DIM.jefe[j])}</span>`).join('')}<span>○ mes parcial</span></div>
+      <div class="chart-box h-280"><canvas id="ch-jef" role="img" aria-label="Equipos por jefatura por mes"></canvas></div>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Participación mensual</h3><p class="card-sub">Equipos y % del total de cada mes</p></div></header>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Mes</th>${jefes.map(j => `<th class="num">${esc(DIM.jefe[j])}</th><th class="num">%</th>`).join('')}<th class="num">Total</th></tr></thead>
+          <tbody>${byMonth.map((v, i) => { const s = v.reduce((a, b) => a + b, 0) || 1; return `<tr class="${i === m ? 'is-sel' : ''}"><td><span class="cell-name">${esc(MONTHS[i].name)}</span> ${monthTag(i) ? `<span class="tag">${monthTag(i)}</span>` : ''}</td>${v.map(n => `<td class="num">${fmtInt(n)}</td><td class="num">${fmtShare(n / s)}</td>`).join('')}<td class="num"><strong>${fmtInt(v.reduce((a, b) => a + b, 0))}</strong></td></tr>`; }).join('')}</tbody>
+        </table>
+      </div>
+    </section>
+    ${footer()}`;
+
+  const t = chartTheme();
+  const col = j => j === 0 ? t.s1 : t.s2;
+  const datasets = jefes.map((j, di) => ({
+    label: DIM.jefe[j], data: byMonth.map(v => v[di]), borderColor: col(j), backgroundColor: col(j), borderWidth: 2, cubicInterpolationMode: 'monotone',
+    pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2, pointBorderColor: col(j),
+    pointBackgroundColor: MONTHS.map((_, i) => partialEnd(i) || partialStart(i) ? t.surface : col(j)),
+  }));
+  // Etiqueta directa al final de cada serie, separando las que quedan muy cerca
+  const ends = datasets.map((d, di) => ({ di, v: d.data[LAST] })).sort((a, b) => b.v - a.v);
+  mkChart('ch-jef', {
+    type: 'line',
+    data: { labels: MONTHS.map((x, i) => x.short + (partialEnd(i) || partialStart(i) ? '*' : '')), datasets },
+    options: baseOptions(t, {
+      layout: { padding: { right: 112, top: 10 } },
+      scales: { x: catAxis(t), y: axis(t, fmtInt) },
+      plugins: Object.assign(baseOptions(t).plugins, {
+        labels: { items: [] },
+        tooltip: Object.assign(baseOptions(t).plugins.tooltip, { callbacks: { title: it => monthName(it[0].dataIndex), label: ctx => `${ctx.dataset.label}: ${fmtInt(ctx.raw)} equipos` } }),
+      }),
+    }),
+    plugins: [{
+      id: 'endLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart; const placed = [];
+        ctx.save(); ctx.font = `600 12px ${css('--font-ui')}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+        for (const e of ends) {
+          const pt = chart.getDatasetMeta(e.di).data[LAST]; if (!pt) continue;
+          let y = pt.y; for (const p of placed) if (Math.abs(p - y) < 16) y = p + 16;
+          placed.push(y);
+          ctx.fillStyle = t.ink2; ctx.fillText(datasets[e.di].label, pt.x + 10, y);
+        }
+        ctx.restore();
+      },
+    }],
+  });
+}
+
+/* ---------- Productos y GEX ---------- */
+function renderProductos() {
+  const rows = base(), m = state.month, mode = cmpMode(m), showDelta = mode === 'full' || mode === 'same';
+  const c = cmp(rows, m), cur = inMonth(rows, m);
+  const skus = [...groupBy(cur.filter(r => r.sku), 'sku')].map(([k, rs]) => ({ k, n: rs.length, a: agg(rs) }))
+    .sort((a, b) => b.n - a.n || b.a.venta - a.a.venta).slice(0, 10);
+  const skuMax = skus.length ? skus[0].n : 1;
+  const tierRows = TIERS.map(t => { const rs = cur.filter(r => tierOf(r) === t.i); return { t, n: rs.length, gex: rs.reduce((a, r) => a + r.pgex, 0), com: rs.reduce((a, r) => a + r.com, 0) }; });
+  const mix = MONTHS.map((_, i) => { const rs = inMonth(rows, i); const n = rs.length || 1; return TIERS.map(t => rs.filter(r => tierOf(r) === t.i).length / n * 100); });
+  const mixN = MONTHS.map((_, i) => { const rs = inMonth(rows, i); return TIERS.map(t => rs.filter(r => tierOf(r) === t.i).length); });
+
+  const tiles = [
+    ['GEX promedio por equipo', fmtMoney(c.cur.gexEq), 'gexEq'],
+    ['Peso del GEX sobre el equipo', fmtShare(c.cur.gexShare), 'gexShare'],
+    ['Comisión promedio por equipo', fmtMoney(c.cur.comEq), 'comEq'],
+    ['SKUs distintos vendidos', fmtInt(c.cur.nSkus), 'nSkus'],
+  ];
+
+  content.innerHTML = `
+    <section class="grid-4" aria-label="Indicadores de producto">
+      ${tiles.map(([l, v, k]) => `<article class="kpi mini"><div class="kpi-top"><h3 class="kpi-label">${l}</h3>${showDelta ? delta(c.cur[k], c.prev[k], mode) : ''}</div><p class="kpi-value">${v}</p><p class="kpi-sub">${esc(MONTHS[m].name)}${mode !== 'none' ? ` · ${esc(refText(m))}: ${k === 'gexShare' ? fmtShare(c.prev[k]) : k === 'nSkus' ? fmtInt(c.prev[k]) : fmtMoney(c.prev[k])}` : ''}</p></article>`).join('')}
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Mix de GEX por tramo</h3><p class="card-sub">% de equipos vendidos en cada tramo de garantía extendida, por mes</p></div></header>
+      <div class="legend">${TIERS.map(t => `<span><i class="sw" style="background:var(--ord-${t.i + 1})"></i>${t.label} · incentivo ${t.inc}</span>`).join('')}</div>
+      <div class="chart-box h-300"><canvas id="ch-mix" role="img" aria-label="Mix de GEX por tramo y mes"></canvas></div>
+    </section>
+
+    <div class="grid-2 even">
+      <section class="card">
+        <header class="card-head"><div><h3>Top 10 SKUs</h3><p class="card-sub">Equipos vendidos en ${esc(MONTHS[m].name)} · ${esc(scopeText())}</p></div></header>
+        ${skus.length ? `<ol class="rank">${skus.map((s, i) => `
+          <li><span class="n">${i + 1}</span>
+            <div class="who"><span class="name mono">${esc(s.k)}</span><span class="meta">${fmtMoney(s.a.venta)} en equipos · GEX prom. ${fmtMoney(s.a.gexEq)}</span><div class="bar"><span style="width:${(s.n / skuMax * 100).toFixed(1)}%"></span></div></div>
+            <div class="val"><strong>${s.n}</strong></div></li>`).join('')}</ol>` : '<p class="card-sub">Sin ventas en este mes.</p>'}
+      </section>
+      <section class="card">
+        <header class="card-head"><div><h3>Tramos de GEX en ${esc(MONTHS[m].name)}</h3><p class="card-sub">Según la tabla de incentivos del Excel</p></div></header>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Tramo</th><th class="num">Incentivo</th><th class="num">Equipos</th><th class="num">%</th><th class="num">Venta GEX</th><th class="num">Comisión</th></tr></thead>
+            <tbody>${tierRows.map(x => `<tr><td><i class="sw" style="background:var(--ord-${x.t.i + 1});margin-right:8px"></i>${x.t.label}</td><td class="num">${x.t.inc}</td><td class="num"><strong>${fmtInt(x.n)}</strong></td><td class="num">${fmtShare(x.n / (cur.length || 1))}</td><td class="num">${fmtMoney(x.gex)}</td><td class="num">${fmtMoney(x.com)}</td></tr>`).join('')}</tbody>
+            <tfoot><tr><td>Total</td><td></td><td class="num">${fmtInt(cur.length)}</td><td class="num">${cur.length ? fmtShare(1) : '—'}</td><td class="num">${fmtMoney(c.cur.gex)}</td><td class="num">${fmtMoney(c.cur.com)}</td></tr></tfoot>
+          </table>
+        </div>
+      </section>
+    </div>
+    ${footer()}`;
+
+  const t = chartTheme();
+  mkChart('ch-mix', {
+    type: 'bar',
+    data: {
+      labels: MONTHS.map((x, i) => x.short + (partialEnd(i) || partialStart(i) ? '*' : '')),
+      datasets: TIERS.map(tr => ({
+        label: `${tr.label} (incentivo ${tr.inc})`, data: mix.map(v => v[tr.i]), backgroundColor: t.ord[tr.i],
+        borderColor: t.surface, borderWidth: { top: 2 }, borderSkipped: false, maxBarThickness: 64,
+      })),
+    },
+    options: baseOptions(t, {
+      scales: { x: catAxis(t, { stacked: true }), y: axis(t, v => v + '%', { stacked: true, max: 100, ticks: { color: t.muted, padding: 8, stepSize: 25, callback: v => v + '%' } }) },
+      plugins: Object.assign(baseOptions(t).plugins, {
+        tooltip: Object.assign(baseOptions(t).plugins.tooltip, {
+          itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
+          callbacks: { title: it => monthName(it[0].dataIndex), label: ctx => `${TIERS[ctx.datasetIndex].label}: ${nf1.format(ctx.raw)}% (${mixN[ctx.dataIndex][ctx.datasetIndex]} equipos)` },
+        }),
+      }),
+    }),
+  });
+}
+
+/* ---------- Transacciones ---------- */
+const PAGE = 25;
+function renderTransacciones() {
+  const rows = base(), tx = state.tx;
+  const q = tx.q.trim().toLowerCase();
+  let list = rows.filter(r =>
+    (tx.m < 0 || r.m === tx.m) && (tx.a < 0 || r.a === tx.a) && (!tx.issues || (r.flags & REVIEW_MASK)) &&
+    (!q || r.cliente.toLowerCase().includes(q) || r.sku.toLowerCase().includes(q) || DIM.asesor[r.a].toLowerCase().includes(q)));
+  list.sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.id - a.id);
+  const pages = Math.max(1, Math.ceil(list.length / PAGE));
+  tx.page = Math.min(tx.page, pages - 1);
+  const slice = list.slice(tx.page * PAGE, tx.page * PAGE + PAGE);
+  const a = agg(list);
+  const asesores = [...new Set(rows.map(r => r.a))].sort((x, y) => DIM.asesor[x].localeCompare(DIM.asesor[y], 'es'));
+
+  const obs = r => {
+    const rev = flagList(r.flags, 'review'), fix = flagList(r.flags, 'fixed');
+    if (rev.length) return `<span class="chip chip-warn" title="${esc(rev.concat(fix).join(' · '))}">${ic('alert', 'ic')} Revisar</span>`;
+    if (fix.length) return `<span class="chip" title="${esc(fix.join(' · '))}">Corregido</span>`;
+    return '';
+  };
+
+  content.innerHTML = `
+    <section class="card">
+      <header class="card-head"><div><h3>Transacciones</h3><p class="card-sub">Cada fila es un equipo vendido · ${esc(scopeText())}</p></div></header>
+      <div class="toolbar">
+        <label class="field grow"><span>Buscar</span><input type="search" id="tx-q" placeholder="Cliente, SKU o asesor" value="${esc(tx.q)}" autocomplete="off"></label>
+        <label class="field"><span>Mes</span><select id="tx-m"><option value="-1">Todos</option>${MONTHS.map((x, i) => `<option value="${i}"${tx.m === i ? ' selected' : ''}>${x.name}</option>`).join('')}</select></label>
+        <label class="field"><span>Asesor</span><select id="tx-a"><option value="-1">Todos</option>${asesores.map(i => `<option value="${i}"${tx.a === i ? ' selected' : ''}>${esc(DIM.asesor[i])}</option>`).join('')}</select></label>
+        <label class="check"><input type="checkbox" id="tx-issues"${tx.issues ? ' checked' : ''}> Solo con observaciones</label>
+      </div>
+      <div class="stat-row">
+        <span class="chip chip-info">${fmtInt(list.length)} equipos</span>
+        <span class="chip">${fmtMoney(a.venta)} en equipos</span>
+        <span class="chip">${fmtMoney(a.gex)} en GEX</span>
+        <span class="chip">${fmtMoney(a.com)} en comisiones</span>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Fecha</th><th>Cliente</th><th>SKU</th><th class="num">GEX</th><th class="num">Precio equipo</th><th class="num">Comisión</th><th>Asesor</th><th>Sede</th><th>Obs.</th></tr></thead>
+          <tbody>${slice.map(r => `
+            <tr>
+              <td class="mono">${fmtDate(r.date)}</td>
+              <td class="ellip" title="${esc(r.cliente)}">${r.cliente ? esc(r.cliente) : '<span class="cell-sub">Sin cliente registrado</span>'}</td>
+              <td class="mono">${esc(r.sku || '—')}</td>
+              <td class="num">${fmtMoney(r.pgex)}</td>
+              <td class="num">${r.precio == null ? '<span class="cell-sub">Sin precio</span>' : fmtMoney(r.precio)}</td>
+              <td class="num">${fmtMoney(r.com)}</td>
+              <td style="white-space:nowrap">${esc(DIM.asesor[r.a])}</td>
+              <td style="white-space:nowrap">${esc(DIM.sede[r.se])}</td>
+              <td>${obs(r)}</td>
+            </tr>`).join('') || '<tr><td colspan="9">No hay ventas con estos filtros.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <span>Mostrando ${list.length ? tx.page * PAGE + 1 : 0}–${Math.min(list.length, (tx.page + 1) * PAGE)} de ${fmtInt(list.length)}</span>
+        <div class="btns">
+          <button class="btn" type="button" data-page="-1"${tx.page === 0 ? ' disabled' : ''}>Anterior</button>
+          <button class="btn" type="button" data-page="1"${tx.page >= pages - 1 ? ' disabled' : ''}>Siguiente</button>
+        </div>
+      </div>
+    </section>
+    ${footer()}`;
+
+  const qi = document.getElementById('tx-q');
+  qi.addEventListener('input', () => {
+    tx.q = qi.value; tx.page = 0; const pos = qi.selectionStart;
+    renderTransacciones();
+    const n = document.getElementById('tx-q'); n.focus(); n.setSelectionRange(pos, pos);
+  });
+  document.getElementById('tx-m').addEventListener('change', e => { tx.m = +e.target.value; tx.page = 0; renderTransacciones(); });
+  document.getElementById('tx-a').addEventListener('change', e => { tx.a = +e.target.value; tx.page = 0; renderTransacciones(); });
+  document.getElementById('tx-issues').addEventListener('change', e => { tx.issues = e.target.checked; tx.page = 0; renderTransacciones(); });
+}
+
+/* ---------- Calidad de datos ---------- */
+function renderCalidad() {
+  const f = Q.flags;
+  const n = k => f[k] || 0;
+  const fixed = [
+    ['MES_UNIFICADO', `${fmtInt(n('MES_UNIFICADO'))} ventas`, 'decían "SEPTIEMBRE" y otras "SETIEMBRE"; se unificaron en un solo mes.'],
+    ['NOMBRE_NORMALIZADO', `${Q.asesoresRaw} → ${Q.asesoresClean} asesores`, `Variantes de mayúsculas y nombres incompletos del mismo asesor se consolidaron (${fmtInt(n('NOMBRE_NORMALIZADO'))} ventas).`],
+    ['SEDE_NORMALIZADA', `${Q.sedesRaw} → ${Q.sedesClean} sedes`, `"AYLLON3" y "AYLLON2" se alinearon con "AYLLON 3" y "AYLLON 2" (${fmtInt(n('SEDE_NORMALIZADA'))} ventas).`],
+    ['GEX_FORMATO', `${fmtInt(n('GEX_FORMATO'))} ventas`, 'tenían el GEX escrito como "GEX90", "GEX-90" o "Gex 90"; se estandarizó a "GEX 90".'],
+    ['PRECIO_TEXTO', `${fmtInt(n('PRECIO_TEXTO'))} precios`, 'estaban escritos como texto ("S/.2,609.10", "5.703.08") y se convirtieron a número.'],
+    ['FECHA_TEXTO', `${fmtInt(n('FECHA_TEXTO'))} fechas`, 'estaban escritas como texto ("24/092025") y se convirtieron a fecha.'],
+  ];
+  const review = ['PRECIO_FALTANTE', 'CLIENTE_VACIO', 'SKU_VACIO', 'GEX_INCONSISTENTE', 'FECHA_FUERA_MES', 'CLIENTE_PLACEHOLDER'];
+  const reviewText = {
+    PRECIO_FALTANTE: 'ventas sin precio de equipo. Cuentan como equipos vendidos, pero no suman a la venta en S/.',
+    CLIENTE_VACIO: 'ventas sin nombre de cliente. Se incluyeron en los totales.',
+    SKU_VACIO: 'ventas sin código de producto (SKU).',
+    GEX_INCONSISTENTE: 'ventas donde la etiqueta GEX no coincide con el precio GEX (por ejemplo, "GEX 180" con precio 220).',
+    FECHA_FUERA_MES: 'ventas con una fecha que no corresponde al mes declarado (por ejemplo, una fecha de 2024).',
+    CLIENTE_PLACEHOLDER: 'venta registrada con el cliente de prueba "XXXX".',
+  };
+  const toReview = ROWS.filter(r => r.flags & REVIEW_MASK).sort((a, b) => a.xrow - b.xrow);
+
+  content.innerHTML = `
+    <section class="hero">
+      <p class="eyebrow">Automatización · ${esc(DATA.meta.source)}</p>
+      <h2 class="headline">Cada vez que llega el Excel, Metassistance lo limpia, valida y publica este reporte. En esta carga revisó <strong>${fmtInt(Q.rawRows)} filas</strong>, corrigió lo que tenía regla clara y separó <strong>${fmtInt(toReview.length)} ventas</strong> que necesitan revisión del equipo.</h2>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Cómo se procesa el archivo</h3><p class="card-sub">Mismo proceso en cada actualización, sin pasos manuales</p></div></header>
+      <ol class="pipeline">
+        <li><h4>Lectura</h4><p>Hoja ${esc(DATA.meta.sheet)}: ${fmtInt(Q.rawRows)} filas, ${Q.repeatedHeaders} encabezados repetidos entre meses que se descartan.</p></li>
+        <li><h4>Limpieza</h4><p>Unifica meses, nombres, sedes y formatos de GEX; convierte precios y fechas escritos como texto.</p></li>
+        <li><h4>Validación</h4><p>Comisiones contra la tabla de incentivos: ${fmtInt(Q.comisionOk)} de ${fmtInt(Q.records)} coinciden. Marca vacíos e inconsistencias.</p></li>
+        <li><h4>Publicación</h4><p>${fmtInt(Q.records)} ventas consolidadas alimentan los indicadores, rankings y alertas de este reporte.</p></li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Corregido automáticamente</h3><p class="card-sub">Reglas que se aplican sin intervención</p></div></header>
+      <div class="qgrid">
+        ${fixed.map(([k, big, txt]) => `<div class="q k-good"><span class="ins-ic">${ic('check')}</span><div><strong>${big}</strong><p>${txt}</p></div></div>`).join('')}
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="card-head"><div><h3>Requiere revisión</h3><p class="card-sub">No se pueden corregir sin información del negocio; se listan con su fila del Excel</p></div></header>
+      <div class="qgrid">
+        ${review.map(k => `<div class="q k-warn"><span class="ins-ic">${ic('alert')}</span><div><strong>${fmtInt(n(k))}</strong><p>${reviewText[k]}</p></div></div>`).join('')}
+      </div>
+      <div class="table-wrap tall" style="margin-top:16px">
+        <table class="tbl">
+          <thead><tr><th>Fila Excel</th><th>Mes</th><th>Fecha</th><th>Cliente</th><th>SKU</th><th>Asesor</th><th>Observación</th></tr></thead>
+          <tbody>${toReview.map(r => `
+            <tr>
+              <td class="mono">${r.xrow}</td>
+              <td>${esc(MONTHS[r.m].name)}</td>
+              <td class="mono">${fmtDate(r.date)}</td>
+              <td class="ellip" title="${esc(r.cliente)}">${r.cliente ? esc(r.cliente) : '<span class="cell-sub">—</span>'}</td>
+              <td class="mono">${esc(r.sku || '—')}</td>
+              <td style="white-space:nowrap">${esc(DIM.asesor[r.a])}</td>
+              <td>${flagList(r.flags, 'review').map(l => `<span class="chip chip-warn" style="margin:1px 4px 1px 0">${esc(l)}</span>`).join('')}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    ${footer()}`;
+}
+
+/* ================= Filtros, navegación y tema ================= */
+const fMonth = document.getElementById('f-month'), fJefe = document.getElementById('f-jefe'), fSede = document.getElementById('f-sede');
+function fillFilters() {
+  fMonth.innerHTML = MONTHS.map((x, i) => `<option value="${i}"${i === state.month ? ' selected' : ''}>${x.name} ${x.year}${monthTag(i) ? ` (${monthTag(i)})` : ''}</option>`).join('');
+  fJefe.innerHTML = `<option value="-1">Todas</option>` + DIM.jefe.map((j, i) => `<option value="${i}"${i === state.jefe ? ' selected' : ''}>${esc(j)}</option>`).join('');
+  const sedes = [...new Set(ROWS.filter(r => state.jefe < 0 || r.j === state.jefe).map(r => r.se))].sort((a, b) => DIM.sede[a].localeCompare(DIM.sede[b], 'es'));
+  if (state.sede >= 0 && !sedes.includes(state.sede)) state.sede = -1;
+  fSede.innerHTML = `<option value="-1">Todas</option>` + sedes.map(i => `<option value="${i}"${i === state.sede ? ' selected' : ''}>${esc(DIM.sede[i])}</option>`).join('');
+}
+fMonth.addEventListener('change', () => { state.month = +fMonth.value; render(); });
+fJefe.addEventListener('change', () => { state.jefe = +fJefe.value; fillFilters(); state.tx.page = 0; render(); });
+fSede.addEventListener('change', () => { state.sede = +fSede.value; state.tx.page = 0; render(); });
+
+function render() {
+  const v = VIEWS[state.view];
+  destroyCharts();
+  sparkData = null;
+  document.getElementById('tb-title').textContent = v.title;
+  document.getElementById('filters').hidden = state.view === 'calidad';
+  document.querySelectorAll('#nav a').forEach(a => a.dataset.view === state.view ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  v.render();
+}
+
+function goTo(view, push = true) {
+  if (!VIEWS[view]) view = 'resumen';
+  const changed = view !== state.view;
+  state.view = view;
+  if (push && location.hash !== '#' + view) history.replaceState(null, '', '#' + view);
+  document.getElementById('app').classList.remove('nav-open');
+  render();
+  if (changed) { window.scrollTo(0, 0); content.focus({ preventScroll: true }); }
+}
+window.addEventListener('hashchange', () => goTo(location.hash.slice(1), false));
+
+document.getElementById('menu-btn').addEventListener('click', () => document.getElementById('app').classList.add('nav-open'));
+document.getElementById('scrim').addEventListener('click', () => document.getElementById('app').classList.remove('nav-open'));
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-metric],[data-asesor],[data-go],[data-page],[data-close],#nav a');
+  if (!el) return;
+  if (el.matches('#nav a')) { e.preventDefault(); goTo(el.dataset.view); return; }
+  if (el.dataset.metric) { state.metric = el.dataset.metric; render(); return; }
+  if (el.dataset.asesor != null) { drawerReturn = el; openAsesor(+el.dataset.asesor); return; }
+  if (el.dataset.go) { goTo(el.dataset.go); return; }
+  if (el.dataset.page) { state.tx.page += +el.dataset.page; renderTransacciones(); return; }
+  if (el.hasAttribute('data-close')) closeDrawer();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDrawer(); document.getElementById('app').classList.remove('nav-open'); }
+  if (e.key === 'Enter' && e.target.matches('tr[data-asesor]')) { drawerReturn = e.target; openAsesor(+e.target.dataset.asesor); }
+});
+
+const themeBtn = document.getElementById('theme-btn');
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+const isDark = () => { const t = document.documentElement.dataset.theme; return t ? t === 'dark' : mq.matches; };
+function syncThemeBtn() {
+  const dark = isDark();
+  document.getElementById('theme-ic').innerHTML = `<use href="#i-${dark ? 'sun' : 'moon'}"/>`;
+  themeBtn.setAttribute('aria-label', dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+}
+try { const saved = localStorage.getItem('meta-ilumi-theme'); if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved; } catch (_) { /* almacenamiento no disponible */ }
+themeBtn.addEventListener('click', () => {
+  const next = isDark() ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem('meta-ilumi-theme', next); } catch (_) { /* almacenamiento no disponible */ }
+  syncThemeBtn(); render();
+});
+mq.addEventListener('change', () => { if (!document.documentElement.dataset.theme) { syncThemeBtn(); render(); } });
+
+let rz;
+window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(drawSparks, 120); });
+
+/* ================= Inicio ================= */
+document.getElementById('sf-source').textContent = DATA.meta.source;
+document.getElementById('sf-corte').textContent = fmtDate(DATA.meta.corte);
+document.getElementById('sf-gen').textContent = fmtDate(DATA.meta.generated);
+document.getElementById('nav-ases').textContent = DIM.asesor.length;
+document.getElementById('nav-tx').textContent = fmtInt(ROWS.length);
+if (hasChart()) {
+  Chart.defaults.font.family = css('--font-ui');
+  Chart.defaults.font.size = 12;
+}
+fillFilters();
+syncThemeBtn();
+state.view = VIEWS[location.hash.slice(1)] ? location.hash.slice(1) : 'resumen';
+render();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (state.view !== 'transacciones' && state.view !== 'calidad') render(); });
+})();
+</script>
+</body>
+</html>
 
